@@ -48,4 +48,4 @@ Esta aplicación te permite comunicarte de manera eficiente con dispositivos IOT
 Si tienes alguna pregunta, problema o sugerencia, no dudes en contactarnos a través del correo electrónico juanieltupa@gmail.com.
 
 ## Licencia 📜
-Este proyecto está bajo [nombre de la licencia]. Consulta el archivo LICENSE.md para obtener más información.
+Este proyecto está bajo [GNU GPLv3]. Consulta el archivo LICENSE.md para obtener más información.
