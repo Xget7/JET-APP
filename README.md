@@ -1,5 +1,6 @@
-App de Comunicación MQTT para Dispositivos ESP32 👾📡📱
-¡Bienvenido a la documentación de la increíble aplicación de comunicación MQTT para dispositivos ESP32! Aquí encontrarás toda la información que necesitas para comprender y utilizar esta app desarrollada en Kotlin, con características como DI (Inyección de Dependencias), Ktor, Jetpack Compose y próximamente Multiplatform.
+# App de Comunicación MQTT para Dispositivos ESP32 👾📡📱
+
+¡Bienvenido a la documentación de la increíble aplicación de comunicación MQTT para dispositivos IOT ! Aquí encontrarás toda la información que necesitas para comprender y utilizar esta app desarrollada en Kotlin, con características como DI (Inyección de Dependencias), Ktor, Jetpack Compose y próximamente Multiplatform.
 
 Descripción 📝
 Esta aplicación te permite comunicarte de manera eficiente con dispositivos ESP32 utilizando el protocolo MQTT. Con ella, podrás activar portones, alarmas y otros dispositivos compatibles con MQTT de forma remota desde tu dispositivo móvil. ¡Es una forma sencilla y práctica de controlar tus dispositivos de manera inalámbrica!
