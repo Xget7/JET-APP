@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">JET</string>
+
+    <string name="connection_connected_to">Connected to</string>
+
+
+    <string name="connection_disconnected_from">Desconectado de</string>
+    <string name="connection_unknown_status">Estado de conexión desconocido a</string>
+    <string name="connection_connecting_to">Conectando a</string>
+    <string name="connection_disconnecting_from">Desconectando de</string>
+    <string name="connection_error_connecting_to">Se produjo un error al conectar a</string>
+    <string name="connection_clear">Limpiar</string>
+    <string name="subscription_new">Nueva suscripción</string>
+    <string name="manage_title">Configurar Conexion</string>
+    <string name="notification">Recibido %1$s topico=%2$s</string>
+    <string name="notifyTitle">MQTT Mensaje Recibido</string>
+    <string name="notifyTitle_connectionLost">Conexion Perdida</string>
 </resources>

@@ -1,10 +1,13 @@
 [versions]
 accompanist-pager = "0.25.0"
+androidx-room-runtime = "2.5.1"
 com-android-application = "8.1.0-alpha11"
 hilt-android = "2.44"
 hilt-compiler = "1.0.0"
+jjwt-impl = "0.10.5"
 kotlinx-serialization-json = "1.5.0"
 ktor-client-android = "2.3.0"
+legacy-support-v4 = "1.0.0"
 logback-classic = "1.2.3"
 org-jetbrains-kotlin-android = "1.8.0"
 core-ktx = "1.9.0"
@@ -14,22 +17,35 @@ espresso-core = "3.4.0"
 lifecycle-runtime-ktx = "2.3.1"
 activity-compose = "1.7.1"
 compose-bom = "2023.05.01"
+paho-mqtt-android = "3.5.2"
+room-compiler = "2.5.1"
+room-runtime = "2.5.1"
+symbol-processing-api = "1.8.0-1.0.9"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist-pager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist-pager" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-compiler" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-compiler" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
+androidx-room-runtime-2_5_1 = { module = "androidx.room:room-runtime", version.ref = "androidx-room-runtime" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "hilt-android" }
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "hilt-android" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt-impl" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt-impl" }
+jjwt-orgjson = { module = "io.jsonwebtoken:jjwt-orgjson", version.ref = "jjwt-impl" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+ktor-auth = { module = "io.ktor:ktor-auth", version.ref = "ktor-client-android" }
+ktor-auth-jwt = { module = "io.ktor:ktor-auth-jwt", version.ref = "ktor-client-android" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor-client-android" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-client-android" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client-android" }
@@ -42,6 +58,8 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
+paho-mqtt-android = { module = "com.github.hannesa2:paho.mqtt.android", version.ref = "paho-mqtt-android" }
+symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbol-processing-api" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

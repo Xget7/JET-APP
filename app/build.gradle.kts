@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     id("com.google.dagger.hilt.android")
+    kotlin("jvm") version "1.8.0" apply false
+    id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+
 }
 
 
@@ -22,6 +25,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
     }
 
     buildTypes {
@@ -54,6 +58,11 @@ android {
     kapt {
         correctErrorTypes= true
     }
+    externalNativeBuild {
+        ndkBuild {
+            ndkPath = "src/main/jni/Android.mk"
+        }
+    }
 }
 
 dependencies {
@@ -79,6 +88,11 @@ dependencies {
     implementation (libs.ktor.client.core)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.content.negotiation)
+
+
+    //MQTT V5
+    implementation (libs.androidx.legacy.support.v4)
+    implementation (libs.paho.mqtt.android)
     //Dagger Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
@@ -87,7 +101,17 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation (libs.dagger.android.support)
 
+    //JWT AUTH
+    api(libs.jjwt.api)
+    runtimeOnly (libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.orgjson)
+    //Room
 
+    implementation (libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    // To use Kotlin Symbol Processing (KSP)
+    implementation(libs.symbol.processing.api)
+    ksp(libs.androidx.room.compiler)
 
 
 

@@ -1,9 +1,8 @@
 package xget.dev.jet.data.remote.users.dto
 
+import kotlinx.serialization.Serializable
+import xget.dev.jet.domain.model.user.User
+@Serializable
 data class UserResponse(
-    val uid : String,
-    val name : String,
-    val gmail : String,
-    val phoneNumber : String,
-
+   val user : User
 )

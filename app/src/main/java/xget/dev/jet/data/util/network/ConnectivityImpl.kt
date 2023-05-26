@@ -1,4 +1,4 @@
-package xget.dev.jet.data.network
+package xget.dev.jet.data.util.network
 
 
 

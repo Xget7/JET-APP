@@ -1,15 +1,35 @@
 package xget.dev.jet.di
 
 
+import android.content.Context
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import xget.dev.jet.data.util.network.ConnectivityImpl
+import xget.dev.jet.data.util.token.TokenImpl
+import xget.dev.jet.domain.repository.network.ConnectivityInterface
+import xget.dev.jet.domain.repository.token.Token
+import javax.inject.Singleton
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
+
+    @Provides
+    @Singleton
+    fun provideToken(@ApplicationContext appContext: Context): Token {
+        return TokenImpl(context = appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkRepository(@ApplicationContext appContext: Context): ConnectivityInterface {
+        return ConnectivityImpl(appContext)
+    }
 
 //    @Provides
 //    @Singleton
@@ -42,11 +62,7 @@ class AppModule {
 //    }
 //
 //
-//    @Provides
-//    @Singleton
-//    fun provideNetworkRepository(@ApplicationContext appContext: Context): ConnectivityInterface {
-//        return ConnectivityImpl(appContext)
-//    }
+
 //
 //
 //    @Provides
