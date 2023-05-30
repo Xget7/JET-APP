@@ -5,11 +5,14 @@ import xget.dev.jet.data.remote.auth.AuthService
 import xget.dev.jet.data.remote.auth.dto.LoginRequest
 import xget.dev.jet.data.remote.auth.dto.LoginResponse
 import xget.dev.jet.domain.repository.auth.AuthRepository
+import xget.dev.jet.domain.repository.token.Token
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
+    private val token: Token
 ): AuthRepository {
+
     override suspend fun login(request: LoginRequest): ApiResponse<LoginResponse> {
         return authService.login(request)
     }
@@ -17,4 +20,10 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun logOut(): ApiResponse<Any> {
         return authService.logOut()
     }
+
+    override fun isLoggedIn(): Boolean {
+        return !token.getJwtLocal().isNullOrBlank()
+    }
+
+
 }

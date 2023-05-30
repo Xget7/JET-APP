@@ -7,4 +7,6 @@ import xget.dev.jet.data.remote.auth.dto.LoginResponse
 interface AuthRepository {
     suspend fun login(request : LoginRequest) : ApiResponse<LoginResponse>
     suspend  fun logOut() : ApiResponse<Any>
+
+    fun isLoggedIn() : Boolean
 }

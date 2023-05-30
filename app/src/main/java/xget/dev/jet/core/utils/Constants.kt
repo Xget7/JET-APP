@@ -18,4 +18,5 @@ object ConstantsShared {
     const val historyProperty = "history"
     const val ConnectionStatusProperty = "connectionStatus"
     const val empty = ""
+    const val IsFirstTime = "IsFirstTime"
 }

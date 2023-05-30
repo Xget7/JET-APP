@@ -7,8 +7,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import xget.dev.jet.data.remote.auth.AuthService
+import xget.dev.jet.data.remote.auth.AuthServiceImpl
+import xget.dev.jet.data.repository.auth.AuthRepositoryImpl
 import xget.dev.jet.data.util.network.ConnectivityImpl
 import xget.dev.jet.data.util.token.TokenImpl
+import xget.dev.jet.domain.repository.auth.AuthRepository
 import xget.dev.jet.domain.repository.network.ConnectivityInterface
 import xget.dev.jet.domain.repository.token.Token
 import javax.inject.Singleton
@@ -17,6 +22,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
+
+
 
 
     @Provides
@@ -31,11 +39,18 @@ class AppModule {
         return ConnectivityImpl(appContext)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideUserRepository(firestore: FirebaseFirestore): UsersRepository {
-//        return UserRepositoryImpl(firestore)
-//    }
+    @Provides
+    @Singleton
+    fun provideAuthService(client: HttpClient, token: Token,): AuthService {
+        return AuthServiceImpl(token = token, client = client)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(authService: AuthService, token: Token,): AuthRepository {
+        return AuthRepositoryImpl(authService,token)
+    }
 //
 //    @Provides
 //    @Singleton

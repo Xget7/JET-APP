@@ -19,7 +19,6 @@ class JetApp : Application() {
 
         super.onCreate()
         appComponent.inject(this)
-        System.loadLibrary("keys");
 
     }
 
