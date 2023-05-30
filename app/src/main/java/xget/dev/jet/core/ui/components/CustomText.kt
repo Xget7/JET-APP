@@ -21,7 +21,8 @@ fun TextWithShadow(
     modifier: Modifier,
     fontSize : TextUnit = 16.sp,
             fontWeight : FontWeight,
-    color: Color = Color.Black
+    color: Color = Color.Black,
+    shadow: Boolean = true
 ) {
 
     Text(
@@ -30,11 +31,11 @@ fun TextWithShadow(
             fontSize = fontSize,
             color = color,
             fontWeight = fontWeight,
-            shadow = Shadow(
+            shadow = if (shadow) Shadow(
                 color = Color(0x1D000000),
                 offset = Offset(2.0f, 11.0f),
                 blurRadius = 2f
-            )
+            ) else null
         )
     )
 }

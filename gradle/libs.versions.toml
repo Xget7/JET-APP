@@ -9,6 +9,7 @@ kotlinx-serialization-json = "1.5.0"
 ktor-client-android = "2.3.0"
 legacy-support-v4 = "1.0.0"
 logback-classic = "1.2.3"
+lottie-compose = "6.0.0"
 org-jetbrains-kotlin-android = "1.8.0"
 core-ktx = "1.9.0"
 junit = "4.13.2"
@@ -58,6 +59,7 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
 paho-mqtt-android = { module = "com.github.hannesa2:paho.mqtt.android", version.ref = "paho-mqtt-android" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbol-processing-api" }
 ui = { group = "androidx.compose.ui", name = "ui" }

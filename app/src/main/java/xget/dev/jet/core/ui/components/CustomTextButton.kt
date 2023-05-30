@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import xget.dev.jet.ui.theme.JETTheme
@@ -26,7 +27,9 @@ import xget.dev.jet.ui.theme.JetBlue
 fun CustomTextButton(
     text: String = "",
     textColor: Color = Color.White,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    shadow : Boolean = true,
+    fontSize : TextUnit = 24.sp
 ) {
     TextButton(onClick = onClick, modifier = Modifier
         .width(340.dp)
@@ -34,9 +37,10 @@ fun CustomTextButton(
         TextWithShadow(
             text = text,
             color = textColor,
-            fontSize = 24.sp,
+            fontSize = fontSize,
             modifier = Modifier,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            shadow = shadow
         )
     }
 }

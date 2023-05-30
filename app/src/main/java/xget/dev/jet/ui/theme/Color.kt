@@ -11,3 +11,4 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val JetBlue = Color(0xFF0003FF).copy(alpha = 0.86F)
+val JetDarkBlue = Color(0xFF435080).copy(alpha = 1f)

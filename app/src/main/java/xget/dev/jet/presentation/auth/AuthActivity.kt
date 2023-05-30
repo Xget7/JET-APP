@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import xget.dev.jet.MainActivity
 import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.core.utils.ConstantsShared.IsFirstTime
+import xget.dev.jet.presentation.auth.login.LoginScreen
 import xget.dev.jet.presentation.splash.WelcomeScreen
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
@@ -38,6 +39,7 @@ class AuthActivity : ComponentActivity() {
             JETTheme {
                 if(sharedPreference.getBoolean(IsFirstTime,true)){
                     AuthNavigation(Screens.WelcomeScreen.route)
+                    sharedPreference.edit().putBoolean(IsFirstTime,false).apply()
                 }else{
                     AuthNavigation(Screens.LoginScreen.route)
                 }
@@ -60,7 +62,7 @@ fun AuthNavigation(startDestination : String) {
             WelcomeScreen(nav)
         }
         composable(Screens.LoginScreen.route){
-
+            LoginScreen(nav)
         }
         composable(Screens.RegisterScreen.route){
 

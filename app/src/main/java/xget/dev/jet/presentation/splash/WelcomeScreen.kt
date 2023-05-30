@@ -70,7 +70,7 @@ fun WelcomeScreen(
 
 
                 Image(
-                    painter = painterResource(id = R.drawable.welcome_screen_people_image),
+                    painter = painterResource(id = R.drawable.welcome_screen_people_flying),
                     contentDescription = " Fliying people",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(400.dp)

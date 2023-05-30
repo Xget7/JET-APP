@@ -113,6 +113,10 @@ dependencies {
     implementation(libs.symbol.processing.api)
     ksp(libs.androidx.room.compiler)
 
+    //Lottie
+    implementation (libs.lottie.compose)
+
+
 
 
     testImplementation(libs.junit)
