@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +61,10 @@ internal fun RegisterScreen(
     val showPassword = remember {
         mutableStateOf(false)
     }
+
+    val showConfirmPassword = remember{
+        mutableStateOf(false)
+    }
     Box(
         Modifier
             .fillMaxSize()
@@ -103,13 +109,37 @@ internal fun RegisterScreen(
 
             JetTextField(text = "",
                 textLabel = "Contraseña",
-                onValue = updateUserPassword)
+                onValue = updateUserPassword,
+                trailingIcon = {
+                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                        Icon(
+                            painter = painterResource(id =
+                            if (showPassword.value) R.drawable.password_eye_open
+                            else R.drawable.password_eye_close),
+                            contentDescription = "Eye password",
+                            modifier = Modifier.padding(2.dp),
+                            tint = if (showPassword.value) JetBlue else Color.Gray
+                        )
+                    }
+                })
 
             Spacer(modifier = Modifier.height(21.dp))
 
             JetTextField(text = "",
                 textLabel = "Confirmar contraseña",
-                onValue = updateUserConfirmPassword)
+                onValue = updateUserConfirmPassword,
+                trailingIcon = {
+                    IconButton(onClick = { showConfirmPassword.value = !showConfirmPassword.value }) {
+                        Icon(
+                            painter = painterResource(id =
+                            if (showConfirmPassword.value) R.drawable.password_eye_open
+                            else R.drawable.password_eye_close),
+                            contentDescription = "Eye password",
+                            modifier = Modifier.padding(2.dp),
+                            tint = if (showConfirmPassword.value) JetBlue else Color.Gray
+                        )
+                    }
+                })
 
             Spacer(modifier = Modifier.height(31.dp))
             
@@ -131,7 +161,7 @@ internal fun RegisterScreen(
             TextWithShadow(text = "¡Ingresa aca!",
                 modifier = Modifier
                     .padding(bottom = 8.dp)
-                    .clickable {  },
+                    .clickable { },
                 fontWeight = FontWeight.Medium,
                 shadow = false,
                 color = JetBlue,
