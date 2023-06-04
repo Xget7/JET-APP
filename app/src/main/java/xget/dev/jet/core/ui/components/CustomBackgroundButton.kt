@@ -29,10 +29,10 @@ fun CustomBackgroundButton(
     onClick: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(30),
         modifier = Modifier
             .width(340.dp)
-            .height(60.dp)
+            .height(55.dp)
             .clickable { onClick() },
         elevation = CardDefaults.elevatedCardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor)

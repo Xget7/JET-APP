@@ -1,12 +1,12 @@
-package xget.dev.jet.presentation.auth.forgotpassword.sendEmailVerification
+package xget.dev.jet.presentation.auth.forgotpassword.emailSent
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -22,33 +22,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
-import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
-import xget.dev.jet.core.ui.components.TopCustomBar
-import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
 import xget.dev.jet.ui.theme.JetDarkBlue
 import xget.dev.jet.ui.theme.JetMagenta
 
 
-
 @Composable
-internal fun ForgotPasswordScreen(
+internal fun EmailSentScreen(
     navController: NavController,
-    viewModel: ForgoPasswordViewModel = hiltViewModel()
+    viewModel: EmailSentViewModel = hiltViewModel()
 ){
 
 }
 
 @Composable
-internal fun ForgotPasswordScreen(
-    userEmail: String,
-    updateUserEmail: (String) -> Unit
+internal fun EmailSentScreen(
+    goToSendEmailScreen : () -> Unit,
+    goToLogin : () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -56,26 +50,24 @@ internal fun ForgotPasswordScreen(
             .padding(16.dp)
     ) {
 
-        TopCustomBar(""){
 
-        }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 60.dp, bottom = 0.dp),
+                .padding(top = 90.dp, bottom = 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Text(
-                text = "¿Olvidaste tu contraseña?",
-                fontSize = 26.sp,
+                text = "Te enviamos un Email",
+                fontSize = 25.sp,
                 color = JetDarkBlue,
                 fontWeight = FontWeight.Bold
             )
             TextWithShadow(
-                text = "No te preocupes , te enviaremos\n" +
-                        "un email para resetearla",
+                text = "Por favor chequea tu  correo y clickea en el link" +
+                        "que recibiste para cambiar la contraseña",
                 modifier = Modifier,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -83,62 +75,54 @@ internal fun ForgotPasswordScreen(
                 color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(42.dp))
+            Spacer(modifier = Modifier.height(55.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.forgot_password_person),
+                painter = painterResource(id = R.drawable.forgot_password_email_sended),
                 contentDescription = "Image"
             )
 
             Spacer(modifier = Modifier.height(42.dp))
 
-            JetTextField(
-                text = "",
-                textLabel = "Email",
-                onValue = updateUserEmail
-            )
 
-            Row(
-                Modifier
-                    .padding(top = 17.dp)
-            ) {
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            CustomBackgroundButton("Ingresar",
+                containerColor = JetMagenta,
+                onClick = goToLogin
+            )
+            Spacer(modifier = Modifier.height(22.dp))
+            Row(){
 
                 TextWithShadow(
-                    text = "¿Te la acordaste?",
+                    text = "¿No recibiste nada?",
                     modifier = Modifier,
                     fontWeight = FontWeight.Medium,
                     shadow = false,
                     color = Color.Gray,
                     fontSize = 16.sp
                 )
-                
-                Spacer(modifier = Modifier.width(10.dp))
-
-                TextWithShadow(text = "Ingresá",
-                    modifier = Modifier,
+                Spacer(modifier = Modifier.width(11.dp))
+                TextWithShadow(
+                    text = "Reenviar",
+                    modifier = Modifier.clickable {
+                        goToSendEmailScreen()
+                    },
                     fontWeight = FontWeight.Medium,
                     color = JetBlue,
                     fontSize = 18.sp,
-                    shadow = false)
+                    shadow = false
+                )
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
-
-            CustomBackgroundButton ("Enviar Correo",
-                containerColor =  JetMagenta,
-                onClick = {})
 
         }
     }
-
 }
 
 @Preview
 @Composable
-fun ForgotPasswordScreenPreview() {
-    JETTheme {
-        ForgotPasswordScreen(userEmail = "",
-            updateUserEmail = {})
-    }
-
+fun SendedEmailScreenPrev() {
+    EmailSentScreen({},{})
 }

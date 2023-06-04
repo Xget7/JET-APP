@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
     id("com.google.dagger.hilt.android")
     kotlin("jvm") version "1.8.0" apply false
+    kotlin("plugin.serialization") version "1.4.21"
     id("com.google.devtools.ksp") version "1.8.0-1.0.9"
 
 }
@@ -93,11 +94,13 @@ dependencies {
     //MQTT V5
     implementation (libs.androidx.legacy.support.v4)
     implementation (libs.paho.mqtt.android)
+
     //Dagger Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     kapt (libs.androidx.hilt.compiler)
     kapt (libs.dagger.android.processor)
+    implementation (libs.androidx.navigation.compose)
     implementation (libs.androidx.hilt.navigation.compose)
     implementation (libs.dagger.android.support)
 
@@ -105,10 +108,11 @@ dependencies {
     api(libs.jjwt.api)
     runtimeOnly (libs.jjwt.impl)
     runtimeOnly(libs.jjwt.orgjson)
-    //Room
 
+    //Room
     implementation (libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
+
     // To use Kotlin Symbol Processing (KSP)
     implementation(libs.symbol.processing.api)
     ksp(libs.androidx.room.compiler)

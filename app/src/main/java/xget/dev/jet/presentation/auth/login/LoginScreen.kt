@@ -40,11 +40,26 @@ import xget.dev.jet.ui.theme.JetBlue
 import xget.dev.jet.ui.theme.JetDarkBlue
 
 @Composable
-internal fun LoginScreen(
+fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
+    LoginScreen(
+        userGmail = viewModel.userGmail,
+        password = viewModel.userPassword,
+        updateUserName = viewModel::updateUserGmail,
+        updatePassword = viewModel::updateUserPassword,
+        onLogin = {
+
+        },
+        onPasswordReset = {
+            navController.navigate(Screens.ForgotPasswordScreen.route)
+        },
+        goToRegister = {
+            navController.navigate(Screens.RegisterScreen.route)
+        }
+    )
 
 
 }
@@ -56,6 +71,7 @@ internal fun LoginScreen(
     updateUserName: (String) -> Unit,
     updatePassword: (String) -> Unit,
     onLogin: () -> Unit,
+    goToRegister: () -> Unit,
     onPasswordReset: () -> Unit
 ) {
 
@@ -63,8 +79,12 @@ internal fun LoginScreen(
         mutableStateOf(false)
     }
 
-    Box(modifier = Modifier.padding(16.dp)) {
-        TopCustomBar("Ingresa a tu cuenta")
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .padding(top = 47.dp)
+    ) {
+        TopCustomBar(title = "Ingresa a tu cuenta", showBack = false, onClick = {})
 
         Column(
             modifier = Modifier
@@ -113,7 +133,9 @@ internal fun LoginScreen(
                     color = Color.Gray,
                     fontSize = 16.sp,
                     shadow = false,
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable {
+                        onPasswordReset()
+                    },
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -121,7 +143,9 @@ internal fun LoginScreen(
 
             CustomBackgroundButton(
                 "Ingresar",
-                onClick = { }
+                onClick = {
+                    onLogin()
+                }
             )
 
             Row(
@@ -151,7 +175,9 @@ internal fun LoginScreen(
                     color = JetBlue,
                     fontSize = 18.sp,
                     shadow = false,
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable {
+                        goToRegister()
+                    },
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -173,7 +199,7 @@ fun LoginScreenPreview() {
             password = "",
             updateUserName = {},
             updatePassword = {},
-            onLogin = { /*TODO*/ }) {
+            onLogin = { /*TODO*/ }, {}) {
         }
     }
 }

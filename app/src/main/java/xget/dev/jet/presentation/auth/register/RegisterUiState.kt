@@ -1,6 +1,7 @@
 package xget.dev.jet.presentation.auth.register
 
-class RegisterUiState {
-    val isError : String? = null
-
-}
+data class RegisterUiState (
+    val isError : String? = null,
+    val isLoading : Boolean = false,
+    val successfulCreated : Boolean = false
+)

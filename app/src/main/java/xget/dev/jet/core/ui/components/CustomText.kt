@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -22,14 +23,16 @@ fun TextWithShadow(
     fontSize : TextUnit = 16.sp,
             fontWeight : FontWeight,
     color: Color = Color.Black,
+    textAlign: TextAlign = TextAlign.Start,
     shadow: Boolean = true
 ) {
-
     Text(
         text = text,
+        modifier = modifier,
         style = TextStyle(
             fontSize = fontSize,
             color = color,
+            textAlign = textAlign,
             fontWeight = fontWeight,
             shadow = if (shadow) Shadow(
                 color = Color(0x1D000000),

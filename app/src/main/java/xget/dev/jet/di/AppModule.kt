@@ -10,12 +10,17 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import xget.dev.jet.data.remote.auth.AuthService
 import xget.dev.jet.data.remote.auth.AuthServiceImpl
+import xget.dev.jet.data.remote.users.UserService
+import xget.dev.jet.data.remote.users.UserServiceImpl
 import xget.dev.jet.data.repository.auth.AuthRepositoryImpl
+import xget.dev.jet.data.repository.user.UserRepositoryImpl
+import xget.dev.jet.data.repository.user.UserRepositoryImpl_Factory
 import xget.dev.jet.data.util.network.ConnectivityImpl
 import xget.dev.jet.data.util.token.TokenImpl
 import xget.dev.jet.domain.repository.auth.AuthRepository
 import xget.dev.jet.domain.repository.network.ConnectivityInterface
 import xget.dev.jet.domain.repository.token.Token
+import xget.dev.jet.domain.repository.user.UserRepository
 import javax.inject.Singleton
 
 
@@ -41,6 +46,13 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideUserService(client: HttpClient, token: Token): UserService {
+        return UserServiceImpl(token = token, client = client)
+    }
+
+
+    @Provides
+    @Singleton
     fun provideAuthService(client: HttpClient, token: Token,): AuthService {
         return AuthServiceImpl(token = token, client = client)
     }
@@ -50,6 +62,12 @@ class AppModule {
     @Singleton
     fun provideAuthRepository(authService: AuthService, token: Token,): AuthRepository {
         return AuthRepositoryImpl(authService,token)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(authService: UserService): UserRepository {
+        return UserRepositoryImpl(userRemoteService = authService)
     }
 //
 //    @Provides

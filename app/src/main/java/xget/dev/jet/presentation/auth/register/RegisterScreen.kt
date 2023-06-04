@@ -1,5 +1,6 @@
 package xget.dev.jet.presentation.auth.register
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,14 +12,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -26,27 +37,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
 import xget.dev.jet.core.ui.components.JetTextField
+import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
+import xget.dev.jet.ui.theme.JetDarkBlue
+import xget.dev.jet.ui.theme.JetDarkBlue2
 
-
-//internal fun Screens.RegisterScreen(
-//    navController: NavController,
-//    viewModel: RegisterViewModel: hilViewModel()
-//){
-//
-//
-//}
 
 @Composable
-internal fun RegisterScreen(
+ fun RegisterScreen(
+    navController: NavController,
+    viewModel: RegisterViewModel = hiltViewModel()
+) {
+    val state = viewModel.uiState.collectAsState()
+
+    RegisterScreen(
+        uiState = state,
+        userName = viewModel.user.name,
+        userPhone = viewModel.user.phoneNumber,
+        userEmail = viewModel.user.gmail,
+        userPassword = viewModel.user.password,
+        userConfirmPassword = viewModel.user.confirmPassword,
+        updateUserName = viewModel::updateUserName,
+        updateUserPhone = viewModel::updateUserPhone,
+        updateUserEmail = viewModel::updateUserEmail,
+        updateUserPassword = viewModel::updateUserPassword,
+        updateUserConfirmPassword = viewModel::updateUserConfirmPassword,
+        onRegisterClick = viewModel::registerUser
+    ) {
+        navController.navigate(Screens.LoginScreen.route)
+    }
+
+
+}
+
+@Composable
+ fun RegisterScreen(
+    uiState: State<RegisterUiState>,
     userName: String,
     userPhone: String,
     userEmail: String,
@@ -56,121 +91,169 @@ internal fun RegisterScreen(
     updateUserPhone: (String) -> Unit,
     updateUserEmail: (String) -> Unit,
     updateUserPassword: (String) -> Unit,
-    updateUserConfirmPassword: (String) -> Unit
+    updateUserConfirmPassword: (String) -> Unit,
+    onRegisterClick: () -> Unit,
+    onGoToLogin: () -> Unit
 ) {
     val showPassword = remember {
         mutableStateOf(false)
     }
 
-    val showConfirmPassword = remember{
+    val showConfirmPassword = remember {
         mutableStateOf(false)
     }
-    Box(
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
+
+    Scaffold(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-
-    ) {
-
-        TopCustomBar("Crea tu cuenta")
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 86.dp, bottom = 0.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.register_screen_person),
-                contentDescription = "Image"
-            )
-
-            Spacer(modifier = Modifier.height(39.dp))
-
-            JetTextField(text = "",
-                textLabel = "Nombre",
-                onValue = updateUserName)
-
-            Spacer(modifier = Modifier.height(21.dp))
-
-            JetTextField(text = "",
-                textLabel = "Celular",
-                onValue = updateUserPhone)
-
-            Spacer(modifier = Modifier.height(21.dp))
+            .padding(top = 55.dp),
+        scaffoldState = scaffoldState
+    ) { it
 
 
-            JetTextField(text = "",
-                textLabel = "Email",
-                onValue = updateUserEmail)
+        LaunchedEffect(uiState.value.isError) {
+            if (uiState.value.isError != null){
+                scaffoldState.snackbarHostState.showSnackbar(
+                    uiState.value.isError ?: "Error Inesperado",
+                    duration = SnackbarDuration.Short
+                )
+            }
 
-            Spacer(modifier = Modifier.height(21.dp))
+        }
 
-            JetTextField(text = "",
-                textLabel = "Contraseña",
-                onValue = updateUserPassword,
-                trailingIcon = {
-                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
-                        Icon(
-                            painter = painterResource(id =
-                            if (showPassword.value) R.drawable.password_eye_open
-                            else R.drawable.password_eye_close),
-                            contentDescription = "Eye password",
-                            modifier = Modifier.padding(2.dp),
-                            tint = if (showPassword.value) JetBlue else Color.Gray
-                        )
-                    }
-                })
 
-            Spacer(modifier = Modifier.height(21.dp))
+        Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+            TopCustomBar(title ="Crea tu cuenta", showBack = false){
 
-            JetTextField(text = "",
-                textLabel = "Confirmar contraseña",
-                onValue = updateUserConfirmPassword,
-                trailingIcon = {
-                    IconButton(onClick = { showConfirmPassword.value = !showConfirmPassword.value }) {
-                        Icon(
-                            painter = painterResource(id =
-                            if (showConfirmPassword.value) R.drawable.password_eye_open
-                            else R.drawable.password_eye_close),
-                            contentDescription = "Eye password",
-                            modifier = Modifier.padding(2.dp),
-                            tint = if (showConfirmPassword.value) JetBlue else Color.Gray
-                        )
-                    }
-                })
+            }
 
-            Spacer(modifier = Modifier.height(31.dp))
-            
-            CustomBackgroundButton(
-                "Registrarme",
-                onClick = {}
-            )
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            TextWithShadow(text = "¿Ya tenés cuenta?",
-                modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                shadow = false,
-                color = Color.Gray
-            )
-
-            TextWithShadow(text = "¡Ingresa aca!",
+            Column(
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .clickable { },
-                fontWeight = FontWeight.Medium,
-                shadow = false,
-                color = JetBlue,
-                fontSize = 18.sp
+                    .fillMaxWidth()
+                    .padding(top = 40.dp)
+                    .verticalScroll(rememberScrollState())
+                    .drawBehind {
+                        drawCircle(
+                            color = JetDarkBlue2,
+                            center = Offset(1300F, 2300F),
+                            radius = 450f
+                        )
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.register_screen_person),
+                    contentDescription = "Image"
                 )
 
+                Spacer(modifier = Modifier.height(39.dp))
+
+                JetTextField(
+                    text = userName,
+                    textLabel = "Nombre",
+                    onValue = updateUserName
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                JetTextField(
+                    text = userPhone,
+                    textLabel = "Celular",
+                    onValue = updateUserPhone
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
 
 
+                JetTextField(
+                    text = userEmail,
+                    textLabel = "Email",
+                    onValue = updateUserEmail
+                )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PasswordJetTextField(
+                    text = userPassword,
+                    textLabel = "Contraseña",
+                    onValue = updateUserPassword,
+                    trailingIcon = {
+                        IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                            Icon(
+                                painter = painterResource(
+                                    id =
+                                    if (showPassword.value) R.drawable.password_eye_open
+                                    else R.drawable.password_eye_close
+                                ),
+                                contentDescription = "Eye password",
+                                modifier = Modifier.padding(2.dp),
+                                tint = if (showPassword.value) JetBlue else Color.Gray
+                            )
+                        }
+                    },
+                    visibility = showPassword
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PasswordJetTextField(
+                    text = userConfirmPassword,
+                    textLabel = "Confirmar contraseña",
+                    onValue = updateUserConfirmPassword,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            showConfirmPassword.value = !showConfirmPassword.value
+                        }) {
+                            Icon(
+                                painter = painterResource(
+                                    id =
+                                    if (showConfirmPassword.value) R.drawable.password_eye_open
+                                    else R.drawable.password_eye_close
+                                ),
+                                contentDescription = "Eye password",
+                                modifier = Modifier.padding(2.dp),
+                                tint = if (showConfirmPassword.value) JetBlue else Color.Gray
+                            )
+                        }
+                    },
+                    visibility = showConfirmPassword
+                )
+
+                Spacer(modifier = Modifier.height(31.dp))
+
+                CustomBackgroundButton(
+                    "Registrarme",
+                    onClick = onRegisterClick
+                )
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                TextWithShadow(
+                    text = "¿Ya tenés cuenta?",
+                    modifier = Modifier,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    shadow = false,
+                    color = Color.Gray
+                )
+
+                TextWithShadow(
+                    text = "¡Ingresa aca!",
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .clickable {
+                            onGoToLogin()
+                        },
+                    fontWeight = FontWeight.Medium,
+                    shadow = false,
+                    color = JetBlue,
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+
+            }
 
         }
 
@@ -178,11 +261,13 @@ internal fun RegisterScreen(
     }
 }
 
-@Preview
+@SuppressLint("UnrememberedMutableState")
+@Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
     JETTheme {
         RegisterScreen(
+            uiState = mutableStateOf(RegisterUiState()),
             userName = "",
             userPhone = "",
             userEmail = "",
@@ -192,7 +277,9 @@ fun RegisterScreenPreview() {
             updateUserPhone = {},
             updateUserEmail = {},
             updateUserPassword = {},
-            updateUserConfirmPassword = {}
+            updateUserConfirmPassword = {},
+            {},
+            {}
         )
     }
 
