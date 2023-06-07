@@ -2,12 +2,15 @@ package xget.dev.jet.data.remote
 
 object HttpRoutes {
 
-    private const val BASE_URL = "https://jsonplaceholder.typicode.com"
+
+
+    private const val BASE_URL = "https://jet-production.up.railway.app"
     //User and Auth EndPoints
-    const val REGISTER_USER = "$BASE_URL/posts"
-    const val LOGIN_USER = "$BASE_URL/posts"
+    const val REGISTER_USER = "$BASE_URL/user/registrer/"
+    const val LOGIN_USER = "$BASE_URL/user/login/"
+    const val FORGOT_PASSWORD = "$BASE_URL/user/login/"
     const val LOGOUT_USER = "$BASE_URL/posts"
-    const val GET_USER = "$BASE_URL/get_user"
+    const val GET_USER = "$BASE_URL/user"
 
     //Devices Endpoints
     const val GET_DEVICE = "$BASE_URL/get_user"

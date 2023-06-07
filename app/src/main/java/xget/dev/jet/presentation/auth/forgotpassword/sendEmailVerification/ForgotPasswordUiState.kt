@@ -1,4 +1,7 @@
 package xget.dev.jet.presentation.auth.forgotpassword.sendEmailVerification
 
-class ForgotPasswordUiState {
-}
+data class ForgotPasswordUiState (
+    val isError : String? = null,
+    val isLoading : Boolean = false,
+    val emailSent : Boolean = false
+)

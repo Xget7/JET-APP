@@ -1,56 +1,122 @@
 package xget.dev.jet
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import dagger.hilt.EntryPoint
+import androidx.compose.runtime.mutableStateOf
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import xget.dev.jet.presentation.splash.WelcomeScreen
+import xget.dev.jet.presentation.main.MainScreens
+import xget.dev.jet.presentation.main.home.HomeScreen
+import xget.dev.jet.presentation.main.home.HomeUiState
 import xget.dev.jet.presentation.utils.Screens
+import xget.dev.jet.presentation.utils.Screens.HistoryScreen
+import xget.dev.jet.presentation.utils.Screens.HomeNavGraph
+import xget.dev.jet.presentation.utils.Screens.HomeScreen
+import xget.dev.jet.presentation.utils.Screens.ProfileScreen
 import xget.dev.jet.ui.theme.JETTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @SuppressLint("ResourceAsColor")
+
+    @SuppressLint("UnrememberedMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //hide and permit to draw in status bar
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
-
         setContent {
             JETTheme {
+                val navController = rememberNavController()
+                MainScreens(navController = navController)
             }
+
         }
     }
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        Log.d("MainActivity", "OnCreate")
+//
+//        //hide and permit to draw in status bar
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        )
+//
+//
+//        setContent {
+////            TextButton(onClick = { /*TODO*/ }) {
+////                Text(text = "HEllo")
+////            }
+////            TextButton(onClick = { /*TODO*/ }) {
+////                Text(text = "HEllo")
+////            }
+////            TextButton(onClick = { /*TODO*/ }) {
+////                Text(text = "HEllo")
+////            }
+////            TextButton(onClick = { /*TODO*/ }) {
+////                Text(text = "HEllo")
+////            }
+////
+////
+
+//            JETTheme {
+//
+//                val navController = rememberNavController()
+//                MainScreens(navController = navController)
+//            }
+//        }
+//    }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun HomeBottomNav(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        route = HomeNavGraph.route,
+        startDestination = HomeScreen.route
+    ) {
+        composable(route = HomeScreen.route){
+            HomeScreen(navController)
+        }
+        composable(route = ProfileScreen.route){
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JETTheme {
-        Greeting("Android")
+        }
+        composable(route = HistoryScreen.route){
+
+        }
+        bluetoothNavGraph(navController)
     }
 }
+
+fun NavGraphBuilder.bluetoothNavGraph(navController: NavHostController) {
+    navigation(
+        route = Screens.BluetoothNavGraph.route,
+        startDestination = Screens.PairDeviceFirstStep.route
+    ) {
+
+//        composable(route = Screens.PairDeviceFirstStep.route) {
+//
+//        }
+//        composable(route = Screens.PairDeviceFirstStep.route) {
+//
+//        }
+    }
+}
+
+

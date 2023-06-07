@@ -1,11 +1,16 @@
 [versions]
 accompanist-pager = "0.25.0"
+accompanist-systemuicontroller = ">"
 androidx-room-runtime = "2.5.1"
 com-android-application = "8.1.0-alpha11"
+gradle = "7.0.4"
 hilt-android = "2.44"
+hilt-android-gradle-plugin = "2.42"
 hilt-compiler = "1.0.0"
 hilt-navigation-compose = "2.5.3"
 jjwt-impl = "0.10.5"
+kotlin-gradle-plugin = "1.8.0"
+kotlin-serialization = "1.8.21"
 kotlinx-serialization-json = "1.5.0"
 ktor-client-android = "2.3.0"
 legacy-support-v4 = "1.0.0"
@@ -28,6 +33,7 @@ symbol-processing-api = "1.8.0-1.0.9"
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist-pager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist-pager" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.31.3-beta" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose-2_5_3 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
@@ -39,15 +45,19 @@ androidx-room-runtime-2_5_1 = { module = "androidx.room:room-runtime", version.r
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "hilt-android" }
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "hilt-android" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android" }
+hilt-android-gradle-plugin-2_42 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android-gradle-plugin" }
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt-impl" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt-impl" }
 jjwt-orgjson = { module = "io.jsonwebtoken:jjwt-orgjson", version.ref = "jjwt-impl" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
+kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ktor-auth = { module = "io.ktor:ktor-auth", version.ref = "ktor-client-android" }
 ktor-auth-jwt = { module = "io.ktor:ktor-auth-jwt", version.ref = "ktor-client-android" }
@@ -58,6 +68,7 @@ ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", vers
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor-client-android" }
 ktor-client-serialization-jvm = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor-client-android" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-client-android" }
+ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor-client-android" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-client-android" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }

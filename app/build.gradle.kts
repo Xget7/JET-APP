@@ -1,12 +1,14 @@
 
 plugins {
+    kotlin("plugin.serialization") version "1.8.0"
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    id ("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
-    kotlin("jvm") version "1.8.0" apply false
-    kotlin("plugin.serialization") version "1.4.21"
     id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+
+
 
 }
 
@@ -42,9 +44,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-      //  jvmTarget = "1.17"
-    }
+
     buildFeatures {
         compose = true
     }
@@ -77,19 +77,24 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    //compose ui ccontroller
+    implementation( libs.accompanist.systemuicontroller)
+
     // Paging Compose
     implementation (libs.accompanist.pager)
     implementation (libs.accompanist.pager.indicators)
+
     //Ktor
-    implementation (libs.ktor.client.android)
-    implementation (libs.ktor.client.cio)
-    implementation (libs.ktor.client.logging)
+
     implementation (libs.logback.classic)
-    implementation (libs.kotlinx.serialization.json)
+//    implementation (libs.kotlinx.serialization.json)
     implementation (libs.ktor.client.core)
     implementation(libs.ktor.serialization.kotlinx.json)
+    implementation (libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.gson)
 
+    implementation (libs.ktor.client.logging)
 
     //MQTT V5
     implementation (libs.androidx.legacy.support.v4)

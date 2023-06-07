@@ -1,5 +1,6 @@
 package xget.dev.jet.data.repository.user
 
+import android.util.Log
 import android.util.Patterns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -8,7 +9,6 @@ import xget.dev.jet.data.remote.users.UserService
 import xget.dev.jet.data.remote.users.dto.UserRequest
 import xget.dev.jet.data.remote.users.dto.UserResponse
 import xget.dev.jet.domain.model.user.RegisterUser
-import xget.dev.jet.domain.model.user.User
 import xget.dev.jet.domain.repository.user.UserRepository
 import javax.inject.Inject
 
@@ -35,10 +35,11 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun isValidUser(user: RegisterUser): Pair<String, Boolean> {
         val nameValid = user.name.length > 4
-        val gmailValid = isValidGmail(user.gmail)
+        val gmailValid = isValidGmail(user.email)
         val phoneNumberValid = isValidPhoneNumber(user.phoneNumber)
         val passwordValid = user.password.length > 6 && user.password == user.confirmPassword
 
+        Log.d("isValidUser", "$nameValid" + "$gmailValid" + "$phoneNumberValid" + "$passwordValid")
         if (!nameValid) {
             return Pair("El nombre debe contener más de 4 caracteres.", false)
         }
@@ -54,8 +55,6 @@ class UserRepositoryImpl @Inject constructor(
         if (!passwordValid) {
             return Pair("La contraseña y la confirmación de la contraseña deben ser iguales y contener más de 6 caracteres.", false)
         }
-
-
         return Pair("", true)
     }
 

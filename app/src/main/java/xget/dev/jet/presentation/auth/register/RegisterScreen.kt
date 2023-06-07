@@ -2,28 +2,32 @@ package xget.dev.jet.presentation.auth.register
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,14 +36,16 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.collect
 import xget.dev.jet.R
+import xget.dev.jet.core.ui.components.AlignedCircularProgressIndicator
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
 import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.PasswordJetTextField
@@ -48,7 +54,6 @@ import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetDarkBlue
 import xget.dev.jet.ui.theme.JetDarkBlue2
 
 
@@ -61,11 +66,11 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
 
     RegisterScreen(
         uiState = state,
-        userName = viewModel.user.name,
-        userPhone = viewModel.user.phoneNumber,
-        userEmail = viewModel.user.gmail,
-        userPassword = viewModel.user.password,
-        userConfirmPassword = viewModel.user.confirmPassword,
+        userName = viewModel.userName,
+        userPhone = viewModel.userPhone,
+        userEmail = viewModel.userEmail,
+        userPassword = viewModel.userPassword,
+        userConfirmPassword = viewModel.userConfirmPassword,
         updateUserName = viewModel::updateUserName,
         updateUserPhone = viewModel::updateUserPhone,
         updateUserEmail = viewModel::updateUserEmail,
@@ -80,7 +85,7 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
 }
 
 @Composable
- fun RegisterScreen(
+internal fun RegisterScreen(
     uiState: State<RegisterUiState>,
     userName: String,
     userPhone: String,
@@ -106,17 +111,19 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
 
     Scaffold(
         Modifier
+            .background(Color.White)
             .fillMaxSize()
-            .padding(top = 55.dp),
+            .padding(top = 5.dp),
         scaffoldState = scaffoldState
     ) { it
 
 
-        LaunchedEffect(uiState.value.isError) {
+        LaunchedEffect(uiState.value) {
             if (uiState.value.isError != null){
                 scaffoldState.snackbarHostState.showSnackbar(
                     uiState.value.isError ?: "Error Inesperado",
-                    duration = SnackbarDuration.Short
+                    duration = SnackbarDuration.Long,
+                    actionLabel = "Ok"
                 )
             }
 
@@ -131,7 +138,7 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp)
+                    .padding(top = 30.dp)
                     .verticalScroll(rememberScrollState())
                     .drawBehind {
                         drawCircle(
@@ -157,20 +164,22 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                JetTextField(
-                    text = userPhone,
-                    textLabel = "Celular",
-                    onValue = updateUserPhone
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
 
                 JetTextField(
                     text = userEmail,
                     textLabel = "Email",
                     onValue = updateUserEmail
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                JetTextField(
+                    text = userPhone,
+                    textLabel = "Celular",
+                    onValue = updateUserPhone
+                )
+
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -192,7 +201,9 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
                             )
                         }
                     },
-                    visibility = showPassword
+                    visibility = showPassword,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -217,15 +228,22 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
                             )
                         }
                     },
-                    visibility = showConfirmPassword
+                    visibility = showConfirmPassword,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+
                 )
 
                 Spacer(modifier = Modifier.height(31.dp))
 
-                CustomBackgroundButton(
-                    "Registrarme",
-                    onClick = onRegisterClick
-                )
+                if (!uiState.value.isLoading){
+                    CustomBackgroundButton(
+                        "Registrarme",
+                        onClick = onRegisterClick
+                    )
+                }else {
+                   AlignedCircularProgressIndicator()
+                }
+
 
                 Spacer(modifier = Modifier.height(18.dp))
 

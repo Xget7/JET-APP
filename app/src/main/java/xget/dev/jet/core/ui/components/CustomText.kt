@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.sp
 fun TextWithShadow(
     text: String,
     modifier: Modifier,
-    fontSize : TextUnit = 16.sp,
-            fontWeight : FontWeight,
+    fontSize: TextUnit = 16.sp,
+    fontWeight: FontWeight,
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     shadow: Boolean = true

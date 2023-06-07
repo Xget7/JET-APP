@@ -26,11 +26,12 @@ fun CustomBackgroundButton(
     text: String = "",
     textColor: Color = Color.White,
     containerColor: Color = JetBlue,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(30),
-        modifier = Modifier
+        modifier = modifier
             .width(340.dp)
             .height(55.dp)
             .clickable { onClick() },

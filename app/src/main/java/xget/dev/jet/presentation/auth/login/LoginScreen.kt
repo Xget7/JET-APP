@@ -1,6 +1,10 @@
 package xget.dev.jet.presentation.auth.login
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.expandVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,33 +15,54 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import xget.dev.jet.R
+import xget.dev.jet.core.ui.components.AlignedCircularProgressIndicator
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
-import xget.dev.jet.core.ui.components.CustomTextButton
 import xget.dev.jet.core.ui.components.JetTextField
+import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetDarkBlue
 
 @Composable
 fun LoginScreen(
@@ -45,14 +70,20 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
+    val state = viewModel.uiState.collectAsState()
+    LaunchedEffect(state) {
+        if (state.value.isLoggedIn) {
+            navController.navigate(Screens.HomeScreen.route)
+        }
+    }
+
     LoginScreen(
+        uiState = state,
         userGmail = viewModel.userGmail,
         password = viewModel.userPassword,
         updateUserName = viewModel::updateUserGmail,
         updatePassword = viewModel::updateUserPassword,
-        onLogin = {
-
-        },
+        onLogin = viewModel::signInUser,
         onPasswordReset = {
             navController.navigate(Screens.ForgotPasswordScreen.route)
         },
@@ -64,8 +95,10 @@ fun LoginScreen(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun LoginScreen(
+    uiState: State<LoginUiState>,
     userGmail: String,
     password: String,
     updateUserName: (String) -> Unit,
@@ -78,19 +111,45 @@ internal fun LoginScreen(
     val showPassword = remember {
         mutableStateOf(false)
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-    Box(
+
+    val scaffoldState = rememberScaffoldState()
+
+    val coroutineScope = rememberCoroutineScope()
+    val focUsManager = LocalFocusManager.current
+    val bringIntoViewRequester = BringIntoViewRequester()
+
+    Scaffold(
+        scaffoldState = scaffoldState,
         modifier = Modifier
-            .padding(16.dp)
-            .padding(top = 47.dp)
+            .background( Color.White)
+            .padding(start = 1.dp, end = 1.dp, top = 12.dp ),
+        topBar = {
+            TopCustomBar(title = "Ingresa a tu cuenta", showBack = false, onClick = {})
+        },
+        backgroundColor =  Color.White
     ) {
-        TopCustomBar(title = "Ingresa a tu cuenta", showBack = false, onClick = {})
+        it
+
+        LaunchedEffect(uiState.value) {
+            if (uiState.value.isError != null) {
+                keyboardController?.hide()
+                scaffoldState.snackbarHostState.showSnackbar(
+                    uiState.value.isError ?: "Error Inesperado.",
+                    duration = SnackbarDuration.Long,
+                    actionLabel = "Ok"
+                )
+            }
+
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 50.dp, bottom = 0.dp),
+                .padding(top = 30.dp, bottom = 0.dp , start = 16.dp, end = 16.dp,)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -107,10 +166,17 @@ internal fun LoginScreen(
 
             Spacer(modifier = Modifier.height(21.dp))
 
-            JetTextField(
+            PasswordJetTextField(
                 text = password,
                 textLabel = "Contraseña",
                 onValue = updatePassword,
+                modifier = Modifier.onFocusEvent {
+                    if (it.isFocused) {
+                        coroutineScope.launch {
+                            bringIntoViewRequester.bringIntoView()
+                        }
+                    }
+                },
                 trailingIcon = {
                     IconButton(onClick = { showPassword.value = !showPassword.value }) {
                         Icon(
@@ -120,7 +186,12 @@ internal fun LoginScreen(
                             tint = if (showPassword.value) JetBlue else Color.Gray
                         )
                     }
-                }
+                },
+                visibility = showPassword,
+                keyboardActions = KeyboardActions(
+                    onDone = { focUsManager.clearFocus() }
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
             )
 
             Row(
@@ -141,12 +212,17 @@ internal fun LoginScreen(
             }
             Spacer(modifier = Modifier.height(60.dp))
 
-            CustomBackgroundButton(
-                "Ingresar",
-                onClick = {
-                    onLogin()
-                }
-            )
+            if (!uiState.value.isLoading) {
+                CustomBackgroundButton(
+                    "Ingresar",
+                    onClick = onLogin,
+                    modifier = Modifier.bringIntoViewRequester(bringIntoViewRequester)
+                )
+            } else {
+                keyboardController?.hide()
+                AlignedCircularProgressIndicator()
+            }
+
 
             Row(
                 modifier = Modifier
@@ -190,11 +266,13 @@ internal fun LoginScreen(
 
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 fun LoginScreenPreview() {
     JETTheme {
         LoginScreen(
+            uiState = mutableStateOf(LoginUiState()),
             userGmail = "",
             password = "",
             updateUserName = {},

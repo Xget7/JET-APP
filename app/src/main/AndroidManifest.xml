@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Request legacy Bluetooth permissions on older devices. -->
@@ -33,7 +34,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.bluetooth"/>
+    <uses-feature android:name="android.hardware.bluetooth" />
 
     <application
         android:name=".JetApp"
@@ -48,7 +49,8 @@
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.JET" />
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".presentation.splash.SplashActivity"
             android:exported="true"
@@ -60,8 +62,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.auth.AuthActivity">
-
+        <activity
+            android:name=".presentation.auth.AuthActivity"
+            android:windowSoftInputMode="adjustResize">
         </activity>
     </application>
 

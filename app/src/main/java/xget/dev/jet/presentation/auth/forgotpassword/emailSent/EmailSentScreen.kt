@@ -1,6 +1,7 @@
 package xget.dev.jet.presentation.auth.forgotpassword.emailSent
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +28,7 @@ import androidx.navigation.NavController
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
 import xget.dev.jet.core.ui.components.TextWithShadow
+import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JetBlue
 import xget.dev.jet.ui.theme.JetDarkBlue
 import xget.dev.jet.ui.theme.JetMagenta
@@ -34,22 +37,26 @@ import xget.dev.jet.ui.theme.JetMagenta
 @Composable
 internal fun EmailSentScreen(
     navController: NavController,
-    viewModel: EmailSentViewModel = hiltViewModel()
-){
+) {
 
+    EmailSentScreen(
+        goToLogin = { navController.navigate(Screens.LoginScreen.route) },
+        goToSendEmailScreen = {
+            navController.navigateUp()
+        })
 }
 
 @Composable
 internal fun EmailSentScreen(
-    goToSendEmailScreen : () -> Unit,
-    goToLogin : () -> Unit
+    goToSendEmailScreen: () -> Unit,
+    goToLogin: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(White)
             .padding(16.dp)
     ) {
-
 
 
         Column(
@@ -88,12 +95,13 @@ internal fun EmailSentScreen(
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            CustomBackgroundButton("Ingresar",
+            CustomBackgroundButton(
+                "Ingresar",
                 containerColor = JetMagenta,
                 onClick = goToLogin
             )
             Spacer(modifier = Modifier.height(22.dp))
-            Row(){
+            Row() {
 
                 TextWithShadow(
                     text = "¿No recibiste nada?",
@@ -124,5 +132,5 @@ internal fun EmailSentScreen(
 @Preview
 @Composable
 fun SendedEmailScreenPrev() {
-    EmailSentScreen({},{})
+    EmailSentScreen({}, {})
 }

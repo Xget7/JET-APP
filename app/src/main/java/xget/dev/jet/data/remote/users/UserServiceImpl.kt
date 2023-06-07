@@ -1,11 +1,13 @@
 package xget.dev.jet.data.remote.users
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -26,6 +28,7 @@ class UserServiceImpl @Inject constructor(
 
     private val currentToken = token.getJwtLocal()
     override suspend fun getUser(uid: String): ApiResponse<UserResponse>? {
+        ApiResponse.Loading<Any>()
         return try {
             val response = client.get {
                 url(HttpRoutes.GET_USER)
@@ -39,14 +42,24 @@ class UserServiceImpl @Inject constructor(
     }
 
     override suspend fun registerUser(userRequest: UserRequest): ApiResponse<UserResponse>? {
+        Log.d("urlToPost", REGISTER_USER)
+        ApiResponse.Loading<Any>()
         return try {
             val response: UserResponse = client.post(REGISTER_USER) {
                 contentType(ContentType.Application.Json)
-                body = userRequest
+                setBody(userRequest)
             }.body()
-            ApiResponse.Success(response)
+            Log.d("registerUserResponse", response.toString())
+
+            if (response.user == null){
+                ApiResponse.Error("Error al registrar usuario, Reintentar mas tarde.")
+            }else{
+                ApiResponse.Success(response)
+            }
         } catch (e: Exception) {
+            Log.d("registerUserResponse Exception", e.message.toString())
             handleApiException(e)
+
         }
     }
 
