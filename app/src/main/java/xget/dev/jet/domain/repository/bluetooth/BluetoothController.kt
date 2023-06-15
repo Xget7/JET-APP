@@ -9,13 +9,13 @@ import java.lang.Thread.State
 interface BluetoothController {
 
     val isConnected : StateFlow<Boolean>
+    val isBluetoothOn : StateFlow<Boolean>
     val pairedDevice : StateFlow<BluetoothDevice?>
     val scannedDevices : StateFlow<List<BluetoothDevice>?>
     val errors : SharedFlow<String> //One time events
     fun startDiscovery()
     fun stopDiscovery()
-
-    fun startBluetoothServer() : Flow<BluetoothConnectionResult>
+    suspend fun trySendMessage(message: String): String?
     fun connectToDevice(device : BluetoothDevice) : Flow<BluetoothConnectionResult>
 
     fun closeConnection()

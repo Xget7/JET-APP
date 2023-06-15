@@ -35,33 +35,39 @@ fun TopCustomBar(
     onClick: () -> Unit,
 ) {
     Box() {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            if (showBack) {
-                IconButton(onClick = onClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bakcarrow),
-                        "Back Arrow",
-                        tint = Color(0xFF949494)
-                    )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (showBack) {
+                    IconButton(onClick = onClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.bakcarrow),
+                            "Back Arrow",
+                            tint = Color(0xFF949494)
+                        )
+                    }
                 }
+
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = if(showBack) Arrangement.Start else Arrangement.Center
+            ) {
 
+                if (showBack){
+                    Spacer(modifier = Modifier.width(34.dp))
+                }
+                Text(text = title, fontSize = 27.sp, color = color, fontWeight = FontWeight.Bold)
+
+            }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
 
-
-//        Spacer(modifier = Modifier.width(70.dp))
-            Text(text = title, fontSize = 27.sp, color = color, fontWeight = FontWeight.Bold)
-
-        }
     }
 
 }

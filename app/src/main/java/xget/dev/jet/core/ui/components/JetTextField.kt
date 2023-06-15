@@ -35,6 +35,7 @@ fun JetTextField(
     textLabel: String,
     onValue: (String) -> Unit,
     trailingIcon:  @Composable() (() -> Unit)? = null,
+    leadingIcon:  @Composable() (() -> Unit)? = null,
     oneLine : Boolean = true,
 
 ) {
@@ -57,6 +58,7 @@ fun JetTextField(
         modifier = Modifier
             .width(350.dp)
             .height(60.dp),
+        leadingIcon =leadingIcon ,
         trailingIcon = trailingIcon,
         singleLine = oneLine
 
@@ -71,6 +73,7 @@ fun PasswordJetTextField(
     onValue: (String) -> Unit,
     modifier : Modifier = Modifier,
     trailingIcon:  @Composable() (() -> Unit)? = null,
+    leadingIcon:  @Composable() (() -> Unit)? = null,
     visibility : MutableState<Boolean> = mutableStateOf(false),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions()
@@ -95,6 +98,7 @@ fun PasswordJetTextField(
             .width(350.dp)
             .height(60.dp) ,
         trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon,
         visualTransformation = if (visibility.value) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions

@@ -1,6 +1,7 @@
 package xget.dev.jet.presentation.main.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -33,9 +33,8 @@ import androidx.navigation.NavController
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
+import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetDarkBlue
-import xget.dev.jet.ui.theme.JetDarkBlue2
 import xget.dev.jet.ui.theme.JetScreensBackgroundColor
 
 @Composable
@@ -43,14 +42,20 @@ internal fun HomeScreen(
     navController: NavController,
     vm: HomeViewModel = hiltViewModel()
 ) {
-    HomeScreen(uiState = vm.uiState.collectAsState())
+    LaunchedEffect(true){
+        navController.navigate(Screens.PairDeviceThirdStep.route)
+    }
+//    HomeScreen(uiState = vm.state.collectAsState()) {
+//        navController.navigate(Screens.PairDeviceFirstStep.route)
+//    }
 
 }
 
 
 @Composable
 internal fun HomeScreen(
-    uiState: State<HomeUiState>
+    uiState: State<HomeUiState>,
+    onAddDevice: () -> Unit
 ) {
 
     val scaffoldState = rememberScaffoldState()
@@ -58,19 +63,18 @@ internal fun HomeScreen(
     Scaffold(
         Modifier
             .fillMaxSize()
+            .background(JetScreensBackgroundColor)
             .padding(top = 5.dp),
         scaffoldState = scaffoldState,
         topBar = {
-            TopHomeBar(addDevices = true) {
-
-            }
+            TopHomeBar(addDevices = true,onAddDevice)
         },
-        backgroundColor =JetScreensBackgroundColor
+        backgroundColor = JetScreensBackgroundColor
     ) {
         it
 
         LaunchedEffect(uiState.value.isError) {
-            if (uiState.value.isError != null){
+            if (uiState.value.isError != null) {
                 scaffoldState.snackbarHostState.showSnackbar(
                     uiState.value.isError ?: "Error Inesperado",
                     duration = SnackbarDuration.Short
@@ -122,7 +126,6 @@ internal fun HomeScreen(
                 //Main Content
 
 
-
             }
 
         }
@@ -138,6 +141,6 @@ internal fun HomeScreen(
 @Composable
 fun HomeScreenPrev() {
     JETTheme {
-        HomeScreen(uiState = mutableStateOf(HomeUiState()))
+        HomeScreen(uiState = mutableStateOf(HomeUiState())){}
     }
 }

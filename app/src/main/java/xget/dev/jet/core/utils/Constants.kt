@@ -19,4 +19,9 @@ object ConstantsShared {
     const val ConnectionStatusProperty = "connectionStatus"
     const val empty = ""
     const val IsFirstTime = "IsFirstTime"
+
+
+    const val LAST_DEVICE_SELECTED = "lastDeviceSelected"
+    const val LAST_WIFI_SSID = "lastWifiSelected"
+    const val WIFI_CREDENTIALS = "wifiCredentials"
 }

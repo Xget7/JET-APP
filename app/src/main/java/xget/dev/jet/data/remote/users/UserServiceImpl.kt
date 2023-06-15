@@ -15,8 +15,8 @@ import io.ktor.util.InternalAPI
 import xget.dev.jet.data.remote.HttpRoutes
 import xget.dev.jet.data.remote.HttpRoutes.REGISTER_USER
 import xget.dev.jet.data.util.network.ApiResponse
-import xget.dev.jet.data.remote.users.dto.UserRequest
-import xget.dev.jet.data.remote.users.dto.UserResponse
+import xget.dev.jet.data.remote.users.dto.RegisterRequest
+import xget.dev.jet.data.remote.users.dto.UserAuthResponse
 import xget.dev.jet.data.util.network.handleApiException
 import xget.dev.jet.domain.repository.token.Token
 import javax.inject.Inject
@@ -27,34 +27,40 @@ class UserServiceImpl @Inject constructor(
 ) : UserService {
 
     private val currentToken = token.getJwtLocal()
-    override suspend fun getUser(uid: String): ApiResponse<UserResponse>? {
+    override suspend fun getUser(uid: String): ApiResponse<UserAuthResponse>? {
         ApiResponse.Loading<Any>()
         return try {
             val response = client.get {
                 url(HttpRoutes.GET_USER)
                 parameter("uid", uid)
                 header("Authorization", "Bearer $currentToken")
-            }.body<UserResponse>()
+            }.body<UserAuthResponse>()
             ApiResponse.Success(response)
         } catch (e: Exception) {
             handleApiException(e)
         }
     }
 
-    override suspend fun registerUser(userRequest: UserRequest): ApiResponse<UserResponse>? {
-        Log.d("urlToPost", REGISTER_USER)
+    override suspend fun registerUser(registerRequest: RegisterRequest): ApiResponse<UserAuthResponse>? {
         ApiResponse.Loading<Any>()
         return try {
-            val response: UserResponse = client.post(REGISTER_USER) {
-                contentType(ContentType.Application.Json)
-                setBody(userRequest)
-            }.body()
-            Log.d("registerUserResponse", response.toString())
+            Log.d("registerUserSent", registerRequest.toString())
 
-            if (response.user == null){
-                ApiResponse.Error("Error al registrar usuario, Reintentar mas tarde.")
+            val response = client.post(REGISTER_USER) {
+                contentType(ContentType.Application.Json)
+                setBody(registerRequest)
+            }
+
+
+            val formatedResponse = response.body<UserAuthResponse>()
+
+            if (formatedResponse.id == null){
+                ApiResponse.Error("Error al registrar usuario, reintentar mas tarde.")
             }else{
-                ApiResponse.Success(response)
+
+                token.setJwtLocal(formatedResponse.token ?: "null")
+                Log.d("RegisterSuccess", "currentToken : ${token.getJwtLocal()} ")
+                ApiResponse.Success(formatedResponse)
             }
         } catch (e: Exception) {
             Log.d("registerUserResponse Exception", e.message.toString())

@@ -1,9 +1,14 @@
 [versions]
 accompanist-pager = "0.25.0"
 accompanist-systemuicontroller = ">"
+activity-ktx = "1.7.2"
 androidx-room-runtime = "2.5.1"
-com-android-application = "8.1.0-alpha11"
-gradle = "7.0.4"
+appcompat = "1.6.1"
+com-android-application = "8.2.0-alpha07"
+compose-stepper = "1.0.0-beta01"
+constraintlayout-compose = "1.0.1"
+fragment-ktx = "1.6.0"
+gradle = "8.2.0-alpha07"
 hilt-android = "2.44"
 hilt-android-gradle-plugin = "2.42"
 hilt-compiler = "1.0.0"
@@ -26,6 +31,7 @@ lifecycle-runtime-ktx = "2.3.1"
 activity-compose = "1.7.1"
 compose-bom = "2023.05.01"
 paho-mqtt-android = "3.5.2"
+play-services-location = "21.0.1"
 room-compiler = "2.5.1"
 room-runtime = "2.5.1"
 symbol-processing-api = "1.8.0-1.0.9"
@@ -34,6 +40,10 @@ symbol-processing-api = "1.8.0-1.0.9"
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist-pager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist-pager" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version = "0.31.3-beta" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment-ktx" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose-2_5_3 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
@@ -42,6 +52,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-compiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
 androidx-room-runtime-2_5_1 = { module = "androidx.room:room-runtime", version.ref = "androidx-room-runtime" }
+compose-stepper = { module = "com.github.maryamrzdh:compose-stepper", version.ref = "compose-stepper" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "hilt-android" }
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "hilt-android" }
@@ -76,6 +87,7 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
 paho-mqtt-android = { module = "com.github.hannesa2:paho.mqtt.android", version.ref = "paho-mqtt-android" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbol-processing-api" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

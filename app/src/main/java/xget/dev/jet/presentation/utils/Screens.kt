@@ -23,6 +23,7 @@ sealed class Screens(val route : String){
     object BluetoothNavGraph : Screens("bluetooth_nav_graph")
     object PairDeviceFirstStep : Screens("pair_first_step")
     object PairDeviceSecondStep : Screens("pair_second_step")
+    object PairDeviceThirdStep : Screens("pair_third_step")
 
 
 

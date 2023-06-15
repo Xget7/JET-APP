@@ -6,8 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.data.remote.users.UserService
-import xget.dev.jet.data.remote.users.dto.UserRequest
-import xget.dev.jet.data.remote.users.dto.UserResponse
+import xget.dev.jet.data.remote.users.dto.RegisterRequest
+import xget.dev.jet.data.remote.users.dto.UserAuthResponse
 import xget.dev.jet.domain.model.user.RegisterUser
 import xget.dev.jet.domain.repository.user.UserRepository
 import javax.inject.Inject
@@ -15,15 +15,15 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteService : UserService
 ) : UserRepository {
-    override suspend fun getUser(uid: String): ApiResponse<UserResponse>? {
+    override suspend fun getUser(uid: String): ApiResponse<UserAuthResponse>? {
         return withContext(Dispatchers.IO){
             userRemoteService.getUser(uid)
         }
     }
 
-    override suspend fun registerUser(userRequest: UserRequest): ApiResponse<UserResponse>? {
+    override suspend fun registerUser(registerRequest: RegisterRequest): ApiResponse<UserAuthResponse>? {
         return withContext(Dispatchers.IO){
-            userRemoteService.registerUser(userRequest)
+            userRemoteService.registerUser(registerRequest)
         }
     }
 

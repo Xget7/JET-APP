@@ -77,8 +77,15 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation (libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.appcompat)
+    api (libs.androidx.activity.ktx)
+    api (libs.androidx.fragment.ktx)
+
+
     //compose ui ccontroller
     implementation( libs.accompanist.systemuicontroller)
+
 
     // Paging Compose
     implementation (libs.accompanist.pager)
@@ -87,7 +94,6 @@ dependencies {
     //Ktor
 
     implementation (libs.logback.classic)
-//    implementation (libs.kotlinx.serialization.json)
     implementation (libs.ktor.client.core)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation (libs.ktor.client.android)
@@ -124,6 +130,10 @@ dependencies {
 
     //Lottie
     implementation (libs.lottie.compose)
+
+    //Location
+    implementation (libs.play.services.location)
+
 
 
 

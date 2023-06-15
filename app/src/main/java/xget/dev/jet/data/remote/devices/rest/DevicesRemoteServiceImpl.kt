@@ -5,16 +5,11 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
-import io.ktor.client.request.post
 import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import xget.dev.jet.data.remote.HttpRoutes
 
 import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICE
 import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICES_FROM_USER
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
-import xget.dev.jet.data.remote.users.dto.UserResponse
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.data.util.network.handleApiException
 import xget.dev.jet.domain.repository.devices.Rest.DevicesListRestResponse

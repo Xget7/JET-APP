@@ -2,22 +2,28 @@ package xget.dev.jet.di
 
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
+import xget.dev.jet.core.utils.WifiUtil
 import xget.dev.jet.data.remote.auth.AuthService
 import xget.dev.jet.data.remote.auth.AuthServiceImpl
 import xget.dev.jet.data.remote.users.UserService
 import xget.dev.jet.data.remote.users.UserServiceImpl
 import xget.dev.jet.data.repository.auth.AuthRepositoryImpl
+import xget.dev.jet.data.repository.bluetooth.BluetoothControllerImpl
 import xget.dev.jet.data.repository.user.UserRepositoryImpl
 import xget.dev.jet.data.repository.user.UserRepositoryImpl_Factory
+import xget.dev.jet.data.util.location.LocationHelper
 import xget.dev.jet.data.util.network.ConnectivityImpl
 import xget.dev.jet.data.util.token.TokenImpl
 import xget.dev.jet.domain.repository.auth.AuthRepository
+import xget.dev.jet.domain.repository.bluetooth.BluetoothController
 import xget.dev.jet.domain.repository.network.ConnectivityInterface
 import xget.dev.jet.domain.repository.token.Token
 import xget.dev.jet.domain.repository.user.UserRepository
@@ -69,6 +75,31 @@ class AppModule {
     fun provideUserRepository(authService: UserService): UserRepository {
         return UserRepositoryImpl(userRemoteService = authService)
     }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("local", MODE_PRIVATE)
+    }
+    @Provides
+    @Singleton
+    fun provideWifiUtils(@ApplicationContext context: Context): WifiUtil {
+        return WifiUtil(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationHelper(@ApplicationContext context: Context): LocationHelper {
+        return LocationHelper(context)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideBluetoothController(@ApplicationContext context: Context): BluetoothController {
+        return BluetoothControllerImpl(context)
+    }
+
 //
 //    @Provides
 //    @Singleton
@@ -104,11 +135,7 @@ class AppModule {
 //        return FirebaseStorageRepositoryImpl(storage)
 //    }
 //
-//    @Provides
-//    @Singleton
-//    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-//        return context.getSharedPreferences("local", MODE_PRIVATE)
-//    }
+
 //
 //    @Provides
 //    @Singleton

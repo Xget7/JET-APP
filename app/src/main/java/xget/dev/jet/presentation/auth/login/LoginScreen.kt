@@ -1,13 +1,11 @@
 package xget.dev.jet.presentation.auth.login
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +22,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -40,13 +36,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +55,7 @@ import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
+import xget.dev.jet.presentation.auth.AuthActivity
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
@@ -70,12 +66,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
-    val state = viewModel.uiState.collectAsState()
-    LaunchedEffect(state) {
-        if (state.value.isLoggedIn) {
-            navController.navigate(Screens.HomeScreen.route)
-        }
-    }
+    val state = viewModel.state.collectAsState()
+
 
     LoginScreen(
         uiState = state,
@@ -131,7 +123,7 @@ internal fun LoginScreen(
         backgroundColor =  Color.White
     ) {
         it
-
+        val act = LocalContext.current
         LaunchedEffect(uiState.value) {
             if (uiState.value.isError != null) {
                 keyboardController?.hide()
@@ -141,7 +133,10 @@ internal fun LoginScreen(
                     actionLabel = "Ok"
                 )
             }
-
+            if (uiState.value.isLoggedIn) {
+                val a = act as AuthActivity
+                a.navigateToMain()
+            }
         }
 
         Column(
@@ -227,7 +222,7 @@ internal fun LoginScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 27.dp),
+                    .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 TextWithShadow(
@@ -243,7 +238,7 @@ internal fun LoginScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 1.dp),
+                    .padding(bottom = 4.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 TextWithShadow(

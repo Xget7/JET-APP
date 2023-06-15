@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.util.Log
 import xget.dev.jet.data.bluetooth.socketsUtils.FallbackBluetoothSocket
+import xget.dev.jet.data.bluetooth.socketsUtils.FallbackException
 import xget.dev.jet.data.bluetooth.socketsUtils.NativeBluetoothSocket
 import xget.dev.jet.domain.repository.bluetooth.BluetoothConnector
 import xget.dev.jet.domain.repository.bluetooth.BluetoothSocketWrapper

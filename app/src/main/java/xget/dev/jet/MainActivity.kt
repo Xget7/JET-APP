@@ -18,6 +18,9 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import xget.dev.jet.presentation.main.MainScreens
+import xget.dev.jet.presentation.main.device_config.device_search.DeviceSearchScreen
+import xget.dev.jet.presentation.main.device_config.firstStep.AddDeviceFirstStep
+import xget.dev.jet.presentation.main.device_config.secondStep.AddDeviceSecondStep
 import xget.dev.jet.presentation.main.home.HomeScreen
 import xget.dev.jet.presentation.main.home.HomeUiState
 import xget.dev.jet.presentation.utils.Screens
@@ -48,40 +51,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        Log.d("MainActivity", "OnCreate")
-//
-//        //hide and permit to draw in status bar
-//        window.setFlags(
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-//        )
-//
-//
-//        setContent {
-////            TextButton(onClick = { /*TODO*/ }) {
-////                Text(text = "HEllo")
-////            }
-////            TextButton(onClick = { /*TODO*/ }) {
-////                Text(text = "HEllo")
-////            }
-////            TextButton(onClick = { /*TODO*/ }) {
-////                Text(text = "HEllo")
-////            }
-////            TextButton(onClick = { /*TODO*/ }) {
-////                Text(text = "HEllo")
-////            }
-////
-////
-
-//            JETTheme {
-//
-//                val navController = rememberNavController()
-//                MainScreens(navController = navController)
-//            }
-//        }
-//    }
 }
 
 @Composable
@@ -110,12 +79,15 @@ fun NavGraphBuilder.bluetoothNavGraph(navController: NavHostController) {
         startDestination = Screens.PairDeviceFirstStep.route
     ) {
 
-//        composable(route = Screens.PairDeviceFirstStep.route) {
-//
-//        }
-//        composable(route = Screens.PairDeviceFirstStep.route) {
-//
-//        }
+        composable(route = Screens.PairDeviceFirstStep.route) {
+            AddDeviceFirstStep(navController)
+        }
+        composable(route = Screens.PairDeviceSecondStep.route) {
+            AddDeviceSecondStep(navController)
+        }
+        composable(route = Screens.PairDeviceThirdStep.route) {
+            DeviceSearchScreen(navController)
+        }
     }
 }
 

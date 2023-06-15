@@ -13,7 +13,7 @@ class TokenImpl(context: Context) : Token {
     private val editor: SharedPreferences.Editor = sharedPreference.edit()
 
     override fun setJwtLocal(token : String) {
-        editor.putString(ConstantsShared.jwtKey,token)
+        editor.putString(ConstantsShared.jwtKey,token).commit()
     }
 
     override fun getJwtLocal() : String? {

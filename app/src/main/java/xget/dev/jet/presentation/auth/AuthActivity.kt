@@ -45,15 +45,15 @@ class AuthActivity : ComponentActivity() {
         setContent {
             JETTheme {
 
-
                 if (sharedPreference.getBoolean(IsFirstTime, true)) {
                     AuthNavigation(Screens.WelcomeScreen.route)
                     sharedPreference.edit().putBoolean(IsFirstTime, false).apply()
                 } else {
-
+//                    AuthNavigation(Screens.LoginScreen.route)
+//
                     if (token.isNullOrBlank()) {
                         Log.d("token?","")
-                        AuthNavigation(Screens.LoginScreen.route)
+                    AuthNavigation(Screens.LoginScreen.route)
                     }else {
                         Log.d("token?","yes? $token")
                         navigateToMain()
@@ -65,7 +65,7 @@ class AuthActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToMain() {
+     fun navigateToMain() {
         val i = Intent(this, MainActivity::class.java)
         startActivity(i)
         finish()

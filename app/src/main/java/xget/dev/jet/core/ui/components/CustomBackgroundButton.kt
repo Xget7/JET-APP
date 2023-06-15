@@ -27,6 +27,7 @@ fun CustomBackgroundButton(
     textColor: Color = Color.White,
     containerColor: Color = JetBlue,
     modifier: Modifier = Modifier,
+    enabled : Boolean = true,
     onClick: () -> Unit
 ) {
     Card(

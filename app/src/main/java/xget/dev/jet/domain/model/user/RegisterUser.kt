@@ -1,6 +1,6 @@
 package xget.dev.jet.domain.model.user
 
-import xget.dev.jet.data.remote.users.dto.UserRequest
+import xget.dev.jet.data.remote.users.dto.RegisterRequest
 
 data class RegisterUser(
     var name : String= "",
@@ -9,7 +9,13 @@ data class RegisterUser(
     var password : String = "",
     var confirmPassword : String = ""
 ){
-    fun toUserRequest() : UserRequest {
-        return UserRequest(name, email, phoneNumber, password)
+    fun toUserRequest() : RegisterRequest {
+        return RegisterRequest(
+            username = name,
+            email = email,
+            password = password,
+            profilePicture = "null",
+            phoneNumber = phoneNumber
+        )
     }
 }

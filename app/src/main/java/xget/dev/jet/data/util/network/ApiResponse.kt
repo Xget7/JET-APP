@@ -31,9 +31,28 @@ fun <T> handleApiException(e: Exception): ApiResponse.Error<T> {
                 else -> "Error del servidor."
             }
         }
-        else -> "Error: ${e.localizedMessage}"
+        else -> "Error del sistema."
     }
 
+    // Puedes agregar un registro de error adicional si lo deseas
+    Log.d("ErrorWithServer", e.toString())
+
+    return ApiResponse.Error(errorMessage)
+}
+
+fun <T> handleApiCodeStatusException(e: HttpStatusCode): ApiResponse.Error<T> {
+    val errorMessage =
+        when (e) {
+            HttpStatusCode.Unauthorized -> {
+                "No autorizado. Verifique sus credenciales."
+            }
+            HttpStatusCode.Forbidden -> "Acceso denegado. No tiene permiso para acceder a este recurso."
+            HttpStatusCode.NotFound -> "Recurso no encontrado."
+            HttpStatusCode.InternalServerError -> "Error interno del servidor."
+            HttpStatusCode.BadGateway -> "Error al comunicarse con el servidor upstream."
+            HttpStatusCode.ServiceUnavailable -> "Servicio no disponible en este momento. Intente nuevamente más tarde."
+            else -> "Error del servidor."
+        }
     // Puedes agregar un registro de error adicional si lo deseas
     Log.d("ErrorWithServer", e.toString())
 

@@ -23,43 +23,41 @@ class LoginViewModel @Inject constructor(
     val token : Token
 ): BaseViewModel<LoginUiState>() {
 
-    var userGmail by mutableStateOf("juan2@gmail.com")
+    var userGmail by mutableStateOf("p@p.com")
         private set
-    var userPassword by mutableStateOf("hola123")
+    var userPassword by mutableStateOf("p")
         private set
 
 
 
     fun signInUser(){
         val request = LoginRequest(userGmail, userPassword)
-        _uiState.update {
-            _uiState.value.copy(isLoading = true)
+        _state.update {
+            _state.value.copy(isLoading = true)
         }
-
         viewModelScope.launch {
-
-            when (val result = authRepository.login(request) ) {
+            val result = authRepository.login(request)
+            when (result) {
                 is ApiResponse.Error -> {
                     Log.d("apiResponseViewmodel", "error ${result.message}")
-                    _uiState.update {
-                        _uiState.value.copy(isError = result.message, isLoading = false)
+                    _state.update {
+                        _state.value.copy(isError = result.message, isLoading = false)
                     }
-                    delay(5000)
-                    _uiState.update {
-                        _uiState.value.copy(isError = null, isLoading = false)
+                    delay(3000)
+                    _state.update {
+                        _state.value.copy(isError = null, isLoading = false)
                     }
                 }
 
                 is ApiResponse.Loading -> {
-                    _uiState.update {
-                        _uiState.value.copy(isLoading = true)
+                    _state.update {
+                        _state.value.copy(isLoading = true)
                     }
                 }
 
                 is ApiResponse.Success -> {
-                    token.setJwtLocal(result.data?.jwt ?: "")
-                    _uiState.update {
-                        _uiState.value.copy(isLoggedIn = true, isLoading = false)
+                    _state.update {
+                        _state.value.copy(isLoggedIn = true, isLoading = false)
                     }
                 }
             }

@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,14 +18,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.collect
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.AlignedCircularProgressIndicator
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
@@ -51,6 +47,7 @@ import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
+import xget.dev.jet.presentation.auth.AuthActivity
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.ui.theme.JETTheme
 import xget.dev.jet.ui.theme.JetBlue
@@ -62,7 +59,15 @@ import xget.dev.jet.ui.theme.JetDarkBlue2
     navController: NavController,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val state = viewModel.uiState.collectAsState()
+    val state = viewModel.state.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(state.value.successfulCreated){
+        if (state.value.successfulCreated){
+            val act = context as AuthActivity
+            act.navigateToMain()
+        }
+    }
+
 
     RegisterScreen(
         uiState = state,
@@ -98,7 +103,7 @@ internal fun RegisterScreen(
     updateUserPassword: (String) -> Unit,
     updateUserConfirmPassword: (String) -> Unit,
     onRegisterClick: () -> Unit,
-    onGoToLogin: () -> Unit
+    onGoToLogin: () -> Unit,
 ) {
     val showPassword = remember {
         mutableStateOf(false)
@@ -118,6 +123,7 @@ internal fun RegisterScreen(
     ) { it
 
 
+
         LaunchedEffect(uiState.value) {
             if (uiState.value.isError != null){
                 scaffoldState.snackbarHostState.showSnackbar(
@@ -126,6 +132,7 @@ internal fun RegisterScreen(
                     actionLabel = "Ok"
                 )
             }
+
 
         }
 

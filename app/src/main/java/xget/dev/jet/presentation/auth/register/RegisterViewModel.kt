@@ -1,6 +1,5 @@
 package xget.dev.jet.presentation.auth.register
 
-import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,40 +46,39 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun registerUser() {
-        Log.d("registerHasLocalEror", userHasLocalError.second.toString())
         if (!userHasLocalError.second) {
-            _uiState.update {
-                _uiState.value.copy(isError = userHasLocalError.first, isLoading = false)
+            _state.update {
+                _state.value.copy(isError = userHasLocalError.first, isLoading = false)
             }
             return
         }
-        _uiState.update {
-            _uiState.value.copy(isLoading = true)
+        _state.update {
+            _state.value.copy(isLoading = true)
         }
 
         viewModelScope.launch {
             when (val result = userRepository.registerUser(currentUser.toUserRequest())) {
                 is ApiResponse.Error -> {
-                    _uiState.update {
-                        _uiState.value.copy(isError = result.message, isLoading = false)
+                    _state.update {
+                        _state.value.copy(isError = result.message, isLoading = false)
                     }
                 }
 
                 is ApiResponse.Loading -> {
-                    _uiState.update {
-                        _uiState.value.copy(isLoading = true)
+                    _state.update {
+                        _state.value.copy(isLoading = true)
                     }
                 }
 
                 is ApiResponse.Success -> {
-                    _uiState.update {
-                        _uiState.value.copy(successfulCreated = true, isLoading = false)
+                    _state.update {
+                        _state.value.copy(successfulCreated = true, isLoading = false)
                     }
                 }
 
                 null -> {
-                    _uiState.update {
-                        _uiState.value.copy(isError = "Error inesperado.", isLoading = false)
+                    _state.update {
+                        _state.value.copy(isError = "Error inesperado.", isLoading = false)
                     }
                 }
             }
