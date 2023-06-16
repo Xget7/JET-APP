@@ -1,4 +1,4 @@
-package xget.dev.jet.ui.theme
+package xget.dev.jet.presentation.theme
 
 import android.app.Activity
 import android.os.Build

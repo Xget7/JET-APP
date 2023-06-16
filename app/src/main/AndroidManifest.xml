@@ -11,9 +11,7 @@
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
-    <uses-permission
-        android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <!-- Needed only if your app looks for Bluetooth devices.
          If your app doesn't use Bluetooth scan results to derive physical
@@ -35,6 +33,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature android:name="android.hardware.bluetooth" />
+
 
     <application
         android:name=".JetApp"

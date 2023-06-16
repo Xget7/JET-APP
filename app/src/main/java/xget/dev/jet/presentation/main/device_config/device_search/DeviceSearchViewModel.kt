@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xget.dev.jet.core.base.BaseViewModel
+import xget.dev.jet.core.utils.ConstantsShared
+import xget.dev.jet.core.utils.ConstantsShared.USER_ID
+import xget.dev.jet.core.utils.ConstantsShared.WIFI_CREDENTIALS
 import xget.dev.jet.domain.repository.bluetooth.BluetoothConnectionResult
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
 import javax.inject.Inject
@@ -37,9 +40,9 @@ class DeviceSearchViewModel @Inject constructor(
         bluetoothController.scannedDevices,
         bluetoothController.isBluetoothOn,
         _state
-    ) { pairedDevice, scannedDevices,bluetoothState, uiState ->
+    ) { pairedDevice, scannedDevices, bluetoothState, uiState ->
         uiState.copy(
-            pairingDevice = pairedDevice != null,
+            pairedDevice = pairedDevice,
             scannedDevices = scannedDevices ?: emptyList(),
             bluetoothOn = bluetoothState
         )
@@ -47,14 +50,14 @@ class DeviceSearchViewModel @Inject constructor(
 
     //Coroutine
     private var deviceConnectionJob: Job? = null
-    var content = mutableIntStateOf(12220000)
+    var content = mutableIntStateOf(120000)
     var counter: CountDownTimer? = null
 
+    val userId = sharedPreferences.getString(USER_ID, "")
 
     init {
         countDownDeviceSearch()
         startScan()
-
         bluetoothController.errors.onEach { error ->
             _state.update {
                 it.copy(
@@ -83,16 +86,19 @@ class DeviceSearchViewModel @Inject constructor(
 
     private fun connectToDevice() {
         bluetoothController.pairedDevice.onEach { device ->
-            if (device != null){
+            if (device != null && device.name.contains("JET")) {
                 Log.d("DeviceSearchViewmodel", "connectToDevice try")
-                Log.d("DeviceSearchViewmodel", "device to pair ${bluetoothController.pairedDevice.value?.name}")
-                _state.update { it.copy(pairingDevice = true) }
+                Log.d(
+                    "DeviceSearchViewmodel",
+                    "device to pair ${bluetoothController.pairedDevice.value?.name}"
+                )
+                _state.update { it.copy(pairingDevice = true, searchingDevice = false) }
                 deviceConnectionJob = bluetoothController
-                    .connectToDevice(bluetoothController.pairedDevice.value!!)
+                    .connectToDevice()
                     .listen()
-            }else{
-                Log.d("DeviceSearchViewmodel", "connectToDevice  == null")
-                _state.update { it.copy(searchingDevice = true) }
+                Log.d("DeviceSearchViewmodel", "Listen atacched ")
+
+                return@onEach
             }
         }.launchIn(viewModelScope)
 
@@ -120,26 +126,40 @@ class DeviceSearchViewModel @Inject constructor(
     }
 
 
-    fun pairDevice() {
-        val messages = listOf("SSID:${null}", "PASSWORD:${null}", "USER_ID${null}")
-        connectToDevice()
-//        viewModelScope.launch {
-//            for (e in messages) {
-//                val bluetoothMessage = bluetoothController.trySendMessage(e)
-//                if (bluetoothMessage != null) {
+    suspend fun sendMessages() {
+        Log.d("sendMessageFun", " executed")
+//        val wifiCredentials = sharedPreferences.getStringSet(WIFI_CREDENTIALS, setOf())?.toList()
 //
-//                }
-//            }
-//
-//        }
+//        val messages = listOf(
+//            "SSID:${wifiCredentials?.get(0)}\n",
+//            "PASSWORD:${wifiCredentials?.get(1)}\n",
+//            "USER_ID${userId}\n"
+//        )
+
+        val messages2 = listOf(
+            "SSID:lauchita\n",
+            "PASSWORD:lauchita\n",
+            "USER_ID:lauchfd8f7d89fita\n"
+        )
+
+            for (message in messages2) {
+                Log.d("sendMessageFun", " $message")
+
+                bluetoothController.trySendMessage(message)
+                delay(100)
+            }
+            _state.update {
+                it.copy(searchingDevice = false, pairingDevice = false, syncingWithCloud = true)
+            }
+
     }
 
     private fun Flow<BluetoothConnectionResult>.listen(): Job {
         return onEach { result ->
             Log.d("Listening Result", result.toString())
             when (result) {
-
                 BluetoothConnectionResult.ConnectionEstablished -> {
+                    Log.d("ConnectionStablished", "Yes")
                     _state.update {
                         it.copy(
                             pairingDevice = true,
@@ -147,6 +167,7 @@ class DeviceSearchViewModel @Inject constructor(
                             errorMessage = null
                         )
                     }
+                    sendMessages()
                 }
 
                 is BluetoothConnectionResult.Error -> {
@@ -154,17 +175,23 @@ class DeviceSearchViewModel @Inject constructor(
                         it.copy(
                             pairingDevice = false,
                             searchingDevice = false,
-                            errorMessage = result.message
+                            errorMessage = result.errorMsg
                         )
+
                     }
                 }
 
                 is BluetoothConnectionResult.TransferSucceeded -> {
                     //received messages?
+                    Log.d("Received Bluetooth MEssage", result.message)
+
                 }
             }
         }.catch { throwable ->
-            Log.d("DeviceSearchViewMdoel", throwable.localizedMessage ?: throwable.message ?: "null error")
+            Log.d(
+                "DeviceSearchViewMdoel",
+                throwable.localizedMessage ?: throwable.message ?: "null error"
+            )
             disconnectFromDevice()
             _state.update {
                 it.copy(
@@ -179,8 +206,8 @@ class DeviceSearchViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-//        disconnectFromDevice()
-//        bluetoothController.release()
+        disconnectFromDevice()
+        bluetoothController.release()
     }
 
     override fun defaultState(): DeviceSearchUiState {

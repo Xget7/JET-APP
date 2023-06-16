@@ -10,7 +10,8 @@ object ConstantsShared {
     const val jwtKey  = "JWT-TOKEN"
 
     //MQTT
-    const val serverUri = "tcp://broker.hivemq.com:1883"
+    const val MQTT_BROKER_ADDRESS = "tcp://broker.hivemq.com:1883"
+    const val MQTT_CLIENT_ID = "xget2323232"
 
     //
     const val CONNECTION_KEY = "CONNECTION_KEY"
@@ -24,4 +25,5 @@ object ConstantsShared {
     const val LAST_DEVICE_SELECTED = "lastDeviceSelected"
     const val LAST_WIFI_SSID = "lastWifiSelected"
     const val WIFI_CREDENTIALS = "wifiCredentials"
+    const val USER_ID = "user_id"
 }

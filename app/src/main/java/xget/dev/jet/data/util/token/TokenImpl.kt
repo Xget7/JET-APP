@@ -12,12 +12,17 @@ class TokenImpl(context: Context) : Token {
     private val sharedPreference: SharedPreferences =  context.getSharedPreferences(ConstantsShared.AUTH_PREFERENCES, Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = sharedPreference.edit()
 
-    override fun setJwtLocal(token : String) {
+    override fun setJwtLocal(token : String , userId  : String) {
         editor.putString(ConstantsShared.jwtKey,token).commit()
+        editor.putString(ConstantsShared.USER_ID,userId).commit()
     }
 
     override fun getJwtLocal() : String? {
         return sharedPreference.getString(ConstantsShared.jwtKey, "")
+    }
+
+    override fun getUserIdLocal() : String? {
+        return sharedPreference.getString(ConstantsShared.USER_ID, "")
     }
 
 }

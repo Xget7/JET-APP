@@ -1,6 +1,7 @@
 package xget.dev.jet.data.bluetooth.socket
 
 import android.bluetooth.BluetoothSocket
+import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -10,28 +11,32 @@ import kotlinx.coroutines.withContext
 import xget.dev.jet.data.bluetooth.socketsUtils.TransferFailedException
 import xget.dev.jet.domain.repository.bluetooth.BluetoothConnectionResult
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 class BluetoothDataTransferService(
     val socket: BluetoothSocket
 ) {
 
-    fun listenForIncomingMessages(): Flow<String> {
+    private val mmInStream : InputStream = socket.inputStream
+    private val mmOutStream : OutputStream = socket.outputStream
+    private val mmBuffer : ByteArray = ByteArray(1024)
 
+
+    fun listenForIncomingMessages(): Flow<String> {
         return flow {
             if (!socket.isConnected) {
                 return@flow
             }
-            val buffer = ByteArray(1024)
             while (true) {
                 val byteCount = try {
                     //try to receive
-                    socket.inputStream.read(buffer)
+                    mmInStream.read(mmBuffer)
                 } catch (e: IOException) {
                     throw TransferFailedException()
                 }
                 emit(
-
-                    buffer.decodeToString(
+                    mmBuffer.decodeToString(
                         endIndex = byteCount
                     )
                 )
@@ -43,8 +48,10 @@ class BluetoothDataTransferService(
     suspend fun sendMessageToDevice(bytes: ByteArray): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                socket.outputStream.write(bytes)
+                Log.d("sendMessage", bytes.toString())
+                mmOutStream.write(bytes)
             } catch (e: IOException) {
+                Log.w("sendMessage FAIL ", "IOEX", e)
                 e.printStackTrace()
                 return@withContext false
             }

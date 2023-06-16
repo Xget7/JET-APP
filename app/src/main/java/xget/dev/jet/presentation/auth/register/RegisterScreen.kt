@@ -49,9 +49,9 @@ import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.presentation.auth.AuthActivity
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetDarkBlue2
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetBlue
+import xget.dev.jet.presentation.theme.JetDarkBlue2
 
 
 @Composable

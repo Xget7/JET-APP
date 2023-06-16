@@ -70,7 +70,7 @@ class BluetoothControllerImpl @Inject constructor(
             _pairedDevice.asStateFlow()
 
     private var currentServerSocket: BluetoothSocket? = null
-    private var currentConnector: BluetoothConnectorImpl? = null
+    lateinit var currentConnector: BluetoothConnectorImpl
 
     private val _errors = MutableStateFlow("")
     override val errors: SharedFlow<String>
@@ -81,28 +81,34 @@ class BluetoothControllerImpl @Inject constructor(
         _scannedDevices.update { devices ->
             if (deviceFound in devices) devices else devices + deviceFound
         }
-        if (bluetoothAdapter?.bondedDevices?.contains(deviceFound) == true) {
-            Log.d("FoundDeviceReceiver", "${deviceFound.name} is Bonded")
-            _pairedDevice.update {
-                _scannedDevices.value.first { it.name.contains("JET") }
-            }
-        } else {
-            Log.d("FoundDeviceReceiver", "${deviceFound.name} is NOT Bonded")
-            if (deviceFound.createBond()) {
-                Log.d("Create Bond == true", "added device")
-                _pairedDevice.update {
-                    _scannedDevices.value.first { it.name.contains("JET") }
+        deviceFound.name?.let { deviceName ->
+            if (deviceName.contains("JET")) {
+                if (bluetoothAdapter?.bondedDevices?.contains(deviceFound) == true) {
+                    Log.d("FoundDeviceReceiver", "${deviceFound.name} is Bonded")
+                    _pairedDevice.update {
+                        deviceFound
+                    }
+                } else {
+                    Log.d("FoundDeviceReceiver", "${deviceFound.name} is NOT Bonded")
+                    if (deviceFound.createBond()) {
+                        Log.d("Create Bond == true", "added device")
+                        _pairedDevice.update {
+                            _scannedDevices.value.first { it.name.contains("JET") }
+                        }
+                        _isConnected.update { true }
+                    } else {
+                        Log.d("Create Bond == False", "not device")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            _errors.emit("No se pudo vincular dispositivo , hazlo manualmente y vuelve a intenetarlo.")
+                        }
+                        _isConnected.update { false }
+                    }
+
                 }
-                _isConnected.update { true }
-            } else {
-                Log.d("Create Bond == False", "not device")
-                CoroutineScope(Dispatchers.IO).launch {
-                    _errors.emit("No se pudo vincular dispositivo , hazlo manualmente y vuelve a intenetarlo.")
-                }
-                _isConnected.update { false }
             }
 
         }
+
     }
 
     private val bluetoothDeviceStateReceiver = BluetoothDeviceStateReceiver { isConnected ->
@@ -162,10 +168,9 @@ class BluetoothControllerImpl @Inject constructor(
     }
 
 
-    override fun connectToDevice(device: BluetoothDevice): Flow<BluetoothConnectionResult> {
+    override fun connectToDevice(): Flow<BluetoothConnectionResult> {
         return flow {
-            Log.d("BluetoothPermission",   hasPermission(Manifest.permission.BLUETOOTH_CONNECT).toString())
-            if (!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
+            if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
                 throw SecurityException("No hay permisos suficientes para establecer una conexion.")
             }
 
@@ -173,32 +178,40 @@ class BluetoothControllerImpl @Inject constructor(
                 Log.d("currentServerSocket", "trying connecting bluetoothAdapter")
 
                 currentConnector = BluetoothConnectorImpl(
-                    device,
+                    _pairedDevice.value!!,
                     false,
                     bluetoothAdapter!!,
                     null
                 )
-                stopDiscovery()
 
                 try {
                     Log.d("currentServerSocket", "trying connecting socket")
 
-                    currentServerSocket = currentConnector!!.connect()?.underlyingSocket
-                    emit(BluetoothConnectionResult.ConnectionEstablished)
+                   val preSocket = currentConnector.connect()
 
-                    if (currentServerSocket != null) {
-                        BluetoothDataTransferService(currentServerSocket!!).also {
-                            dataTransferService = it
+                    currentServerSocket = preSocket?.underlyingSocket
+                    currentServerSocket.let {
+                        Log.d("currentServerSocket", "Starting Transfer services")
+                        BluetoothDataTransferService(currentServerSocket!!).also { transferService ->
+                            Log.d("ConnectionResult", "ConnectionStablished")
+                            emit(BluetoothConnectionResult.ConnectionEstablished)
+                            dataTransferService = transferService
                             emitAll(
-                                it.listenForIncomingMessages()
-                                    .map { BluetoothConnectionResult.TransferSucceeded(it) }
+                                transferService.listenForIncomingMessages()
+                                    .map {
+
+                                        BluetoothConnectionResult.TransferSucceeded(it)
+
+                                    }
                             )
+
                         }
+
+
                     }
 
-
                 } catch (e: IOException) {
-                    currentConnector?.bluetoothSocket?.close()
+                    currentConnector.bluetoothSocket?.close()
                     emit(BluetoothConnectionResult.Error("La conexion fue interrumpida"))
                 }
 
@@ -209,11 +222,13 @@ class BluetoothControllerImpl @Inject constructor(
     }
 
     override suspend fun trySendMessage(message: String): String? {
-        if (!hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
+        if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
+            Log.d("dataTrasnferServiceNull", "NO PERMISSION???")
             return null
         }
 
         if (dataTransferService == null) {
+            Log.d("dataTrasnferServiceNull", "Null")
             return null
         }
 
@@ -225,7 +240,7 @@ class BluetoothControllerImpl @Inject constructor(
     override fun closeConnection() {
         Log.d("OnCloseConnection", "Closed")
         currentServerSocket?.close()
-        currentConnector = null
+
         currentServerSocket = null
     }
 

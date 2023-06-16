@@ -58,7 +58,7 @@ class UserServiceImpl @Inject constructor(
                 ApiResponse.Error("Error al registrar usuario, reintentar mas tarde.")
             }else{
 
-                token.setJwtLocal(formatedResponse.token ?: "null")
+                token.setJwtLocal(formatedResponse.token ?: "null", formatedResponse.id)
                 Log.d("RegisterSuccess", "currentToken : ${token.getJwtLocal()} ")
                 ApiResponse.Success(formatedResponse)
             }

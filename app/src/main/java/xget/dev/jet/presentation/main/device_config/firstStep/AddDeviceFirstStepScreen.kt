@@ -53,8 +53,8 @@ import xget.dev.jet.presentation.main.device_config.components.SelectDeviceTypeI
 import xget.dev.jet.presentation.main.device_config.components.TurnOnBluetooth
 import xget.dev.jet.presentation.utils.DevicesTypeObj.listOfDevices
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetDarkGray2
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetDarkGray2
 
 @SuppressLint("UnrememberedMutableState")
 @Composable

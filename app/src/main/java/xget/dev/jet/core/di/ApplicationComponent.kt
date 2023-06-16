@@ -1,4 +1,4 @@
-package xget.dev.jet.di;
+package xget.dev.jet.core.di;
 
 import dagger.Component;
 import xget.dev.jet.JetApp

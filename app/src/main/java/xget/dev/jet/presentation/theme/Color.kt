@@ -1,4 +1,4 @@
-package xget.dev.jet.ui.theme
+package xget.dev.jet.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -12,9 +12,13 @@ val Pink40 = Color(0xFF7D5260)
 
 val JetBlue = Color(0xFF0003FF).copy(alpha = 0.86F)
 val JetBlue2 = Color(0xFF407BFF)
+
+val JetGreen = Color(0xFF4FBE79)
+
 val JetGray= Color(0xFF858585).copy(alpha = 0.56F)
 val JetGray2= Color(0xFF777777)
 val JetDarkGray= Color(0xFF373939)
+
 val JetDarkGray2= Color(0xFF5A5A5A)
 val JetMagenta = Color(0xFF5C5DF3).copy(alpha = 1f)
 

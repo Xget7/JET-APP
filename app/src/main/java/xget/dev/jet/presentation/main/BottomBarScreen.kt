@@ -27,7 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import xget.dev.jet.R
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JetGray2
+import xget.dev.jet.presentation.theme.JetGray2
 
 sealed class BottomBarScreen(
     val route: String,

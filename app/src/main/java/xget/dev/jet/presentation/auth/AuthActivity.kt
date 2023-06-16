@@ -29,7 +29,7 @@ import xget.dev.jet.presentation.auth.login.LoginScreen
 import xget.dev.jet.presentation.auth.register.RegisterScreen
 import xget.dev.jet.presentation.splash.WelcomeScreen
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
+import xget.dev.jet.presentation.theme.JETTheme
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {

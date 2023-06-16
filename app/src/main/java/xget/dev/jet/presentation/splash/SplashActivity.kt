@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import xget.dev.jet.MainActivity
 import xget.dev.jet.domain.repository.auth.AuthRepository
 import xget.dev.jet.presentation.auth.AuthActivity
-import xget.dev.jet.ui.theme.JETTheme
+import xget.dev.jet.presentation.theme.JETTheme
 import javax.inject.Inject
 
 

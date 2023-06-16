@@ -10,6 +10,6 @@ data class DeviceSearchUiState(
     val errorMessage : String? = null,
     val finished : String? = null,
     val scannedDevices : List<BluetoothDevice> = emptyList(),
-    val syncingWithCloud : String? = null
+    val syncingWithCloud : Boolean = false
 
 )

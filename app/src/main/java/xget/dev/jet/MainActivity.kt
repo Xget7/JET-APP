@@ -28,7 +28,7 @@ import xget.dev.jet.presentation.utils.Screens.HistoryScreen
 import xget.dev.jet.presentation.utils.Screens.HomeNavGraph
 import xget.dev.jet.presentation.utils.Screens.HomeScreen
 import xget.dev.jet.presentation.utils.Screens.ProfileScreen
-import xget.dev.jet.ui.theme.JETTheme
+import xget.dev.jet.presentation.theme.JETTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

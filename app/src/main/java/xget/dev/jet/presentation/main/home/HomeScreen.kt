@@ -34,21 +34,17 @@ import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetScreensBackgroundColor
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetScreensBackgroundColor
 
 @Composable
 internal fun HomeScreen(
     navController: NavController,
     vm: HomeViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(true){
-        navController.navigate(Screens.PairDeviceThirdStep.route)
+    HomeScreen(uiState = vm.state.collectAsState()) {
+        navController.navigate(Screens.PairDeviceFirstStep.route)
     }
-//    HomeScreen(uiState = vm.state.collectAsState()) {
-//        navController.navigate(Screens.PairDeviceFirstStep.route)
-//    }
-
 }
 
 

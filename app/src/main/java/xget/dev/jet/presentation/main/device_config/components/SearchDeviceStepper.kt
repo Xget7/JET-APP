@@ -1,57 +1,39 @@
 package xget.dev.jet.presentation.main.device_config.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.DurationBasedAnimationSpec
-import androidx.compose.animation.core.EaseInCirc
-import androidx.compose.animation.core.EaseOutCirc
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
-import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,25 +41,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import kotlinx.coroutines.NonDisposableHandle.parent
-import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetBlue2
+import xget.dev.jet.presentation.theme.JetBlue2
 
 @Composable
-fun SearchDeviceSteps() {
-    val numberStep = 3
-    var currentStep by rememberSaveable { mutableIntStateOf(4) }
+fun SearchDeviceStepper(
+    step: Int
+) {
     val titleList = arrayListOf(
         "Escaneo de\ndispositivos\ncercanos",
-        "Registro del\n dispositivo en la \n nube",
-        "Configuración\ndel dispositivo"
+        "Configuración\ndel dispositivo",
+        "Registro del\n dispositivo en la \n nube"
     )
 
 
-    xget.dev.jet.presentation.main.device_config.components.Stepper(
+    Stepper(
         modifier = Modifier.width(380.dp),
-        numberOfSteps = numberStep,
-        currentStep = currentStep,
+        numberOfSteps = 3,
+        currentStep = step,
         stepDescriptionList = titleList,
         selectedColor = JetBlue2,
         unSelectedColor = Color(0xFFC9C9C9),
@@ -85,10 +65,11 @@ fun SearchDeviceSteps() {
 
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview(showBackground = true)
 @Composable
 fun SEarchDeviceSteps() {
-    SearchDeviceSteps()
+    SearchDeviceStepper(2)
 }
 
 @Composable

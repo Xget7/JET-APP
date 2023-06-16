@@ -50,7 +50,7 @@ class AuthServiceImpl @Inject constructor(
                     ApiResponse.Error("Error con la autenticacion del usuario.")
                 } else {
                     Log.d("settedJwt", formatedResponse.token)
-                    token.setJwtLocal(formatedResponse.token ?: "")
+                    token.setJwtLocal(formatedResponse.token ?: "" , formatedResponse.id)
                     ApiResponse.Success(formatedResponse)
                 }
             } else {

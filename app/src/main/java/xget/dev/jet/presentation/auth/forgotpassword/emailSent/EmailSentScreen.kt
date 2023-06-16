@@ -29,9 +29,9 @@ import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetDarkBlue
-import xget.dev.jet.ui.theme.JetMagenta
+import xget.dev.jet.presentation.theme.JetBlue
+import xget.dev.jet.presentation.theme.JetDarkBlue
+import xget.dev.jet.presentation.theme.JetMagenta
 
 
 @Composable

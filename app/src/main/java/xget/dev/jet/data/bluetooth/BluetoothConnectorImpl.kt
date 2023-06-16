@@ -43,6 +43,7 @@ class BluetoothConnectorImpl(
             adapter.cancelDiscovery()
             try {
                 bluetoothSocket!!.connect()
+                Log.w("BT", "Socket success")
                 success = true
                 break
             } catch (e: IOException) {
@@ -52,6 +53,8 @@ class BluetoothConnectorImpl(
                     Thread.sleep(500)
                     (bluetoothSocket as FallbackBluetoothSocket).connect()
                     success = true
+                    Log.w("BT", "Falllback but success", e)
+
                     break
                 } catch (e1: FallbackException) {
                     Log.w("BT", "Could not initialize FallbackBluetoothSocket classes.", e)

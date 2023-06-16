@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetBlue
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetBlue
 
 @Composable
 fun CustomTextButton(

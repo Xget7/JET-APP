@@ -47,7 +47,7 @@ import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.core.utils.checkLocationSetting
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
+import xget.dev.jet.presentation.theme.JETTheme
 
 @Composable
 internal fun AddDeviceSecondStep(

@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.sp
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.presentation.utils.DevicesTypeObj
-import xget.dev.jet.ui.theme.JetDarkGray
-import xget.dev.jet.ui.theme.JetDarkGray2
+import xget.dev.jet.presentation.theme.JetDarkGray
+import xget.dev.jet.presentation.theme.JetDarkGray2
 
 @Composable
 fun SelectDeviceTypeItem(

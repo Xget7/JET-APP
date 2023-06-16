@@ -1,4 +1,4 @@
-package xget.dev.jet.di
+package xget.dev.jet.core.di
 
 import android.content.Context
 import dagger.Module
@@ -16,11 +16,12 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.gson.gson
-import io.ktor.serialization.kotlinx.json.DefaultJson
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import xget.dev.jet.core.utils.ConstantsShared.serverUri
+import xget.dev.jet.core.utils.ConstantsShared.MQTT_BROKER_ADDRESS
+import xget.dev.jet.data.remote.devices.mqtt.DevicesMqttServiceImpl
+import xget.dev.jet.data.remote.mqtt.MqttFlowClientImpl
+import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
+import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import javax.inject.Singleton
 
 
@@ -58,9 +59,14 @@ object RemoteModule {
 
     @Provides
     @Singleton
-    fun provideMQTTClient(@ApplicationContext c : Context) : MqttAndroidClient{
-      return  MqttAndroidClient(c, serverUri, "")
+    fun provideMqttClient(@ApplicationContext context: Context): MqttFlowClient {
+        return MqttFlowClientImpl(context)
     }
 
+    @Provides
+    @Singleton
+    fun provideMqttService(mqttFlowClient: MqttFlowClient ): DevicesMqttService {
+        return DevicesMqttServiceImpl(mqttFlowClient)
+    }
 
 }

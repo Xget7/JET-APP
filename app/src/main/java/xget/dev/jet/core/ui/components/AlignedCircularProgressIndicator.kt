@@ -7,7 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import xget.dev.jet.ui.theme.JetBlue
+import xget.dev.jet.presentation.theme.JetBlue
 
 @Composable
 fun AlignedCircularProgressIndicator() {

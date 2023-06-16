@@ -28,8 +28,8 @@ import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.presentation.splash.components.jetvectorsandicons.Vectors.welcomeScreenBottom
 import xget.dev.jet.presentation.splash.components.jetvectorsandicons.Vectors.welcomeScreenTopVector
 import xget.dev.jet.presentation.utils.Screens
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetBlue
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetBlue
 
 @Composable
 fun WelcomeScreen(

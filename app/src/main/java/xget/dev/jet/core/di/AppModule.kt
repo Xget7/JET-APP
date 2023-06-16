@@ -1,4 +1,4 @@
-package xget.dev.jet.di
+package xget.dev.jet.core.di
 
 
 import android.content.Context
@@ -13,10 +13,12 @@ import io.ktor.client.HttpClient
 import xget.dev.jet.core.utils.WifiUtil
 import xget.dev.jet.data.remote.auth.AuthService
 import xget.dev.jet.data.remote.auth.AuthServiceImpl
+import xget.dev.jet.data.remote.mqtt.MqttFlowClientImpl
 import xget.dev.jet.data.remote.users.UserService
 import xget.dev.jet.data.remote.users.UserServiceImpl
 import xget.dev.jet.data.repository.auth.AuthRepositoryImpl
 import xget.dev.jet.data.repository.bluetooth.BluetoothControllerImpl
+import xget.dev.jet.data.repository.devices.DevicesRepositoryImpl
 import xget.dev.jet.data.repository.user.UserRepositoryImpl
 import xget.dev.jet.data.repository.user.UserRepositoryImpl_Factory
 import xget.dev.jet.data.util.location.LocationHelper
@@ -24,18 +26,18 @@ import xget.dev.jet.data.util.network.ConnectivityImpl
 import xget.dev.jet.data.util.token.TokenImpl
 import xget.dev.jet.domain.repository.auth.AuthRepository
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
+import xget.dev.jet.domain.repository.devices.DevicesRepository
+import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import xget.dev.jet.domain.repository.network.ConnectivityInterface
 import xget.dev.jet.domain.repository.token.Token
 import xget.dev.jet.domain.repository.user.UserRepository
+import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import javax.inject.Singleton
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-
-
-
 
 
     @Provides
@@ -59,15 +61,15 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(client: HttpClient, token: Token,): AuthService {
+    fun provideAuthService(client: HttpClient, token: Token): AuthService {
         return AuthServiceImpl(token = token, client = client)
     }
 
 
     @Provides
     @Singleton
-    fun provideAuthRepository(authService: AuthService, token: Token,): AuthRepository {
-        return AuthRepositoryImpl(authService,token)
+    fun provideAuthRepository(authService: AuthService, token: Token): AuthRepository {
+        return AuthRepositoryImpl(authService, token)
     }
 
     @Provides
@@ -78,9 +80,19 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideDevicesRepository(
+        deviceSerice: DevicesRemoteService,
+        mqttFlowClient: MqttFlowClient
+    ): DevicesRepository {
+        return DevicesRepositoryImpl(deviceSerice, mqttFlowClient)
+    }
+
+    @Provides
+    @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences("local", MODE_PRIVATE)
     }
+
     @Provides
     @Singleton
     fun provideWifiUtils(@ApplicationContext context: Context): WifiUtil {

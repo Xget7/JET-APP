@@ -30,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
-import xget.dev.jet.ui.theme.JETTheme
-import xget.dev.jet.ui.theme.JetBlue
-import xget.dev.jet.ui.theme.JetDarkBlue
-import xget.dev.jet.ui.theme.JetDarkGray
-import xget.dev.jet.ui.theme.JetDarkGray2
-import xget.dev.jet.ui.theme.JetGray
+import xget.dev.jet.presentation.theme.JETTheme
+import xget.dev.jet.presentation.theme.JetBlue
+import xget.dev.jet.presentation.theme.JetDarkBlue
+import xget.dev.jet.presentation.theme.JetDarkGray
+import xget.dev.jet.presentation.theme.JetDarkGray2
+import xget.dev.jet.presentation.theme.JetGray
 
 @Composable
 fun TurnOnBluetooth(
