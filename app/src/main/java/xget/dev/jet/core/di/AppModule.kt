@@ -27,6 +27,7 @@ import xget.dev.jet.data.util.token.TokenImpl
 import xget.dev.jet.domain.repository.auth.AuthRepository
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
 import xget.dev.jet.domain.repository.devices.DevicesRepository
+import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import xget.dev.jet.domain.repository.network.ConnectivityInterface
 import xget.dev.jet.domain.repository.token.Token
@@ -81,10 +82,10 @@ class AppModule {
     @Provides
     @Singleton
     fun provideDevicesRepository(
-        deviceSerice: DevicesRemoteService,
-        mqttFlowClient: MqttFlowClient
+        devicesRemote: DevicesRemoteService,
+        devicesMqtt: DevicesMqttService
     ): DevicesRepository {
-        return DevicesRepositoryImpl(deviceSerice, mqttFlowClient)
+        return DevicesRepositoryImpl(devicesRemote, devicesMqtt)
     }
 
     @Provides

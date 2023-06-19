@@ -17,10 +17,15 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.gson.gson
 import kotlinx.serialization.ExperimentalSerializationApi
+import org.eclipse.paho.client.mqttv3.MqttClient
+import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.core.utils.ConstantsShared.MQTT_BROKER_ADDRESS
 import xget.dev.jet.data.remote.devices.mqtt.DevicesMqttServiceImpl
+import xget.dev.jet.data.remote.devices.rest.DevicesRemoteServiceImpl
 import xget.dev.jet.data.remote.mqtt.MqttFlowClientImpl
 import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
+import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
+import xget.dev.jet.domain.repository.token.Token
 import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import javax.inject.Singleton
 
@@ -59,14 +64,25 @@ object RemoteModule {
 
     @Provides
     @Singleton
-    fun provideMqttClient(@ApplicationContext context: Context): MqttFlowClient {
-        return MqttFlowClientImpl(context)
+    fun provideMqttAndroidClient(@ApplicationContext context: Context) : MqttAndroidClient{
+       return MqttAndroidClient(context.applicationContext, MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
+    }
+    @Provides
+    @Singleton
+    fun provideMqttClient(mqttClient: MqttAndroidClient): MqttFlowClient {
+        return MqttFlowClientImpl(mqttClient)
     }
 
     @Provides
     @Singleton
     fun provideMqttService(mqttFlowClient: MqttFlowClient ): DevicesMqttService {
         return DevicesMqttServiceImpl(mqttFlowClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceRemote(httpClient: HttpClient ,token: Token ): DevicesRemoteService {
+        return DevicesRemoteServiceImpl(httpClient,token)
     }
 
 }

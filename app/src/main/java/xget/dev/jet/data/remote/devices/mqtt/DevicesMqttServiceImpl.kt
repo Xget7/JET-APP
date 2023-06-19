@@ -29,9 +29,10 @@ class DevicesMqttServiceImpl @Inject constructor(
 
     init {
         mqttClient.startMqttService()
+
     }
 
-    suspend fun collectMqttErrors() {
+    override suspend fun collectMqttErrors() {
         mqttClient.errors.collect { mqttErorr ->
             _errors.update {
                 mqttErorr
@@ -40,7 +41,7 @@ class DevicesMqttServiceImpl @Inject constructor(
     }
 
 
-    private fun subscribeAndCollectDevices(userId: String, devicesId: List<String>): Flow<List<DeviceState>> = flow {
+    override fun subscribeAndCollectDevices(userId: String, devicesId: List<String>): Flow<List<DeviceState>> = flow {
         val subscriptionState = mutableStateOf(false)
         mqttClient.subscribe("$userId/#").onEach { subscriptionState.value = it }
         val deviceStates = mutableListOf<DeviceState>()

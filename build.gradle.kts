@@ -8,7 +8,7 @@ buildscript{
 
     }
     repositories {
-
+        jcenter()
         google()
         mavenCentral()
     }

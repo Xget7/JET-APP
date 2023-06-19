@@ -28,18 +28,13 @@ import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import java.util.Date
 import javax.inject.Inject
 
-class MqttFlowClientImpl  @Inject constructor(
-    context: Context,
+class MqttFlowClientImpl @Inject constructor(
+
+    private val mqttAndroidClient: MqttAndroidClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     MqttFlowClient {
 
-    private var mqttAndroidClient: MqttAndroidClient
-
-    init {
-        mqttAndroidClient =
-            MqttAndroidClient(context.applicationContext, MQTT_BROKER_ADDRESS, MQTT_CLIENT_ID)
-    }
 
     private val _connectionStatus = MutableStateFlow(false)
     override val connectionStatus: StateFlow<Boolean> get() = _connectionStatus.asStateFlow()

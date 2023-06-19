@@ -5,14 +5,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.domain.repository.devices.DevicesRepository
+import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import javax.inject.Inject
 
 class DevicesRepositoryImpl @Inject constructor(
     private val deviceService : DevicesRemoteService,
-    private val mqttClient : MqttFlowClient
+    private val mqttDevices : DevicesMqttService
 ) : DevicesRepository {
+
+
 
 
 

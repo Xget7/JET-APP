@@ -24,7 +24,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "xget.dev.jet.HiltTestRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -108,6 +109,7 @@ dependencies {
 
     //Dagger Hilt
     implementation(libs.hilt.android)
+    testImplementation("junit:junit:4.12")
     kapt(libs.hilt.android.compiler)
     kapt (libs.androidx.hilt.compiler)
     kapt (libs.dagger.android.processor)
@@ -136,13 +138,15 @@ dependencies {
 
 
 
-
-
+    // ...with Kotlin.
+    androidTestImplementation (libs.hilt.android.testing)
+    kaptAndroidTest (libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
