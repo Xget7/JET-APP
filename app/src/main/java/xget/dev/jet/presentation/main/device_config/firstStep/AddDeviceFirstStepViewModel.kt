@@ -2,6 +2,7 @@ package xget.dev.jet.presentation.main.device_config.firstStep
 
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xget.dev.jet.core.base.BaseViewModel
+import xget.dev.jet.core.utils.ConstantsShared.LAST_DEVICE_NAME
 import xget.dev.jet.core.utils.ConstantsShared.LAST_DEVICE_SELECTED
 import xget.dev.jet.data.util.location.LocationHelper
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
@@ -24,7 +26,7 @@ class AddDeviceFirstStepViewModel @Inject constructor(
     val locationHelper: LocationHelper,
 ) : BaseViewModel<AddDeviceFirstStepUiState>() {
     private val lastDeviceSelected = sharedPreferences.getString(LAST_DEVICE_SELECTED, "Alarma")
-
+    val deviceName = mutableStateOf("")
 
     override var state = combine(
         bluetoothController.isBluetoothOn,
@@ -57,7 +59,15 @@ class AddDeviceFirstStepViewModel @Inject constructor(
         }
 
     }
+    fun updateDeviceName(new : String){
+        deviceName.value = new
+        sharedPreferences.edit().putString(LAST_DEVICE_NAME, deviceName.value ).apply()
 
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 
     fun changeSelectedDevice(name: String) {
         _state.update {

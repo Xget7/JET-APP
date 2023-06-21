@@ -23,6 +23,7 @@ import xget.dev.jet.R
 import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.core.utils.ConstantsShared.IsFirstTime
 import xget.dev.jet.data.util.token.TokenImpl
+import xget.dev.jet.domain.repository.token.Token
 import xget.dev.jet.presentation.auth.forgotpassword.emailSent.EmailSentScreen
 import xget.dev.jet.presentation.auth.forgotpassword.sendEmailVerification.ForgotPasswordScreen
 import xget.dev.jet.presentation.auth.login.LoginScreen
@@ -30,9 +31,13 @@ import xget.dev.jet.presentation.auth.register.RegisterScreen
 import xget.dev.jet.presentation.splash.WelcomeScreen
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var token : Token
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +46,8 @@ class AuthActivity : ComponentActivity() {
         val sharedPreference: SharedPreferences = getSharedPreferences(
             ConstantsShared.AUTH_PREFERENCES, Context.MODE_PRIVATE
         )
-        val token = TokenImpl(this).getJwtLocal()
+        val token = token.getJwtLocal()
+
         setContent {
             JETTheme {
 
@@ -49,11 +55,9 @@ class AuthActivity : ComponentActivity() {
                     AuthNavigation(Screens.WelcomeScreen.route)
                     sharedPreference.edit().putBoolean(IsFirstTime, false).apply()
                 } else {
-//                    AuthNavigation(Screens.LoginScreen.route)
-//
                     if (token.isNullOrBlank()) {
                         Log.d("token?","")
-                    AuthNavigation(Screens.LoginScreen.route)
+                       AuthNavigation(Screens.LoginScreen.route)
                     }else {
                         Log.d("token?","yes? $token")
                         navigateToMain()

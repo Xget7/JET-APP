@@ -15,10 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.IMqttToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import xget.dev.jet.core.utils.ConstantsShared.MQTT_BROKER_ADDRESS
@@ -27,6 +30,7 @@ import xget.dev.jet.domain.model.mqtt.ReceivedMessage
 import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import java.util.Date
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 class MqttFlowClientImpl @Inject constructor(
 
@@ -44,8 +48,11 @@ class MqttFlowClientImpl @Inject constructor(
         get() = _errors.asSharedFlow()
 
     override fun startMqttService() {
+        val connOpts = MqttConnectOptions()
+        connOpts.userName = "xget"
+        connOpts.password = "eltupa2005".toCharArray()
         try {
-            val token = mqttAndroidClient.connect()
+            val token = mqttAndroidClient.connect(connOpts)
             token.actionCallback = object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken) {
                     Log.i("Connection", "success ")
@@ -75,14 +82,14 @@ class MqttFlowClientImpl @Inject constructor(
         }
     }
 
-    override fun subscribe(topic: String) = callbackFlow {
+    override suspend fun subscribe(topic: String): Boolean = suspendCancellableCoroutine { continuation ->
         val qos = 1 // Mention your qos value
         try {
             mqttAndroidClient.subscribe(topic, qos, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken) {
                     // Give your callback on Subscription here
-                    trySend(true)
-                    close()
+                    Log.d("MQTT", "subscribed to $topic, ${asyncActionToken.topics}")
+                    continuation.resume(true)
                 }
 
                 override fun onFailure(
@@ -90,27 +97,32 @@ class MqttFlowClientImpl @Inject constructor(
                     exception: Throwable
                 ) {
                     // Give your subscription failure callback here
-                    trySend(true)
+                    Log.d("MQTT", "failure to $topic, ${asyncActionToken.topics}")
                     _errors.update {
-                        "Error al escuchar a el dispositivo."
+                        "Error al escuchar al dispositivo."
                     }
-                    close()
+                    continuation.resume(false)
                 }
             })
 
         } catch (e: MqttException) {
             // Give your subscription failure callback here
-            trySend(false)
             _errors.update {
-                "Error de conexion al intentar escuchar a el dispositivo."
+                "Error de conexión al intentar escuchar al dispositivo."
             }
-            close()
+            Log.d("MQTT", "EXCEPTION ${e.localizedMessage}", e)
+            continuation.resume(false)
         }
 
-        awaitClose {
-
+        // Cancellation listener
+        continuation.invokeOnCancellation {
+            // Handle cancellation if needed
+            // ...
+            Log.d("MQTT", "EXCEPTION cancelattion")
         }
-    }.flowOn(dispatcher)
+    }
+
+
 
     override fun unSubscribe(topic: String): Flow<Boolean> = callbackFlow {
         try {
@@ -142,10 +154,15 @@ class MqttFlowClientImpl @Inject constructor(
     }.flowOn(dispatcher)
 
     override fun receiveMessages(): Flow<ReceivedMessage> = callbackFlow {
+        Log.d("receivedMessageSet","setted")
         val _receivedMEssage = MutableStateFlow(ReceivedMessage())
         val receivedMessage = _receivedMEssage.asStateFlow()
+
+
         mqttAndroidClient.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable) {
+                Log.d("receivedMessageState","connectionLost", cause)
+
                 _receivedMEssage.update { it.copy(connection = false) }
 
                 trySend(
@@ -155,6 +172,8 @@ class MqttFlowClientImpl @Inject constructor(
 
             override fun messageArrived(topic: String, message: MqttMessage) {
                 try {
+                    Log.d("receivedMessageState","MESSAGE $message")
+
                     val data = String(message.payload, charset("UTF-8"))
                     _receivedMEssage.update {
                         it.copy(
@@ -169,6 +188,8 @@ class MqttFlowClientImpl @Inject constructor(
                         receivedMessage.value
                     )
                 } catch (e: Exception) {
+                    Log.d("receivedMessageState","CATCH EXECTION MESSAGE $message",e)
+
                     _receivedMEssage.update {
                         it.copy(
                             connection = false,

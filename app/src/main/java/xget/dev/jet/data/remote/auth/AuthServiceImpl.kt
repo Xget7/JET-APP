@@ -49,8 +49,8 @@ class AuthServiceImpl @Inject constructor(
                 if (formatedResponse.id.isNullOrBlank()){
                     ApiResponse.Error("Error con la autenticacion del usuario.")
                 } else {
-                    Log.d("settedJwt", formatedResponse.token)
-                    token.setJwtLocal(formatedResponse.token ?: "" , formatedResponse.id)
+                    Log.d("settedJwt and userId", formatedResponse.toString())
+                    token.setJwtLocal(formatedResponse.token ?: "" , formatedResponse.id ?: "null")
                     ApiResponse.Success(formatedResponse)
                 }
             } else {

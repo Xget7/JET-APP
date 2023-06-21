@@ -17,7 +17,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.gson.gson
 import kotlinx.serialization.ExperimentalSerializationApi
-import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.core.utils.ConstantsShared.MQTT_BROKER_ADDRESS
 import xget.dev.jet.data.remote.devices.mqtt.DevicesMqttServiceImpl
@@ -65,7 +65,10 @@ object RemoteModule {
     @Provides
     @Singleton
     fun provideMqttAndroidClient(@ApplicationContext context: Context) : MqttAndroidClient{
-       return MqttAndroidClient(context.applicationContext, MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
+        val client = MqttAndroidClient(context.applicationContext, MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
+
+
+       return client
     }
     @Provides
     @Singleton

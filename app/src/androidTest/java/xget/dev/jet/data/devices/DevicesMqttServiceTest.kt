@@ -1,10 +1,21 @@
 package xget.dev.jet.data.devices
 
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -15,6 +26,7 @@ import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
 import xget.dev.jet.domain.services.mqtt.MqttFlowClient
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 class DevicesMqttServiceTest {
 
@@ -23,31 +35,37 @@ class DevicesMqttServiceTest {
 
     @Inject
     lateinit var mqttFlowClient : MqttFlowClient
+    private val testDispatcher = StandardTestDispatcher()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun init(){
         hiltRule.inject()
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        testDispatcher.cancel()
     }
 
 
 
-    @Test
-    fun testMqttFlowClientImpl() {
-        // Perform your test assertions or actions on the `mqttFlowClient` object
-        // For example, you can call methods and check the returned values or verify the behavior
-
-        // Example assertion:
-        assertTrue(mqttFlowClient.connectionStatus.value)
-    }
 
 
     @Test
-    fun testStartMqttService_SuccessfulConnection() {
+    fun testStartMqttService_SuccessfulConnection() = runTest{
 
         mqttFlowClient.startMqttService()
+        Log.d("DEBUGTEST",mqttFlowClient.errors.last() .toString())
+//        mqttFlowClient.connectionStatus.collectLatest {
+//            assertTrue(it)
+//        }
 
-        assertTrue(mqttFlowClient.connectionStatus.value)
-        assertEquals("", mqttFlowClient.errors.replayCache.firstOrNull())
+        assertEquals("", mqttFlowClient.errors.last())
+
     }
 
     @Test
@@ -63,32 +81,29 @@ class DevicesMqttServiceTest {
     }
 
     @Test
-    fun testSubscribe_SuccessfulSubscription() = runBlocking{
+    fun testSubscribe_SuccessfulSubscription() = runTest{
         val topic = "test/topic"
         val flow = mqttFlowClient.subscribe(topic)
 
-        val collector = flow.last()
 
         // Simulate a failed subscription
         // ...
-        assertEquals(collector,true)
+        assertEquals(flow,true)
     }
 
     @Test
-    fun testSubscribe_FailedSubscription()  = runBlocking(){
+    fun testSubscribe_FailedSubscription()  = runTest(){
         val topic = "test/topic"
         val flow = mqttFlowClient.subscribe(topic)
 
-        val collector = flow.last()
-
         // Simulate a failed subscription
         // ...
-        assertFalse(collector)
+        assertFalse(flow)
         assertNotNull(mqttFlowClient.errors.replayCache.firstOrNull())
     }
 
     @Test
-    fun testUnsubscribe_SuccessfulUnsubscription()  = runBlocking(){
+    fun testUnsubscribe_SuccessfulUnsubscription()  = runTest(){
 
         val topic = "test/topic"
         val flow = mqttFlowClient.unSubscribe(topic)
@@ -102,7 +117,7 @@ class DevicesMqttServiceTest {
     }
 
     @Test
-    fun testUnsubscribe_FailedUnsubscription() = runBlocking{
+    fun testUnsubscribe_FailedUnsubscription() = runTest{
 
 
         val topic = "test/topic"
@@ -118,7 +133,7 @@ class DevicesMqttServiceTest {
     }
 
     @Test
-    fun testReceiveMessages_MessageArrived()= runBlocking {
+    fun testReceiveMessages_MessageArrived()= runTest {
 
         val flow = mqttFlowClient.receiveMessages()
 

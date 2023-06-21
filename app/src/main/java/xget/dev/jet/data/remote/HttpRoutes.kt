@@ -13,8 +13,8 @@ object HttpRoutes {
     const val GET_USER = "$BASE_URL/user"
 
     //Devices Endpoints
-    const val GET_DEVICE = "$BASE_URL/device"
+    const val GET_DEVICE = "$BASE_URL/device/"
     const val GET_DEVICES_FROM_USER = "$BASE_URL/get_user"
-    const val CREATE_DEVICE = "$BASE_URL/device"
+    const val CREATE_DEVICE = "$BASE_URL/device/"
 
 }

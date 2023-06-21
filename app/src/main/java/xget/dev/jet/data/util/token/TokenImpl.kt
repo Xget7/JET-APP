@@ -6,11 +6,13 @@ import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.domain.repository.token.Token
 import java.util.Calendar
 import java.util.Date
+import javax.inject.Inject
 
-class TokenImpl(context: Context) : Token {
+class TokenImpl @Inject constructor(
+    val sharedPreferences: SharedPreferences
+) : Token {
 
-    private val sharedPreference: SharedPreferences =  context.getSharedPreferences(ConstantsShared.AUTH_PREFERENCES, Context.MODE_PRIVATE)
-    private val editor: SharedPreferences.Editor = sharedPreference.edit()
+    private val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
     override fun setJwtLocal(token : String , userId  : String) {
         editor.putString(ConstantsShared.jwtKey,token).commit()
@@ -18,11 +20,11 @@ class TokenImpl(context: Context) : Token {
     }
 
     override fun getJwtLocal() : String? {
-        return sharedPreference.getString(ConstantsShared.jwtKey, "")
+        return sharedPreferences.getString(ConstantsShared.jwtKey, "")
     }
 
     override fun getUserIdLocal() : String? {
-        return sharedPreference.getString(ConstantsShared.USER_ID, "")
+        return sharedPreferences.getString(ConstantsShared.USER_ID, "")
     }
 
 }

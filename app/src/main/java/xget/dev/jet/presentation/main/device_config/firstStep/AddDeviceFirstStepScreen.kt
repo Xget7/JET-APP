@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
@@ -46,6 +48,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import xget.dev.jet.MainActivity
 import xget.dev.jet.core.ui.components.CustomBackgroundButton
+import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.core.utils.checkLocationSetting
@@ -65,13 +68,15 @@ internal fun AddDeviceFirstStep(
 
 
     AddDeviceFirstStep(
-        viewModel.state.collectAsState(),
+        uiState = viewModel.state.collectAsState(),
         viewModel::changeSelectedDevice,
         onNext = {
             navController.navigate(Screens.PairDeviceSecondStep.route)
         },
         onBack = navController::navigateUp,
-        tryEnableLocation = viewModel::tryEnableLocation
+        tryEnableLocation = viewModel::tryEnableLocation,
+        deviceName = viewModel.deviceName.value,
+        updateDeviceName = viewModel::updateDeviceName
     )
 
 
@@ -84,7 +89,9 @@ internal fun AddDeviceFirstStep(
     selectedItem: (String) -> Unit,
     onNext: () -> Unit,
     onBack: () -> Unit,
-    tryEnableLocation: () -> Unit
+    tryEnableLocation: () -> Unit,
+    deviceName: String,
+    updateDeviceName: (String) -> Unit
 ) {
 
     //permissions and launchers
@@ -115,15 +122,16 @@ internal fun AddDeviceFirstStep(
         }
     }
 
-    val launchGps = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // Your logic
+    val launchGps =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // Your logic
 
+            }
         }
-    }
 
-    LaunchedEffect(uiState.value.intentSenderForResult ){
-        if (uiState.value.intentSenderForResult != null){
+    LaunchedEffect(uiState.value.intentSenderForResult) {
+        if (uiState.value.intentSenderForResult != null) {
             launchGps.launch(uiState.value.intentSenderForResult)
         }
     }
@@ -211,7 +219,8 @@ internal fun AddDeviceFirstStep(
         Column(
             modifier = Modifier
                 .padding(paddingVals)
-                .padding(8.dp),
+                .padding(8.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -237,7 +246,7 @@ internal fun AddDeviceFirstStep(
 
 
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             TextWithShadow(
                 text = "Selecciona tu dispositivo:",
@@ -249,7 +258,9 @@ internal fun AddDeviceFirstStep(
             )
             Spacer(modifier = Modifier.height(20.dp))
 
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.height(270.dp)
+            ) {
                 items(listOfDevices) { name ->
                     SelectDeviceTypeItem(
                         isSelected = uiState.value.selectedItem == name,
@@ -259,6 +270,23 @@ internal fun AddDeviceFirstStep(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
+
+            TextWithShadow(
+                text = "Asignale un nombre",
+                modifier = Modifier.fillMaxWidth(),
+                fontWeight = FontWeight.Bold,
+                color = JetDarkGray2,
+                fontSize = 23.sp,
+                shadow = false
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+
+            JetTextField(
+                text = deviceName,
+                textLabel = "Nombre de tu dispositivo",
+                onValue = updateDeviceName
+            )
 
 
         }
@@ -281,7 +309,7 @@ fun FirstStepPrev() {
                 bluetoothOn = false
             )
         )
-        AddDeviceFirstStep(uiState = uiState, {}, {}, {}, {})
+        AddDeviceFirstStep(uiState = uiState, {}, {}, {}, {},"",{})
     }
 }
 

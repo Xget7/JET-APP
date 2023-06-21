@@ -139,7 +139,7 @@ dependencies {
 
 
     // ...with Kotlin.
-    androidTestImplementation (libs.hilt.android.testing)
+    androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest (libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

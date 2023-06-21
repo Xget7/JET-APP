@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
 import xget.dev.jet.core.base.BaseViewModel
 import xget.dev.jet.core.utils.ConstantsShared.LAST_DEVICE_SELECTED
-import xget.dev.jet.core.utils.ConstantsShared.LAST_WIFI_SSID
 import xget.dev.jet.core.utils.ConstantsShared.WIFI_CREDENTIALS
 import xget.dev.jet.core.utils.WifiUtil
 import javax.inject.Inject

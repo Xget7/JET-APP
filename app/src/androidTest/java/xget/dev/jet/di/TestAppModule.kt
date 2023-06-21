@@ -20,15 +20,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object TestAppModule {
 
-    @Provides
-    @Singleton
-    fun provideMqttAndroidClient(@ApplicationContext context: Context) : MqttAndroidClient {
-        return MqttAndroidClient(context, ConstantsShared.MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
-    }
-    @Provides
-    fun provideMqttFlow(mqttAndroidClient: MqttAndroidClient) : MqttFlowClient {
-        return MqttFlowClientImpl(mqttAndroidClient)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideMqttAndroidClient(@ApplicationContext context: Context) : MqttAndroidClient {
+//        return MqttAndroidClient(context, ConstantsShared.MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
+//    }
+//    @Provides
+//    fun provideMqttFlow(mqttAndroidClient: MqttAndroidClient) : MqttFlowClient {
+//        return MqttFlowClientImpl(mqttAndroidClient)
+//    }
 
     @Provides
     fun provideTestDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined

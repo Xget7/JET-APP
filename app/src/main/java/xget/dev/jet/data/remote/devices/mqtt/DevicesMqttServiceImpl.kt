@@ -42,10 +42,9 @@ class DevicesMqttServiceImpl @Inject constructor(
 
 
     override fun subscribeAndCollectDevices(userId: String, devicesId: List<String>): Flow<List<DeviceState>> = flow {
-        val subscriptionState = mutableStateOf(false)
-        mqttClient.subscribe("$userId/#").onEach { subscriptionState.value = it }
+        val subscriptionState =   mqttClient.subscribe("$userId/#")
         val deviceStates = mutableListOf<DeviceState>()
-        if (subscriptionState.value) {
+        if (subscriptionState) {
             mqttClient.receiveMessages().onEach { msg ->
                 for ((index,deviceId) in devicesId.withIndex()) {
                     // Process the received message based on device ID

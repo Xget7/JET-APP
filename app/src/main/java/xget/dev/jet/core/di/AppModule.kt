@@ -43,8 +43,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideToken(@ApplicationContext appContext: Context): Token {
-        return TokenImpl(context = appContext)
+    fun provideToken(sharedPreferences: SharedPreferences): Token {
+        return TokenImpl(sharedPreferences)
     }
 
     @Provides

@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.compose.runtime.asIntState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -22,8 +25,13 @@ import xget.dev.jet.core.base.BaseViewModel
 import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.core.utils.ConstantsShared.USER_ID
 import xget.dev.jet.core.utils.ConstantsShared.WIFI_CREDENTIALS
+import xget.dev.jet.core.utils.secondsToMinutes
+import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
+import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.domain.repository.bluetooth.BluetoothConnectionResult
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
+import xget.dev.jet.domain.repository.devices.DevicesRepository
+import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,29 +39,49 @@ import javax.inject.Inject
 class DeviceSearchViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val bluetoothController: BluetoothController,
+    private val deviceService: DevicesRemoteService,
 ) : BaseViewModel<DeviceSearchUiState>() {
+
+    private var deviceConnectionJob: Job? = null
+    var counter: CountDownTimer? = null
+
+    val userId = sharedPreferences.getString(USER_ID, "")
+
+    var content = MutableStateFlow(120000L)
+    val currentDeviceId = mutableStateOf("")
+    val creatingDevice = mutableStateOf(false)
+    private fun countDownDeviceSearch() {
+        viewModelScope.launch {
+            delay(1000L)
+            counter = object : CountDownTimer(120000, 1000L) {
+                override fun onTick(millisUntilFinished: Long) {
+                    content.value = content.value - 1000
+
+                }
+
+                override fun onFinish() {
+                    stopScan()
+                }
+            }.start()
+        }
+    }
 
 
     //combine states
     override var state = combine(
         bluetoothController.pairedDevice,
-        bluetoothController.scannedDevices,
         bluetoothController.isBluetoothOn,
-        _state
-    ) { pairedDevice, scannedDevices, bluetoothState, uiState ->
+        _state,
+        content,
+    ) { pairedDevice, bluetoothState, uiState, time ->
         uiState.copy(
             pairedDevice = pairedDevice,
-            scannedDevices = scannedDevices ?: emptyList(),
-            bluetoothOn = bluetoothState
+            bluetoothOn = bluetoothState,
+            timeUntilStop = secondsToMinutes(time)
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _state.value)
 
     //Coroutine
-    private var deviceConnectionJob: Job? = null
-    var content = mutableIntStateOf(120000)
-    var counter: CountDownTimer? = null
-
-    val userId = sharedPreferences.getString(USER_ID, "")
 
     init {
         countDownDeviceSearch()
@@ -66,21 +94,6 @@ class DeviceSearchViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
         connectToDevice()
-    }
-
-    private fun countDownDeviceSearch() {
-        viewModelScope.launch {
-            delay(1000L)
-            counter = object : CountDownTimer(120000, 1000L) {
-                override fun onTick(millisUntilFinished: Long) {
-                    content.intValue = content.intValue - 1000
-                }
-
-                override fun onFinish() {
-                    stopScan()
-                }
-            }.start()
-        }
     }
 
 
@@ -117,40 +130,80 @@ class DeviceSearchViewModel @Inject constructor(
     }
 
     private fun startScan() {
+        _state.update {
+            it.copy(
+                cantFindDevice = false
+            )
+        }
         bluetoothController.startDiscovery()
 
     }
 
     private fun stopScan() {
         bluetoothController.stopDiscovery()
+        if (!_state.value.pairingDevice) {
+            _state.update {
+                it.copy(cantFindDevice = true)
+            }
+        }
     }
 
 
-    suspend fun sendMessages() {
-        Log.d("sendMessageFun", " executed")
-//        val wifiCredentials = sharedPreferences.getStringSet(WIFI_CREDENTIALS, setOf())?.toList()
-//
-//        val messages = listOf(
-//            "SSID:${wifiCredentials?.get(0)}\n",
-//            "PASSWORD:${wifiCredentials?.get(1)}\n",
-//            "USER_ID${userId}\n"
-//        )
+    private suspend fun sendMessages() {
 
-        val messages2 = listOf(
-            "SSID:lauchita\n",
-            "PASSWORD:lauchita\n",
-            "USER_ID:lauchfd8f7d89fita\n"
+        val wifiCredentials = sharedPreferences.getStringSet(WIFI_CREDENTIALS, setOf())?.toList()
+        val messages = listOf(
+            "SSID:${wifiCredentials?.get(0)}\n",
+            "PASSWORD:${wifiCredentials?.get(1)}\n",
+            "USER_ID${userId}\n"
         )
+        for (message in messages) {
+            Log.d("sendMessageFun", " $message")
+            bluetoothController.trySendMessage(message)
+            delay(100)
+        }
+        _state.update {
+            it.copy(searchingDevice = false, pairingDevice = false, syncingWithCloud = true)
+        }
+    }
 
-            for (message in messages2) {
-                Log.d("sendMessageFun", " $message")
+    private fun createDevice() {
 
-                bluetoothController.trySendMessage(message)
-                delay(100)
+        val deviceType = sharedPreferences.getString(ConstantsShared.LAST_DEVICE_SELECTED, "GATE")
+        val deviceName = sharedPreferences.getString(ConstantsShared.LAST_DEVICE_NAME, "Dispositivo")
+        currentDeviceId.value =  currentDeviceId.value.replace(":", "")
+        Log.d("CreatedDeviceId", currentDeviceId.value)
+        val newDevice = DeviceDto(
+            currentDeviceId.value,
+            deviceName ?: "Dispositivo",
+            userId.orEmpty(),
+            deviceType ?: "GATE",
+            emptyList()
+        )
+        Log.d("createDevice", newDevice.toString())
+        creatingDevice.value = true
+        deviceService.createDevice(newDevice).onEach { response ->
+            when (response) {
+                is ApiResponse.Error -> {
+                    Log.d("ApiResponseDeviceError", response.message ?: "")
+                    _state.update {
+                        it.copy(errorMessage = response.message)
+                    }
+                }
+
+                is ApiResponse.Loading -> {
+                    Log.d("apiResponse", "LOADING????")
+
+                }
+
+                is ApiResponse.Success -> {
+                    Log.d("apiResponse", "successo")
+                    _state.update {
+                        it.copy(finished = true)
+                    }
+                }
             }
-            _state.update {
-                it.copy(searchingDevice = false, pairingDevice = false, syncingWithCloud = true)
-            }
+        }.launchIn(viewModelScope)
 
     }
 
@@ -167,6 +220,8 @@ class DeviceSearchViewModel @Inject constructor(
                             errorMessage = null
                         )
                     }
+                    counter?.cancel()
+                    currentDeviceId.value = bluetoothController.pairedDevice.value?.address.toString()
                     sendMessages()
                 }
 
@@ -182,8 +237,11 @@ class DeviceSearchViewModel @Inject constructor(
                 }
 
                 is BluetoothConnectionResult.TransferSucceeded -> {
-                    //received messages?
                     Log.d("Received Bluetooth MEssage", result.message)
+                    delay(2000)
+                    if (!creatingDevice.value) {
+                        createDevice()
+                    }
 
                 }
             }
@@ -212,6 +270,35 @@ class DeviceSearchViewModel @Inject constructor(
 
     override fun defaultState(): DeviceSearchUiState {
         return DeviceSearchUiState()
+    }
+
+    fun retry() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    errorMessage = null,
+                    searchingDevice = false,
+                    pairedDevice = null,
+                    pairingDevice = false
+                )
+            }
+            disconnectFromDevice()
+            bluetoothController.release()
+
+            delay(2000)
+
+            countDownDeviceSearch()
+            startScan()
+            bluetoothController.errors.onEach { error ->
+                _state.update {
+                    it.copy(
+                        errorMessage = error
+                    )
+                }
+            }.launchIn(viewModelScope)
+            connectToDevice()
+        }
+
     }
 
 }
