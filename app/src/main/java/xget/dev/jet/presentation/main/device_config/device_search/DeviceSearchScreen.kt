@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -132,34 +133,25 @@ internal fun DeviceSearchScreen(
     ) { paddingValues ->
         paddingValues
 
-
-        LaunchedEffect(uiState.value.errorMessage) {
-            if (!uiState.value.errorMessage.isNullOrEmpty()) {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    uiState.value.errorMessage!!,
-                    duration = SnackbarDuration.Long
-                )
+        LaunchedEffect(uiState.value) {
+            if (uiState.value.syncingWithCloud && !uiState.value.pairingDevice && uiState.value.finished == false) {
+                Log.d("animatetoScrollPage", "2")
+                pageState.animateScrollToPage(2)
             }
 
-        }
-        LaunchedEffect(uiState.value.syncingWithCloud) {
-            if (uiState.value.syncingWithCloud && !uiState.value.pairingDevice) {
-                pageState.animateScrollToPage((2) % 3)
-            }
-        }
-        LaunchedEffect(uiState.value.finished) {
             if (uiState.value.finished == true) {
                 Log.d("animatetoScrollPage", "3")
-                pageState.animateScrollToPage((3) % 3)
+                pageState.animateScrollToPage(3)
             }
         }
+
 
 
         if (uiState.value.cantFindDevice) {
             NotFoundDevice(retry)
         } else if (!uiState.value.errorMessage.isNullOrEmpty()) {
             ErrorScreen(goToHome)
-        }else{
+        } else {
             HorizontalPager(
                 contentPadding = PaddingValues(12.dp),
                 itemSpacing = 26.dp,
@@ -167,6 +159,7 @@ internal fun DeviceSearchScreen(
                 count = 4,
                 userScrollEnabled = false,
             ) { page ->
+                Log.d("pagerScopecurrent", page.toString())
                 when (page) {
                     0 -> {
                         SearchingDevicesStep(uiState, pageState)
@@ -182,13 +175,11 @@ internal fun DeviceSearchScreen(
                         FinishedPairAndConnectionScreen(goToHome)
                     }
                 }
-
-
             }
         }
 
         if (!uiState.value.cantFindDevice) {
-            if (uiState.value.errorMessage.isNullOrEmpty()){
+            if (uiState.value.errorMessage.isNullOrEmpty() && uiState.value.finished == false) {
                 Box(modifier = Modifier.fillMaxHeight()) {
                     Row(
                         Modifier
@@ -198,12 +189,19 @@ internal fun DeviceSearchScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SearchDeviceStepper(pageState.currentPage + 1)
+                        SearchDeviceStepper(pageState.currentPage + 1 )
                     }
                 }
             }
+        }
 
-
+        LaunchedEffect(uiState.value.errorMessage) {
+            if (!uiState.value.errorMessage.isNullOrEmpty()) {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    uiState.value.errorMessage!!,
+                    duration = SnackbarDuration.Long
+                )
+            }
         }
 
     }

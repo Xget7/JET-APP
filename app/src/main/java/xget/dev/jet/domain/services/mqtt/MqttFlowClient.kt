@@ -14,9 +14,10 @@ interface MqttFlowClient {
     fun startMqttService()
 
     suspend fun subscribe(topic: String): Boolean
-    fun unSubscribe(topic: String): Flow<Boolean>
+    suspend fun unSubscribe(topic: String): Boolean
     fun receiveMessages(): Flow<ReceivedMessage>
 
-    fun publish(topic: String, data: String)
+    suspend fun publish(topic: String, data: String): Boolean
     fun disconnectFromClient()
+    fun release()
 }

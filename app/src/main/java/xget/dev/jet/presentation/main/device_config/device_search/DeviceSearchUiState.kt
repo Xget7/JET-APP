@@ -9,7 +9,7 @@ data class DeviceSearchUiState(
     val cantFindDevice : Boolean = false,
     val pairedDevice : BluetoothDevice? = null,
     val errorMessage : String? = null,
-    val finished : Boolean? =true,
+    val finished : Boolean? =false,
     val syncingWithCloud : Boolean = false,
     val timeUntilStop : String = ""
 

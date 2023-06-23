@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -33,6 +37,8 @@ import androidx.navigation.NavController
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
+import xget.dev.jet.domain.model.device.SmartDevice
+import xget.dev.jet.presentation.main.home.components.SmartDeviceItem
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
 import xget.dev.jet.presentation.theme.JetScreensBackgroundColor
@@ -42,16 +48,20 @@ internal fun HomeScreen(
     navController: NavController,
     vm: HomeViewModel = hiltViewModel()
 ) {
-    HomeScreen(uiState = vm.state.collectAsState()) {
-        navController.navigate(Screens.PairDeviceFirstStep.route)
-    }
+    HomeScreen(
+        uiState = vm.state.collectAsState(),
+        onSwitchDevice = vm::sendMessage,
+        onAddDevice = {
+            navController.navigate(Screens.PairDeviceFirstStep.route)
+        })
 }
 
 
 @Composable
 internal fun HomeScreen(
     uiState: State<HomeUiState>,
-    onAddDevice: () -> Unit
+    onAddDevice: () -> Unit,
+    onSwitchDevice: (SmartDevice) -> Unit
 ) {
 
     val scaffoldState = rememberScaffoldState()
@@ -63,7 +73,7 @@ internal fun HomeScreen(
             .padding(top = 5.dp),
         scaffoldState = scaffoldState,
         topBar = {
-            TopHomeBar(addDevices = true,onAddDevice)
+            TopHomeBar(addDevices = true, onAddDevice)
         },
         backgroundColor = JetScreensBackgroundColor
     ) {
@@ -119,8 +129,16 @@ internal fun HomeScreen(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(30.dp))
                 //Main Content
-
+                LazyColumn(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.value.devices) { device ->
+                        SmartDeviceItem(smartDevice = device) { onSwitchDevice(device) }
+                    }
+                }
 
             }
 
@@ -137,6 +155,6 @@ internal fun HomeScreen(
 @Composable
 fun HomeScreenPrev() {
     JETTheme {
-        HomeScreen(uiState = mutableStateOf(HomeUiState())){}
+        HomeScreen(uiState = mutableStateOf(HomeUiState()), {}) {}
     }
 }

@@ -2,17 +2,24 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="JetSwitchButtonPreview">
+      <entry key="APp">
         <State />
       </entry>
-      <entry key="app">
-        <State />
-      </entry>
-      <entry key="createDevice()">
-        <State />
-      </entry>
-      <entry key="testStartMqttService_SuccessfulConnection()">
-        <State />
+      <entry key="FirstStepPrev">
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="ec77bb25" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-06-21T18:11:30.783755Z" />
+        </State>
       </entry>
     </value>
   </component>

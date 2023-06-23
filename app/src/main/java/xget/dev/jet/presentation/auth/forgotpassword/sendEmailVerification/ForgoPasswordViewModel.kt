@@ -33,7 +33,7 @@ class ForgoPasswordViewModel @Inject constructor(
             ){
                 is ApiResponse.Error -> {
                     _state.update {
-                        _state.value.copy(isError = result.message, isLoading = false)
+                        _state.value.copy(isError = result.errorMsg, isLoading = false)
                     }
                     delay(2000)
                     _state.update {

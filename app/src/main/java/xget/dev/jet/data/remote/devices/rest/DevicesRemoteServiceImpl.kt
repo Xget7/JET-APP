@@ -1,6 +1,7 @@
 package xget.dev.jet.data.remote.devices.rest
 
 import android.util.Log
+import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -18,7 +19,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -68,25 +68,17 @@ class DevicesRemoteServiceImpl @Inject constructor(
 
     override  fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
         try {
-            Log.d("REQUEST", "device : $request, token : ${token.getJwtLocal()}")
-
-
             val response = client.post(CREATE_DEVICE) {
                 contentType(ContentType.Application.Json) // Set the content type to JSON
                 setBody(request)
-//                header("Authorization", "Bearer ${token.getJwtLocal()}")
             }
 
-            if (response.status != HttpStatusCode.OK){
+
+            if (response.status != HttpStatusCode.Created){
                 trySend(handleApiCodeStatusException(response.status))
                 close()
-                Log.d("NOT successCreated?/", "${response.status}")
-
             }else{
-                Log.d("successCreated?/", "${response.toString()}")
                 trySend(ApiResponse.Success(true))
-                Log.d("successCreated?/", "${response.toString()}")
-
                 close()
             }
         } catch (e: Exception) {

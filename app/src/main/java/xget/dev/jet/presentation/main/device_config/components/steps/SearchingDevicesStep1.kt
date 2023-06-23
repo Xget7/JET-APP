@@ -97,7 +97,9 @@ fun SearchingDevicesStep(
             if (uiState.value.pairingDevice) {
                 LottieAnimation(composition = compositionResult.value, progressResult)
                 LaunchedEffect(progressResult) {
-                    pageState.animateScrollToPage(1)
+                    if (progressResult.toFloat() >= 0.9f){
+                        pageState.animateScrollToPage(pageState.currentPage + 1)
+                    }
                 }
             } else {
                 LottieAnimation(composition = searching, progress = progress)

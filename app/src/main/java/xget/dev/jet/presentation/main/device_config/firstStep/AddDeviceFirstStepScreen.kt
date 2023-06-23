@@ -280,7 +280,7 @@ internal fun AddDeviceFirstStep(
                 fontSize = 23.sp,
                 shadow = false
             )
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             JetTextField(
                 text = deviceName,

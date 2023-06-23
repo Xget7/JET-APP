@@ -39,9 +39,9 @@ class LoginViewModel @Inject constructor(
             val result = authRepository.login(request)
             when (result) {
                 is ApiResponse.Error -> {
-                    Log.d("apiResponseViewmodel", "error ${result.message}")
+                    Log.d("apiResponseViewmodel", "error ${result.errorMsg}")
                     _state.update {
-                        _state.value.copy(isError = result.message, isLoading = false)
+                        _state.value.copy(isError = result.errorMsg, isLoading = false)
                     }
                     delay(3000)
                     _state.update {

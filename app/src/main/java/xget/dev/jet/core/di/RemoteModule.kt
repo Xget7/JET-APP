@@ -72,14 +72,14 @@ object RemoteModule {
     }
     @Provides
     @Singleton
-    fun provideMqttClient(mqttClient: MqttAndroidClient): MqttFlowClient {
-        return MqttFlowClientImpl(mqttClient)
+    fun provideMqttClient(@ApplicationContext context: Context, mqttClient: MqttAndroidClient): MqttFlowClient {
+        return MqttFlowClientImpl(context,mqttClient)
     }
 
     @Provides
     @Singleton
-    fun provideMqttService(mqttFlowClient: MqttFlowClient ): DevicesMqttService {
-        return DevicesMqttServiceImpl(mqttFlowClient)
+    fun provideMqttService(mqttFlowClient: MqttFlowClient, token: Token ): DevicesMqttService {
+        return DevicesMqttServiceImpl(mqttFlowClient, token)
     }
 
     @Provides

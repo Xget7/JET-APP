@@ -6,9 +6,9 @@ import io.ktor.client.plugins.RedirectResponseException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 
-sealed class ApiResponse<T>(val data: T? = null, val message: String? = null, val loading: Long? = null) {
+sealed class ApiResponse<T>(val data: T? = null, val errorMsg: String? = null, val loading: Long? = null) {
     class Success<T>(data: T) : ApiResponse<T>(data)
-    class Error<T>(message: String, data: T? = null) : ApiResponse<T>(data, message)
+    class Error<T>(errorMsg: String, data: T? = null) : ApiResponse<T>(data, errorMsg)
     class Loading<T>(loading: Long? = null) : ApiResponse<T>(null, null, loading)
 }
 

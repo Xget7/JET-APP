@@ -69,7 +69,7 @@ fun SearchDeviceStepper(
 @Preview(showBackground = true)
 @Composable
 fun SEarchDeviceSteps() {
-    SearchDeviceStepper(2)
+    SearchDeviceStepper(4)
 }
 
 @Composable

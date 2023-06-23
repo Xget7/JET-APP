@@ -60,7 +60,7 @@ class RegisterViewModel @Inject constructor(
             when (val result = userRepository.registerUser(currentUser.toUserRequest())) {
                 is ApiResponse.Error -> {
                     _state.update {
-                        _state.value.copy(isError = result.message, isLoading = false)
+                        _state.value.copy(isError = result.errorMsg, isLoading = false)
                     }
                 }
 

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.compose.runtime.asIntState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +28,6 @@ import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.domain.repository.bluetooth.BluetoothConnectionResult
 import xget.dev.jet.domain.repository.bluetooth.BluetoothController
-import xget.dev.jet.domain.repository.devices.DevicesRepository
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import javax.inject.Inject
 
@@ -84,16 +81,17 @@ class DeviceSearchViewModel @Inject constructor(
     //Coroutine
 
     init {
-        countDownDeviceSearch()
-        startScan()
-        bluetoothController.errors.onEach { error ->
-            _state.update {
-                it.copy(
-                    errorMessage = error
-                )
-            }
-        }.launchIn(viewModelScope)
-        connectToDevice()
+            countDownDeviceSearch()
+            startScan()
+            bluetoothController.errors.onEach { error ->
+                _state.update {
+                    it.copy(
+                        errorMessage = error
+                    )
+                }
+            }.launchIn(viewModelScope)
+            connectToDevice()
+
     }
 
 
@@ -105,10 +103,12 @@ class DeviceSearchViewModel @Inject constructor(
                     "DeviceSearchViewmodel",
                     "device to pair ${bluetoothController.pairedDevice.value?.name}"
                 )
+                delay(2000)
                 _state.update { it.copy(pairingDevice = true, searchingDevice = false) }
                 deviceConnectionJob = bluetoothController
                     .connectToDevice()
                     .listen()
+                delay(1000)
                 Log.d("DeviceSearchViewmodel", "Listen atacched ")
 
                 return@onEach
@@ -168,26 +168,23 @@ class DeviceSearchViewModel @Inject constructor(
     }
 
     private fun createDevice() {
-
+        creatingDevice.value = true
         val deviceType = sharedPreferences.getString(ConstantsShared.LAST_DEVICE_SELECTED, "GATE")
         val deviceName = sharedPreferences.getString(ConstantsShared.LAST_DEVICE_NAME, "Dispositivo")
-        currentDeviceId.value =  currentDeviceId.value.replace(":", "")
-        Log.d("CreatedDeviceId", currentDeviceId.value)
+        currentDeviceId.value =  currentDeviceId.value.replace(":", "2")
         val newDevice = DeviceDto(
-            currentDeviceId.value,
-            deviceName ?: "Dispositivo",
-            userId.orEmpty(),
-            deviceType ?: "GATE",
-            emptyList()
+            id = currentDeviceId.value,
+            name = deviceName ?: "Dispositivo",
+            userId = userId.orEmpty(),
+            deviceType = deviceType ?: "GATE",
+            accessUsersIds = listOf(userId.orEmpty())
         )
-        Log.d("createDevice", newDevice.toString())
-        creatingDevice.value = true
+
         deviceService.createDevice(newDevice).onEach { response ->
             when (response) {
                 is ApiResponse.Error -> {
-                    Log.d("ApiResponseDeviceError", response.message ?: "")
                     _state.update {
-                        it.copy(errorMessage = response.message)
+                        it.copy(errorMessage = response.errorMsg)
                     }
                 }
 

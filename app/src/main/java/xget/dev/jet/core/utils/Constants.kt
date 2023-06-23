@@ -10,7 +10,7 @@ object ConstantsShared {
     const val jwtKey  = "JWT-TOKEN"
 
     //MQTT
-    const val MQTT_BROKER_ADDRESS = "wss://z002205d.ala.us-east-1.emqxsl.com:8084"
+    const val MQTT_BROKER_ADDRESS = "tcp://broker.emqx.io:1883"
     const val MQTT_CLIENT_ID = "xget2323232"
 
     //

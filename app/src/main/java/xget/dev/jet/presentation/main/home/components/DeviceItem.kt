@@ -1,5 +1,7 @@
 package xget.dev.jet.presentation.main.home.components
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +47,9 @@ fun SmartDeviceItem(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth(0.94f)
+            .fillMaxWidth(0.99f)
             .height(125.dp)
-            .padding(2.dp),
+            .padding(3.dp),
         shape = RoundedCornerShape(
             topStart = 10.dp,
             topEnd = 10.dp,
@@ -102,8 +106,11 @@ fun SmartDeviceItem(
                     )
                 }
 
+                LaunchedEffect(smartDevice.stateValue){
+                    Log.d("changedStateValue", smartDevice.stateValue.toString())
+                }
                 JetSwitchButton(
-                    selected = smartDevice.stateValue == 1,
+                    selected = smartDevice.stateValue.intValue == 1,
                     onUpdate = { onSwitchToggle() }
                 )
 
@@ -116,6 +123,7 @@ fun SmartDeviceItem(
 
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview(showBackground = true)
 @Composable
 fun SmartDevicePreview() {
@@ -128,7 +136,7 @@ fun SmartDevicePreview() {
                 horizontalArrangement = Arrangement.Center
             ) {
 
-                SmartDeviceItem(SmartDevice(name = "Portón de casa", online = true, stateValue = 1),
+                SmartDeviceItem(SmartDevice(name = "Portón de casa", online = true, stateValue = mutableIntStateOf(0)),
                     {})
 
             }
