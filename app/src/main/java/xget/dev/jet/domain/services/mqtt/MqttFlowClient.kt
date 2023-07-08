@@ -8,15 +8,13 @@ import xget.dev.jet.domain.model.mqtt.ReceivedMessage
 interface MqttFlowClient {
 
 
-    val connectionStatus: StateFlow<Boolean>
+    val connectionStatus: SharedFlow<Boolean>
     val errors: SharedFlow<String>
 
     fun startMqttService()
 
-    suspend fun subscribe(topic: String): Boolean
+    fun subscribeAndListen(topic: String): Flow<ReceivedMessage>
     suspend fun unSubscribe(topic: String): Boolean
-    fun receiveMessages(): Flow<ReceivedMessage>
-
     suspend fun publish(topic: String, data: String): Boolean
     fun disconnectFromClient()
     fun release()

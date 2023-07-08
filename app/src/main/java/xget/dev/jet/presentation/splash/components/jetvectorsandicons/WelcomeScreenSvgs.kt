@@ -49,8 +49,8 @@ object Vectors {
 
     fun welcomeScreenBottom(): ImageVector {
         return Builder(
-            name = "WelcomeScreenBottom", defaultWidth = 234.0.dp,
-            defaultHeight = 120.0.dp, viewportWidth = 234.0f, viewportHeight = 120.0f
+            name = "WelcomeScreenBottom", defaultWidth = 204.0.dp,
+            defaultHeight = 100.0.dp, viewportWidth = 234.0f, viewportHeight = 120.0f
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF2E2F73)), stroke = null, strokeLineWidth = 0.0f,

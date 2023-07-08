@@ -9,15 +9,16 @@ import xget.dev.jet.data.remote.users.UserService
 import xget.dev.jet.data.remote.users.dto.RegisterRequest
 import xget.dev.jet.data.remote.users.dto.UserAuthResponse
 import xget.dev.jet.domain.model.user.RegisterUser
+import xget.dev.jet.domain.model.user.User
 import xget.dev.jet.domain.repository.user.UserRepository
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userRemoteService : UserService
 ) : UserRepository {
-    override suspend fun getUser(uid: String): ApiResponse<UserAuthResponse>? {
+    override suspend fun getUser(): ApiResponse<User>? {
         return withContext(Dispatchers.IO){
-            userRemoteService.getUser(uid)
+            userRemoteService.getUser()
         }
     }
 

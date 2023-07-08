@@ -1,6 +1,9 @@
 package xget.dev.jet.core.di
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
+import com.amazonaws.mobileconnectors.iot.AWSIotMqttManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +20,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.gson.gson
 import kotlinx.serialization.ExperimentalSerializationApi
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import xget.dev.jet.core.utils.ConstantsShared
-import xget.dev.jet.core.utils.ConstantsShared.MQTT_BROKER_ADDRESS
+import xget.dev.jet.core.utils.ConstantsShared.AWS_MQTT_ENDPOINT
 import xget.dev.jet.data.remote.devices.mqtt.DevicesMqttServiceImpl
 import xget.dev.jet.data.remote.devices.rest.DevicesRemoteServiceImpl
 import xget.dev.jet.data.remote.mqtt.MqttFlowClientImpl
@@ -35,13 +36,11 @@ import javax.inject.Singleton
 object RemoteModule {
 
 
-
-
     @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
-    fun provideHttpClient() : HttpClient{
-        val client = HttpClient(Android){
+    fun provideHttpClient(): HttpClient {
+        val client = HttpClient(Android) {
             install(ContentNegotiation) {
                 gson()
             }
@@ -62,30 +61,39 @@ object RemoteModule {
     }
 
 
+    @SuppressLint("HardwareIds")
     @Provides
     @Singleton
-    fun provideMqttAndroidClient(@ApplicationContext context: Context) : MqttAndroidClient{
-        val client = MqttAndroidClient(context.applicationContext, MQTT_BROKER_ADDRESS, ConstantsShared.MQTT_CLIENT_ID)
-
-
-       return client
+    fun provideMqttAndroidClient(@ApplicationContext context: Context): AWSIotMqttManager {
+        val ANDROID_ID = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+        return AWSIotMqttManager(
+            ANDROID_ID,
+            xget.dev.jet.BuildConfig.AWS_MQTT_ENDPOINT,
+        )
     }
+
     @Provides
     @Singleton
-    fun provideMqttClient(@ApplicationContext context: Context, mqttClient: MqttAndroidClient): MqttFlowClient {
-        return MqttFlowClientImpl(context,mqttClient)
+    fun provideMqttClient(
+        @ApplicationContext context: Context,
+        mqttClient: AWSIotMqttManager
+    ): MqttFlowClient {
+        return MqttFlowClientImpl(context, mqttClient)
     }
 
     @Provides
     @Singleton
-    fun provideMqttService(mqttFlowClient: MqttFlowClient, token: Token ): DevicesMqttService {
+    fun provideMqttService(mqttFlowClient: MqttFlowClient, token: Token): DevicesMqttService {
         return DevicesMqttServiceImpl(mqttFlowClient, token)
     }
 
     @Provides
     @Singleton
-    fun provideDeviceRemote(httpClient: HttpClient ,token: Token ): DevicesRemoteService {
-        return DevicesRemoteServiceImpl(httpClient,token)
+    fun provideDeviceRemote(httpClient: HttpClient, token: Token): DevicesRemoteService {
+        return DevicesRemoteServiceImpl(httpClient, token)
     }
 
 }

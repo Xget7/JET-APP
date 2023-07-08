@@ -1,6 +1,9 @@
 package xget.dev.jet.presentation.main.home
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,15 +33,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
 import xget.dev.jet.domain.model.device.SmartDevice
+import xget.dev.jet.presentation.main.home.components.LoadingDevicesListShimmer
 import xget.dev.jet.presentation.main.home.components.SmartDeviceItem
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
@@ -50,18 +57,34 @@ internal fun HomeScreen(
 ) {
     HomeScreen(
         uiState = vm.state.collectAsState(),
-        onSwitchDevice = vm::sendMessage,
+        onSwitchDevice = vm::sendMessageToDevice,
         onAddDevice = {
             navController.navigate(Screens.PairDeviceFirstStep.route)
-        })
+        },
+        onDeviceDetails = {
+            navController.navigate(Screens.DeviceDetailScreen.route + "/${it.id}/${it.uid}") {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
+        }, lastQuantityOfDevices = vm.lastQuantityOfDevices
+    )
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
     uiState: State<HomeUiState>,
     onAddDevice: () -> Unit,
-    onSwitchDevice: (SmartDevice) -> Unit
+    onSwitchDevice: (SmartDevice) -> Unit,
+    onDeviceDetails: (SmartDevice) -> Unit,
+    lastQuantityOfDevices: Int
 ) {
 
     val scaffoldState = rememberScaffoldState()
@@ -70,23 +93,23 @@ internal fun HomeScreen(
         Modifier
             .fillMaxSize()
             .background(JetScreensBackgroundColor)
-            .padding(top = 5.dp),
+            .padding(top = 5.dp, bottom = 55.dp),
         scaffoldState = scaffoldState,
         topBar = {
             TopHomeBar(addDevices = true, onAddDevice)
         },
-        backgroundColor = JetScreensBackgroundColor
+        backgroundColor = JetScreensBackgroundColor,
     ) {
         it
 
         LaunchedEffect(uiState.value.isError) {
             if (uiState.value.isError != null) {
+                Log.d("luanchEffect", "isError ${uiState.value.isError}")
                 scaffoldState.snackbarHostState.showSnackbar(
                     uiState.value.isError ?: "Error Inesperado",
                     duration = SnackbarDuration.Short
                 )
             }
-
         }
 
 
@@ -114,7 +137,7 @@ internal fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                         shadow = false,
                         fontSize = 26.sp,
-                        color = Color(0xFF435080)
+                        color = Color(0xFF4259AD)
                     )
 
                     //Details
@@ -124,20 +147,75 @@ internal fun HomeScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ellipsis),
                             contentDescription = null,
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(35.dp),
+                            tint = Color.Black
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
                 //Main Content
-                LazyColumn(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                if (uiState.value.isLoading && uiState.value.isError == null) {
+                    LoadingDevicesListShimmer(lastQuantityOfDevices)
+                }
+
+
+
+                AnimatedVisibility(
+                    visible = !uiState.value.isLoading && uiState.value.isError == null,
+                    enter = expandVertically()
                 ) {
-                    items(uiState.value.devices) { device ->
-                        SmartDeviceItem(smartDevice = device) { onSwitchDevice(device) }
+                    LazyColumn(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        if (uiState.value.myDevices.value.isEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(200.dp))
+                                TextWithShadow(
+                                    text = "Aun no tienes dispositivos \n \uD83D\uDE14",
+                                    modifier = Modifier,
+                                    fontWeight = FontWeight.Bold,
+                                    shadow = false,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 26.sp,
+                                    color = Color(0xFF3A497E)
+                                )
+                            }
+                        }
+                        items(uiState.value.myDevices.value.distinct()) { device ->
+                            SmartDeviceItem(
+                                smartDevice = device,
+                                onSwitchToggle = { onSwitchDevice(device) },
+                                onDetails = { onDeviceDetails(device) },
+                                onLongPress = {}
+                            )
+                        }
                     }
+
+//                        TextWithShadow(
+//                            text = "Otros Dispositivos",
+//                            modifier = Modifier,
+//                            fontWeight = FontWeight.Bold,
+//                            shadow = false,
+//                            fontSize = 26.sp,
+//                            color = Color(0xFF3A497E)
+//                        )
+//                        LazyColumn(
+//                            modifier = Modifier,
+//                            verticalArrangement = Arrangement.spacedBy(12.dp)
+//                        ) {
+//                            items(uiState.value.otherUsersDevices.value.distinct()) { device ->
+//                                SmartDeviceItem(
+//                                    smartDevice = device,
+//                                    onSwitchToggle = { onSwitchDevice(device) },
+//                                    onDetails = { onDeviceDetails(device) },
+//                                    onLongPress = {}
+//                                )
+//                            }
+//                        }
+
+
                 }
 
             }
@@ -155,6 +233,6 @@ internal fun HomeScreen(
 @Composable
 fun HomeScreenPrev() {
     JETTheme {
-        HomeScreen(uiState = mutableStateOf(HomeUiState()), {}) {}
+        HomeScreen(uiState = mutableStateOf(HomeUiState()), {}, {}, {},4)
     }
 }

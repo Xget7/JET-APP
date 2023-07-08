@@ -76,94 +76,13 @@ class DevicesMqttServiceTest {
 
         mqttFlowClient.startMqttService()
 
-        assertFalse(mqttFlowClient.connectionStatus.value)
         assertNotNull(mqttFlowClient.errors.replayCache.firstOrNull())
     }
 
     @Test
     fun testSubscribe_SuccessfulSubscription() = runTest{
         val topic = "test/topic"
-        val flow = mqttFlowClient.subscribe(topic)
 
-
-        // Simulate a failed subscription
-        // ...
-        assertEquals(flow,true)
-    }
-
-    @Test
-    fun testSubscribe_FailedSubscription()  = runTest(){
-        val topic = "test/topic"
-        val flow = mqttFlowClient.subscribe(topic)
-
-        // Simulate a failed subscription
-        // ...
-        assertFalse(flow)
-        assertNotNull(mqttFlowClient.errors.replayCache.firstOrNull())
-    }
-
-    @Test
-    fun testUnsubscribe_SuccessfulUnsubscription()  = runTest(){
-
-        val topic = "test/topic"
-        val flow = mqttFlowClient.unSubscribe(topic)
-
-        val collector = flow.last()
-
-        // Simulate a successful unsubscription
-        // ...
-
-        assertEquals(collector,true)
-    }
-
-    @Test
-    fun testUnsubscribe_FailedUnsubscription() = runTest{
-
-
-        val topic = "test/topic"
-        val flow = mqttFlowClient.unSubscribe(topic)
-
-        val collector = flow.last()
-
-        // Simulate a failed unsubscription
-        // ...
-
-        assertFalse(collector)
-        assertNotNull(mqttFlowClient.errors.replayCache.firstOrNull())
-    }
-
-    @Test
-    fun testReceiveMessages_MessageArrived()= runTest {
-
-        val flow = mqttFlowClient.receiveMessages()
-
-        val collector = flow.last()
-
-        // Simulate a message arrival
-        // ...
-
-        assertNotNull(collector.message.isNotBlank())
-    }
-
-    @Test
-    fun testPublish_MessagePublished() {
-
-        val topic = "test/topic"
-        val data = "Hello, MQTT!"
-
-        mqttFlowClient.publish(topic, data)
-
-        // Assert the publish action
-        // ...
-    }
-
-    @Test
-    fun testDisconnectFromClient_SuccessfulDisconnect() {
-
-        mqttFlowClient.disconnectFromClient()
-
-        assertFalse(mqttFlowClient.connectionStatus.value)
-        assertEquals("", mqttFlowClient.errors.replayCache.firstOrNull())
     }
 
 

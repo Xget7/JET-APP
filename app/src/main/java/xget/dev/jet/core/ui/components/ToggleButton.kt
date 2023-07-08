@@ -1,6 +1,7 @@
 package xget.dev.jet.core.ui.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,13 +41,18 @@ import xget.dev.jet.presentation.theme.JetGreen
 fun JetSwitchButton(
     selected: Boolean,
     modifier: Modifier = Modifier,
-    onUpdate: (Boolean) -> Unit
+    onUpdate: (Boolean) -> Unit,
+    state: Int
 ) {
     var horizontalBias by remember { mutableFloatStateOf(-1f) }
     val alignment by animateHorizontalAlignmentAsState(horizontalBias)
 
-    LaunchedEffect(selected){
-
+    LaunchedEffect(selected,state) {
+        if (state == 1){
+            horizontalBias *= -1
+        }else{
+            horizontalBias = -1f
+        }
     }
 
     Card(
@@ -54,8 +60,10 @@ fun JetSwitchButton(
             .width(65.dp)
             .height(35.dp)
             .clickable {
-                horizontalBias *= -1
-                onUpdate(!selected)
+                if (state != 2) {
+                    onUpdate(!selected)
+                }
+
             }, shape = RoundedCornerShape(17.dp), elevation = 0.dp
     ) {
         Box(
@@ -77,7 +85,7 @@ fun JetSwitchButton(
 
 @Composable
 fun CheckCircle(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     Card(
@@ -97,7 +105,7 @@ fun JetSwitchButtonPreview() {
     }
 
     JETTheme {
-        JetSwitchButton(selected = state.value, onUpdate ={state.value = it})
+        JetSwitchButton(selected = state.value, onUpdate = { state.value = it }, state = 1)
     }
 }
 

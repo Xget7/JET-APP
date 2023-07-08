@@ -7,6 +7,7 @@ data class SmartDevice(
     val id : String = "",
     val uid : String = "",
     val name : String = "",
+    val type : String = "",
     var online : Boolean = false,
     val stateValue : MutableIntState = mutableIntStateOf(0)
 )

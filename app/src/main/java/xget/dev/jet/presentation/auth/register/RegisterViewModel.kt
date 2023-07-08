@@ -1,5 +1,6 @@
 package xget.dev.jet.presentation.auth.register
 
+import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,15 +21,15 @@ class RegisterViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : BaseViewModel<RegisterUiState>() {
 
-    var userName by mutableStateOf("random")
+    var userName by mutableStateOf("p")
         private set
-    var userEmail by mutableStateOf("random@gmail.com")
+    var userEmail by mutableStateOf("p@p.com")
         private set
     var userPhone by mutableStateOf("113409234")
         private set
-    var userPassword by mutableStateOf("hola12341")
+    var userPassword by mutableStateOf("pppp")
         private set
-    var userConfirmPassword by mutableStateOf("hola12341")
+    var userConfirmPassword by mutableStateOf("pppp")
         private set
 
 
@@ -47,6 +48,7 @@ class RegisterViewModel @Inject constructor(
 
     fun registerUser() {
         if (!userHasLocalError.second) {
+            Log.d("hasLocalError", userHasLocalError.first)
             _state.update {
                 _state.value.copy(isError = userHasLocalError.first, isLoading = false)
             }

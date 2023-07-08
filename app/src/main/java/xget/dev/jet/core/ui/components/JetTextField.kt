@@ -1,6 +1,7 @@
 package xget.dev.jet.core.ui.components
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -17,6 +18,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -34,9 +37,10 @@ fun JetTextField(
     text: String,
     textLabel: String,
     onValue: (String) -> Unit,
-    trailingIcon:  @Composable() (() -> Unit)? = null,
-    leadingIcon:  @Composable() (() -> Unit)? = null,
-    oneLine : Boolean = true,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    leadingIcon: @Composable() (() -> Unit)? = null,
+    oneLine: Boolean = true,
+    shadow: Boolean = false
 
 ) {
 
@@ -57,12 +61,24 @@ fun JetTextField(
         },
         modifier = Modifier
             .width(350.dp)
-            .height(60.dp),
-        leadingIcon =leadingIcon ,
-        trailingIcon = trailingIcon,
-        singleLine = oneLine
+            .height(60.dp)
+            .apply {
+                if (shadow) {
+                    offset(y = 3.dp)
+                    shadow(
+                        10.dp,
+                        shape = RoundedCornerShape(50),
+                        spotColor = Color.Gray,
+                        ambientColor = Color.White
+                    )
+                }
+            },
 
-    )
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        singleLine = oneLine,
+
+        )
 
 }
 
@@ -71,10 +87,10 @@ fun PasswordJetTextField(
     text: String,
     textLabel: String,
     onValue: (String) -> Unit,
-    modifier : Modifier = Modifier,
-    trailingIcon:  @Composable() (() -> Unit)? = null,
-    leadingIcon:  @Composable() (() -> Unit)? = null,
-    visibility : MutableState<Boolean> = mutableStateOf(false),
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    leadingIcon: @Composable() (() -> Unit)? = null,
+    visibility: MutableState<Boolean> = mutableStateOf(false),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions()
 ) {
@@ -96,7 +112,7 @@ fun PasswordJetTextField(
         },
         modifier = modifier
             .width(350.dp)
-            .height(60.dp) ,
+            .height(60.dp),
         trailingIcon = trailingIcon,
         leadingIcon = leadingIcon,
         visualTransformation = if (visibility.value) VisualTransformation.None else PasswordVisualTransformation(),

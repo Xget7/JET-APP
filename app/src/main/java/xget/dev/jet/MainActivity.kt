@@ -2,14 +2,21 @@ package xget.dev.jet
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,12 +24,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.json.JsonNull.content
 import xget.dev.jet.presentation.main.MainScreens
 import xget.dev.jet.presentation.main.device_config.device_search.DeviceSearchScreen
 import xget.dev.jet.presentation.main.device_config.firstStep.AddDeviceFirstStep
 import xget.dev.jet.presentation.main.device_config.secondStep.AddDeviceSecondStep
+import xget.dev.jet.presentation.main.history.DevicesHistoryScreen
 import xget.dev.jet.presentation.main.home.HomeScreen
 import xget.dev.jet.presentation.main.home.HomeUiState
+import xget.dev.jet.presentation.main.home.device_details.DeviceDetailScreen
+import xget.dev.jet.presentation.main.profile.ProfileScreen
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.utils.Screens.HistoryScreen
 import xget.dev.jet.presentation.utils.Screens.HomeNavGraph
@@ -60,15 +71,17 @@ fun HomeBottomNav(navController: NavHostController) {
         route = HomeNavGraph.route,
         startDestination = HomeScreen.route
     ) {
-        composable(route = HomeScreen.route){
+        composable(route = HomeScreen.route) {
             HomeScreen(navController)
         }
-        composable(route = ProfileScreen.route){
-
+        composable(route = ProfileScreen.route) {
+            ProfileScreen(navController)
         }
-        composable(route = HistoryScreen.route){
-
+        composable(route = HistoryScreen.route) {
+            DevicesHistoryScreen(navController)
         }
+
+        deviceDetailNavGraph(navController)
         bluetoothNavGraph(navController)
     }
 }
@@ -88,7 +101,37 @@ fun NavGraphBuilder.bluetoothNavGraph(navController: NavHostController) {
         composable(route = Screens.PairDeviceThirdStep.route) {
             DeviceSearchScreen(navController)
         }
+
     }
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.deviceDetailNavGraph(navController: NavHostController) {
+    navigation(
+        route = Screens.DeviceDetailNavGraph.route,
+        startDestination = Screens.DeviceDetailScreen.route
+    ) {
+
+        composable(route = Screens.DeviceDetailScreen.route + "/{deviceId}/{userDeviceId}") {
+            AnimatedVisibility(
+                visible = true,
+                enter = slideInHorizontally(
+                    initialOffsetX = { -400 }, animationSpec = tween(400)
+                ) + expandHorizontally(
+                    expandFrom = Alignment.Start
+                ) + fadeIn(initialAlpha = 1f),
+                exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut(),
+                content = {
+                    DeviceDetailScreen(navController)
+                },
+                initiallyVisible = false
+            )
+
+        }
+
+        composable(route = Screens.DeviceDetailConfigScreen.route) {
+
+        }
+    }
+}

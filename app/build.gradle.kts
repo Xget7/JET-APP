@@ -1,3 +1,4 @@
+import java.util.Properties
 
 plugins {
     kotlin("plugin.serialization") version "1.8.0"
@@ -14,10 +15,12 @@ plugins {
 
 
 android {
+    buildFeatures.buildConfig = true
+
     namespace = "xget.dev.jet"
     compileSdk = 33
-
     defaultConfig {
+
         applicationId = "xget.dev.jet"
         minSdk = 26
         targetSdk = 33
@@ -30,6 +33,11 @@ android {
             useSupportLibrary = true
         }
 
+        val properties = Properties()
+            properties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String","COGNITO_POOL_ID","\"${properties.getProperty("COGNITO_POOL_ID")}\"")
+        buildConfigField("String","AWS_MQTT_ENDPOINT","\"${properties.getProperty("AWS_MQTT_ENDPOINT")}\"")
     }
 
     buildTypes {
@@ -65,6 +73,10 @@ android {
             ndkPath = "src/main/jni/Android.mk"
         }
     }
+
+//    tasks.named<JavaExec>("run") {
+//        standardInput = System.`in`
+//    }
 }
 
 dependencies {
@@ -87,6 +99,9 @@ dependencies {
     //compose ui ccontroller
     implementation( libs.accompanist.systemuicontroller)
 
+    //Glide images
+    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+
 
     // Paging Compose
     implementation (libs.accompanist.pager)
@@ -96,6 +111,8 @@ dependencies {
 
     implementation (libs.logback.classic)
     implementation (libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.websockets)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation (libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
@@ -106,6 +123,14 @@ dependencies {
     //MQTT V5
     implementation (libs.androidx.legacy.support.v4)
     implementation (libs.paho.mqtt.android)
+
+
+    //AWS MQTT
+
+    // AWS IoT
+    implementation(libs.aws.android.sdk.iot)
+    implementation (libs.aws.android.sdk.core)
+    implementation (libs.aws.android.sdk.cognitoidentityprovider)
 
     //Dagger Hilt
     implementation(libs.hilt.android)
@@ -135,6 +160,7 @@ dependencies {
 
     //Location
     implementation (libs.play.services.location)
+
 
 
 

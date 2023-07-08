@@ -78,7 +78,7 @@ fun WelcomeScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CustomBackgroundButton(

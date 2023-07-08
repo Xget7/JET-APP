@@ -74,12 +74,12 @@ fun TopCustomBar(
 
 
 @Composable
-fun TopHomeBar(addDevices: Boolean, onClick: () -> Unit) {
+fun TopHomeBar(addDevices: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(100.dp)
-            .padding(26.dp),
+            .padding(22.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -107,9 +107,7 @@ fun TopHomeBar(addDevices: Boolean, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun TopHomeBarPreview() {
-    TopHomeBar(addDevices = true) {
-
-    }
+    TopHomeBar(addDevices = true,{})
 }
 
 

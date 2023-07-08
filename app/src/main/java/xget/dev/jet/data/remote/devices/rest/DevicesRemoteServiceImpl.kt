@@ -2,38 +2,48 @@ package xget.dev.jet.data.remote.devices.rest
 
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.annotations.SerializedName
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
-import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import xget.dev.jet.data.remote.HttpRoutes.CREATE_DEVICE
 
-import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICE
+import xget.dev.jet.data.remote.HttpRoutes.BASE_DEVICE
+import xget.dev.jet.data.remote.HttpRoutes.DEVICE_HISTORY
 import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICES_FROM_USER
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
+import xget.dev.jet.data.remote.devices.rest.dto.DevicesListResponse
+import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceActionRequest
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.data.util.network.handleApiCodeStatusException
 import xget.dev.jet.data.util.network.handleApiException
-import xget.dev.jet.domain.repository.devices.rest.DevicesListRestResponse
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import xget.dev.jet.domain.repository.token.Token
+import java.lang.reflect.Type
+import javax.annotation.Nullable
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 class DevicesRemoteServiceImpl @Inject constructor(
@@ -43,50 +53,135 @@ class DevicesRemoteServiceImpl @Inject constructor(
     override suspend fun getDeviceById(id: String): ApiResponse<DeviceDto> {
         return try {
             val response = client.get {
-                url(GET_DEVICE)
+                url(BASE_DEVICE)
                 parameter("id", id)
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
             }.body<DeviceDto>()
+
             ApiResponse.Success(response)
         } catch (e: Exception) {
             handleApiException(e)
         }
     }
 
-    override suspend fun getDevicesByUserUid(uid: String): DevicesListRestResponse {
-        return try {
-            val response = client.get {
-                url(GET_DEVICES_FROM_USER)
-                parameter("uid", uid)
+    override fun getDevicesByUser() = callbackFlow {
+        try {
+            Log.d("trying response", "yes")
+            Log.d("localToken", token.getJwtLocal().toString())
+            val response = client.get(GET_DEVICES_FROM_USER) {
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
-            }.body<List<DeviceDto>>()
-            ApiResponse.Success(response)
+            }
+            Log.d("getDeviceSBYUserREsponse", response.body())
+            trySend(ApiResponse.Success(response.body<DevicesListResponse>()))
+            close()
         } catch (e: Exception) {
-            handleApiException(e)
+            trySend(handleApiException(e))
+            close()
+            cancel()
         }
+        awaitClose { }
     }
 
-    override  fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
+    override fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
         try {
             val response = client.post(CREATE_DEVICE) {
                 contentType(ContentType.Application.Json) // Set the content type to JSON
                 setBody(request)
+                header("Authorization", "Bearer ${token.getJwtLocal()}")
             }
 
 
-            if (response.status != HttpStatusCode.Created){
+            if (response.status != HttpStatusCode.Created) {
                 trySend(handleApiCodeStatusException(response.status))
                 close()
-            }else{
+            } else {
                 trySend(ApiResponse.Success(true))
                 close()
             }
         } catch (e: Exception) {
-            Log.d("createDevice Error?/", e.localizedMessage , e)
+            Log.d("createDevice Error?/", e.localizedMessage, e)
             trySend(handleApiException(e))
             close()
         }
         awaitClose {}
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun uploadDeviceAction(req : DeviceActionRequest): ApiResponse<Nullable> =
+        suspendCoroutine { continuation ->
+            try {
+                CoroutineScope(continuation.context).launch {
+                    val response = client.post(DEVICE_HISTORY) {
+                        header("Authorization", "Bearer ${token.getJwtLocal()}")
+                        setBody(req)
+                    }
+                    if (response.status == HttpStatusCode.Created) {
+                        continuation.resume(ApiResponse.Success(Nullable()))
+                    }
+                }
+            } catch (e: Exception) {
+                continuation.resume(ApiResponse.Error("Error de conexion."))
+            }
+    }
+
+    override suspend fun deleteDevice(deviceId: String): ApiResponse<Boolean> =
+        suspendCoroutine { continuation ->
+            try {
+                CoroutineScope(continuation.context).launch {
+
+                    val response = client.patch("$BASE_DEVICE/$deviceId/") {
+                        header("Authorization", "Bearer ${token.getJwtLocal()}")
+                    }
+                    if (response.status == HttpStatusCode.NoContent) {
+                        continuation.resume(ApiResponse.Success(true))
+                    } else {
+                        continuation.resume(ApiResponse.Error("Error intentando eliminar dispositivo."))
+                    }
+                }
+            } catch (e: Exception) {
+                continuation.resume(ApiResponse.Error("Error al intentar eliminar el dispositivo."))
+            }
+        }
+
+    override suspend fun updateDevice(device: DeviceDto): ApiResponse<Boolean> = suspendCoroutine { continuation ->
+            try {
+                CoroutineScope(continuation.context).launch {
+
+                    val response = client.put("$BASE_DEVICE/${device.id}/") {
+                        header("Authorization", "Bearer ${token.getJwtLocal()}")
+                        setBody(device)
+                    }
+                    if (response.status == HttpStatusCode.OK) {
+                        continuation.resume(ApiResponse.Success(true))
+                    } else {
+                        continuation.resume(ApiResponse.Error("Error intentando actualizar dispositivo."))
+                    }
+                }
+            } catch (e: Exception) {
+                continuation.resume(ApiResponse.Error("Error al intentar actualizar el dispositivo."))
+            }
+    }
+
+    override suspend fun addUserToDevice( accessUserEmail: String,deviceId: String): ApiResponse<Boolean>  =  suspendCoroutine { continuation ->
+
+        val email = accessUserEmail
+        try {
+            CoroutineScope(continuation.context).launch {
+                val response = client.patch("$BASE_DEVICE/$deviceId/") {
+                    header("Authorization", "Bearer ${token.getJwtLocal()}")
+                    setBody(email)
+                }
+                if (response.status == HttpStatusCode.OK) {
+                    continuation.resume(ApiResponse.Success(true))
+                } else {
+                    continuation.resume(ApiResponse.Error("Error intentando añadir usuario aldispositivo."))
+                }
+            }
+
+
+        } catch (e: Exception) {
+            Log.d("exception",e.localizedMessage,e)
+            continuation.resume(ApiResponse.Error("Error intentando añadir usuario aldispositivo."))
+        }
+    }
 
 }

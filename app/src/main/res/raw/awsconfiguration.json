@@ -1,0 +1,21 @@
+{
+  "Version": "0.1.0",
+  "IdentityManager": {
+    "Default": {}
+  },
+  "CredentialsProvider": {
+    "CognitoIdentity": {
+      "Default": {
+        "PoolId": "us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445",
+        "Region": "us-east-2"
+      }
+    }
+  },
+  "CognitoUserPool": {
+    "Default": {
+      "AppClientId": "JetApp",
+      "PoolId": "us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445",
+      "Region": "us-east-2"
+    }
+  }
+}

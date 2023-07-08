@@ -8,6 +8,8 @@ import xget.dev.jet.domain.model.device.SmartDevice
 interface DevicesRepository {
 
 
-    suspend fun getDevice(uid: String): Flow<SmartDevice>
+    fun getDevice(id: String, userId : String): Flow<SmartDevice>
+    fun initRepo(): Flow<Boolean>
+    suspend fun releaseMqtt()
     fun getDevicesByUserId(uid: String): Flow<List<SmartDevice>>
-}
+    suspend fun sendMessageToDevice(deviceId: String, state: Int, userId : String): Boolean}
