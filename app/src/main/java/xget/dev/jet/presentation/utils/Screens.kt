@@ -25,10 +25,15 @@ sealed class Screens(val route : String){
     object PairDeviceSecondStep : Screens("pair_second_step")
     object PairDeviceThirdStep : Screens("pair_third_step")
 
+
+    //Device details
     object DeviceDetailNavGraph : Screens("device_detail_nav_graph")
 
     object DeviceDetailScreen : Screens("device_detail_screen")
     object DeviceDetailConfigScreen : Screens("device_detail_config_screen")
+
+    //History details
+    object DeviceHistoryScreen : Screens("device_history_screen")
 
 }
 

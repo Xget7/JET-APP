@@ -31,7 +31,7 @@ fun <T> handleApiException(e: Exception): ApiResponse.Error<T> {
                 else -> "Error del servidor."
             }
         }
-        else -> "Error del sistema."
+        else -> "Error de conexion."
     }
 
     // Puedes agregar un registro de error adicional si lo deseas

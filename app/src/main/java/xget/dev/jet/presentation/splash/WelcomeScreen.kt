@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,8 +36,9 @@ import xget.dev.jet.presentation.theme.JetBlue
 fun WelcomeScreen(
     navController: NavController,
 ) {
-
+    val context = LocalContext.current
     Box() {
+
 
         Image(imageVector = welcomeScreenTopVector(), contentDescription = "Top")
 
@@ -50,7 +52,7 @@ fun WelcomeScreen(
             ) {
 
                 TextWithShadow(
-                    "Bienvenido",
+                    context.getString(R.string.text_welcome),
                     modifier = Modifier,
                     fontSize = 48.sp,
                     fontWeight = FontWeight.Bold,
@@ -59,7 +61,7 @@ fun WelcomeScreen(
                     ),
                 )
                 TextWithShadow(
-                    "Jet IOT",
+                    context.getString(R.string.text_jet_iot),
                     modifier = Modifier,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -82,12 +84,12 @@ fun WelcomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CustomBackgroundButton(
-                        "Ingresar",
+                        context.getString(R.string.text_button_ingresar),
                         onClick = { navController.navigate(Screens.LoginScreen.route) }
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     CustomTextButton(
-                        "Registrarme",
+                        context.getString(R.string.text_button_registrarme),
                         onClick = { navController.navigate(Screens.RegisterScreen.route) },
                         textColor = JetBlue,
                     )
@@ -97,7 +99,7 @@ fun WelcomeScreen(
             }
             Image(
                 imageVector = welcomeScreenBottom(),
-                contentDescription = "Welcome Screen Bottom draw",
+                contentDescription = context.getString(R.string.content_description_bottom),
                 modifier = Modifier.align(Alignment.BottomStart)
             )
 

@@ -32,7 +32,7 @@ fun LoadingDevicesListShimmer(devices:Int){
         val cardHeightPx = with(LocalDensity.current) { (60.dp - 4.dp).toPx() }
         val gradientWidth: Float = (0.2f * cardHeightPx)
 
-        val infiniteTransition = rememberInfiniteTransition()
+        val infiniteTransition = rememberInfiniteTransition(label = "")
         val xCardShimmer = infiniteTransition.animateFloat(
             initialValue = 0f,
             targetValue = (cardWidthPx + gradientWidth),

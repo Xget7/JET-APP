@@ -5,12 +5,11 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import xget.dev.jet.core.base.BaseViewModel
 import xget.dev.jet.core.utils.ConstantsShared
-import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
+import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import javax.inject.Inject
 
@@ -23,41 +22,71 @@ class DeviceHistoryViewModel @Inject constructor(
 
 
     val userId = preferences.getString(ConstantsShared.USER_ID, "") ?: ""
-    val lastDevices: List<DeviceDto> = savedStateHandle["HISTORYVIEWMODELSTATE"] ?: emptyList()
-    val lastQuantityOfDevices = preferences.getInt(ConstantsShared.LastQuantityOfDevices, 2)
+    val deviceId : String = savedStateHandle["deviceId"] ?: ""
 
     init {
-        if (lastDevices.isEmpty()) {
-            Log.d("devicesHistory", "First Fetch")
-            fetchDevices()
-        } else {
-            Log.d("devicesHistory", "Cache devices Fetch")
-            _state.update {
-                it.copy(devices = lastDevices, isLoading = false)
+        fetchDeviceData()
+    }
+
+    private fun fetchDeviceData() {
+        Log.d("fetchDeviceHistory","device id $deviceId")
+        viewModelScope.launch {
+            try {
+                val response = devicesService.getDeviceById(deviceId)
+                // Handle the ApiResponse.Success response
+                if (response is ApiResponse.Success) {
+                    _state.update {
+                        it.copy(isLoading = false, device = response.data!!)
+                    }
+                    fetchDeviceHistory()
+                } else if (response is ApiResponse.Error) {
+                    val errorMessage = response.errorMsg
+                    _state.update {
+                        it.copy(isLoading = false, isError = errorMessage)
+                    }
+                    // Handle the error case
+                }
+
+
+
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(isLoading = false, isError = "Ocurrio un error inesperado")
+                }
+            }
+        }
+    }
+
+    private fun fetchDeviceHistory(){
+        viewModelScope.launch {
+            try {
+                val historyResponse = devicesService.getDeviceHistory(deviceId)
+                // Handle the ApiResponse.Success response
+                if (historyResponse is ApiResponse.Success) {
+                    _state.update {
+                        it.copy(isLoading = false, history = historyResponse.data?.history!!)
+                    }
+                } else if (historyResponse is ApiResponse.Error) {
+                    // Handle the error case
+                    val errorMessage = historyResponse.errorMsg
+                    _state.update {
+                        it.copy(isLoading = false, isError = errorMessage)
+                    }
+
+                }
+
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(isLoading = false, isError = "Ocurrio un error obteniendo el historial")
+                }
             }
         }
 
     }
 
-    private fun fetchDevices() {
-        devicesService.getDevicesByUser().onEach { response ->
-            val responseDevices = response.data?.myDevices ?: emptyList()
-            _state.update {
-                it.copy(devices = responseDevices, isError = response.errorMsg, isLoading = false)
-            }
-            savedStateHandle["HISTORYVIEWMODELSTATE"] = responseDevices
-        }.launchIn(viewModelScope)
-    }
-
 
     override fun defaultState(): DeviceHistoryState {
         return DeviceHistoryState(isLoading = true)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        savedStateHandle["HISTORYVIEWMODELSTATE"] = state.value.devices
-        Log.d("historu", "HistoryViewmodel on cleared")
     }
 
 }

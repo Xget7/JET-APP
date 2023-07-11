@@ -159,8 +159,6 @@ internal fun HomeScreen(
                     LoadingDevicesListShimmer(lastQuantityOfDevices)
                 }
 
-
-
                 AnimatedVisibility(
                     visible = !uiState.value.isLoading && uiState.value.isError == null,
                     enter = expandVertically()
@@ -192,28 +190,6 @@ internal fun HomeScreen(
                             )
                         }
                     }
-
-//                        TextWithShadow(
-//                            text = "Otros Dispositivos",
-//                            modifier = Modifier,
-//                            fontWeight = FontWeight.Bold,
-//                            shadow = false,
-//                            fontSize = 26.sp,
-//                            color = Color(0xFF3A497E)
-//                        )
-//                        LazyColumn(
-//                            modifier = Modifier,
-//                            verticalArrangement = Arrangement.spacedBy(12.dp)
-//                        ) {
-//                            items(uiState.value.otherUsersDevices.value.distinct()) { device ->
-//                                SmartDeviceItem(
-//                                    smartDevice = device,
-//                                    onSwitchToggle = { onSwitchDevice(device) },
-//                                    onDetails = { onDeviceDetails(device) },
-//                                    onLongPress = {}
-//                                )
-//                            }
-//                        }
 
 
                 }

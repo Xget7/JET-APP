@@ -15,4 +15,19 @@
     <string name="notification">Recibido %1$s topico=%2$s</string>
     <string name="notifyTitle">MQTT Mensaje Recibido</string>
     <string name="notifyTitle_connectionLost">Conexion Perdida</string>
+
+    <string name="error_null_text">Error de conexion inesperado.</string>
+    <string name="history">Historial</string>
+
+    <string name="text_welcome">Bienvenido</string>
+    <string name="text_jet_iot">Jet IOT</string>
+    <string name="text_button_ingresar">Ingresar</string>
+    <string name="text_button_registrarme">Registrarme</string>
+    <string name="content_description_top">Top</string>
+    <string name="content_description_flying_people">Fliying people</string>
+    <string name="content_description_bottom">Welcome Screen Bottom draw</string>
+
+
+
+
 </resources>

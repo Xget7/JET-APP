@@ -15,7 +15,6 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -24,14 +23,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.json.JsonNull.content
 import xget.dev.jet.presentation.main.MainScreens
 import xget.dev.jet.presentation.main.device_config.device_search.DeviceSearchScreen
 import xget.dev.jet.presentation.main.device_config.firstStep.AddDeviceFirstStep
 import xget.dev.jet.presentation.main.device_config.secondStep.AddDeviceSecondStep
-import xget.dev.jet.presentation.main.history.DevicesHistoryScreen
+import xget.dev.jet.presentation.main.history.HistoryScreen
+import xget.dev.jet.presentation.main.history.device_history.DeviceDetailHistoryScreen
 import xget.dev.jet.presentation.main.home.HomeScreen
-import xget.dev.jet.presentation.main.home.HomeUiState
 import xget.dev.jet.presentation.main.home.device_details.DeviceDetailScreen
 import xget.dev.jet.presentation.main.profile.ProfileScreen
 import xget.dev.jet.presentation.utils.Screens
@@ -78,7 +76,11 @@ fun HomeBottomNav(navController: NavHostController) {
             ProfileScreen(navController)
         }
         composable(route = HistoryScreen.route) {
-            DevicesHistoryScreen(navController)
+            HistoryScreen(navController)
+        }
+
+        composable(route = Screens.DeviceHistoryScreen.route + "/{deviceId}"){
+            DeviceDetailHistoryScreen(navController = navController)
         }
 
         deviceDetailNavGraph(navController)
