@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class DeviceActionRequest(
+data class DeviceActionReq(
     val state : Boolean ,
     @SerializedName("user_id")
     val userId : String ,

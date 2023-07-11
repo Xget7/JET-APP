@@ -1,9 +1,6 @@
 package xget.dev.jet.data.remote.devices.rest
 
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.annotations.SerializedName
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -32,13 +29,13 @@ import xget.dev.jet.data.remote.HttpRoutes.DEVICE_HISTORY
 import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICES_FROM_USER
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
 import xget.dev.jet.data.remote.devices.rest.dto.DevicesListResponse
-import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceActionRequest
+import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceActionReq
+import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceHistoryResponse
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.data.util.network.handleApiCodeStatusException
 import xget.dev.jet.data.util.network.handleApiException
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
 import xget.dev.jet.domain.repository.token.Token
-import java.lang.reflect.Type
 import javax.annotation.Nullable
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -82,6 +79,30 @@ class DevicesRemoteServiceImpl @Inject constructor(
         awaitClose { }
     }
 
+    override suspend fun getDeviceHistory(id: String): ApiResponse<DeviceHistoryResponse> =   suspendCoroutine {continuation ->
+        try {
+            val payload = mapOf("id_device" to id)
+            CoroutineScope(continuation.context).launch {
+                val response = client.post(DEVICE_HISTORY) {
+                    header("Authorization", "Bearer ${token.getJwtLocal()}")
+                    contentType(ContentType.Application.Json) // Set the content type to JSON
+                    setBody(payload)
+                }
+                val parsedResponse = response.body<DeviceHistoryResponse>()
+
+                if (response.status != HttpStatusCode.OK) {
+                    continuation.resume(handleApiCodeStatusException(response.status))
+                } else {
+                    continuation.resume(ApiResponse.Success(parsedResponse))
+                }
+            }
+
+        } catch (e: Exception) {
+            Log.d("getDeviceHistory Error?/", e.localizedMessage, e)
+            continuation.resumeWithException(e)
+        }
+    }
+
     override fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
         try {
             val response = client.post(CREATE_DEVICE) {
@@ -106,7 +127,7 @@ class DevicesRemoteServiceImpl @Inject constructor(
         awaitClose {}
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun uploadDeviceAction(req : DeviceActionRequest): ApiResponse<Nullable> =
+    override suspend fun uploadDeviceAction(req : DeviceActionReq): ApiResponse<Nullable> =
         suspendCoroutine { continuation ->
             try {
                 CoroutineScope(continuation.context).launch {

@@ -1,32 +1,25 @@
-package xget.dev.jet.presentation.main.history
+package xget.dev.jet.presentation.main.history.device_history
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
 import xget.dev.jet.core.base.BaseViewModel
 import xget.dev.jet.core.utils.ConstantsShared
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
-import xget.dev.jet.domain.repository.devices.DevicesRepository
 import xget.dev.jet.domain.repository.devices.rest.DevicesRemoteService
-import xget.dev.jet.presentation.main.home.HomeUiState
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(
+class DeviceHistoryViewModel @Inject constructor(
     preferences: SharedPreferences,
     private val savedStateHandle: SavedStateHandle,
     private val devicesService: DevicesRemoteService
-) : BaseViewModel<HistoryState>() {
+) : BaseViewModel<DeviceHistoryState>() {
 
 
     val userId = preferences.getString(ConstantsShared.USER_ID, "") ?: ""
@@ -57,8 +50,8 @@ class HistoryViewModel @Inject constructor(
     }
 
 
-    override fun defaultState(): HistoryState {
-        return HistoryState(isLoading = true)
+    override fun defaultState(): DeviceHistoryState {
+        return DeviceHistoryState(isLoading = true)
     }
 
     override fun onCleared() {

@@ -4,13 +4,13 @@ object HttpRoutes {
 
 
 
-    private const val BASE_URL = "http://18.206.124.198:8000"
+    private const val BASE_URL = "https://ec2-18-206-124-198.compute-1.amazonaws.com"
     //User and Auth EndPoints
-    const val REGISTER_USER = "$BASE_URL/register/"
-    const val LOGIN_USER = "$BASE_URL/login/"
-    const val FORGOT_PASSWORD = "$BASE_URL/login/"
+    const val REGISTER_USER = "$BASE_URL/user/"
+    const val LOGIN_USER = "$BASE_URL/user/login/"
+    const val FORGOT_PASSWORD = "$BASE_URL/user/login/"
     const val LOGOUT_USER = "$BASE_URL/posts"
-    const val GET_USER = "$BASE_URL/register"
+    const val GET_USER = "$BASE_URL/user/"
 
     //Devices Endpoints
     const val BASE_DEVICE = "$BASE_URL/device/"
