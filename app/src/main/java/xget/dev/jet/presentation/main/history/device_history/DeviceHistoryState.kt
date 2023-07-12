@@ -7,7 +7,7 @@ import xget.dev.jet.presentation.main.history.HistoryState
 data class DeviceHistoryState(
     val isLoading: Boolean = false,
     val isError: String? = null,
-    val device: DeviceDto = DeviceDto(),
+    val deviceName: String = "",
     val history: List<SmartDeviceAction> = listOf()
 
 )

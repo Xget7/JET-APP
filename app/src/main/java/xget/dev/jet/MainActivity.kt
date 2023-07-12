@@ -79,7 +79,7 @@ fun HomeBottomNav(navController: NavHostController) {
             HistoryScreen(navController)
         }
 
-        composable(route = Screens.DeviceHistoryScreen.route + "/{deviceId}"){
+        composable(route = Screens.DeviceHistoryScreen.route + "/{deviceId}/{deviceName}"){
             DeviceDetailHistoryScreen(navController = navController)
         }
 

@@ -22,42 +22,22 @@ class DeviceHistoryViewModel @Inject constructor(
 
 
     val userId = preferences.getString(ConstantsShared.USER_ID, "") ?: ""
-    val deviceId : String = savedStateHandle["deviceId"] ?: ""
+    val deviceId: String = savedStateHandle["deviceId"] ?: ""
+    private val deviceName: String = savedStateHandle["deviceName"] ?: ""
 
     init {
         fetchDeviceData()
     }
 
     private fun fetchDeviceData() {
-        Log.d("fetchDeviceHistory","device id $deviceId")
-        viewModelScope.launch {
-            try {
-                val response = devicesService.getDeviceById(deviceId)
-                // Handle the ApiResponse.Success response
-                if (response is ApiResponse.Success) {
-                    _state.update {
-                        it.copy(isLoading = false, device = response.data!!)
-                    }
-                    fetchDeviceHistory()
-                } else if (response is ApiResponse.Error) {
-                    val errorMessage = response.errorMsg
-                    _state.update {
-                        it.copy(isLoading = false, isError = errorMessage)
-                    }
-                    // Handle the error case
-                }
-
-
-
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(isLoading = false, isError = "Ocurrio un error inesperado")
-                }
-            }
+        Log.d("fetchDeviceHistory", "device id $deviceId and name $deviceName")
+        _state.update {
+            it.copy(isLoading = false, deviceName = deviceName)
         }
+        fetchDeviceHistory()
     }
 
-    private fun fetchDeviceHistory(){
+    private fun fetchDeviceHistory() {
         viewModelScope.launch {
             try {
                 val historyResponse = devicesService.getDeviceHistory(deviceId)

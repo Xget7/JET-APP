@@ -22,9 +22,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import xget.dev.jet.data.remote.HttpRoutes.CREATE_DEVICE
 
 import xget.dev.jet.data.remote.HttpRoutes.BASE_DEVICE
+import xget.dev.jet.data.remote.HttpRoutes.DEVICE_ACTION
 import xget.dev.jet.data.remote.HttpRoutes.DEVICE_HISTORY
 import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICES_FROM_USER
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
@@ -49,12 +52,10 @@ class DevicesRemoteServiceImpl @Inject constructor(
 ) : DevicesRemoteService {
     override suspend fun getDeviceById(id: String): ApiResponse<DeviceDto> {
         return try {
-            val response = client.get {
-                url(BASE_DEVICE)
-                parameter("id", id)
+            val response = client.get(BASE_DEVICE) {
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
             }.body<DeviceDto>()
-
+            
             ApiResponse.Success(response)
         } catch (e: Exception) {
             handleApiException(e)
@@ -79,29 +80,30 @@ class DevicesRemoteServiceImpl @Inject constructor(
         awaitClose { }
     }
 
-    override suspend fun getDeviceHistory(id: String): ApiResponse<DeviceHistoryResponse> =   suspendCoroutine {continuation ->
-        try {
-            val payload = mapOf("id_device" to id)
-            CoroutineScope(continuation.context).launch {
-                val response = client.post(DEVICE_HISTORY) {
-                    header("Authorization", "Bearer ${token.getJwtLocal()}")
-                    contentType(ContentType.Application.Json) // Set the content type to JSON
-                    setBody(payload)
-                }
-                val parsedResponse = response.body<DeviceHistoryResponse>()
+    override suspend fun getDeviceHistory(id: String): ApiResponse<DeviceHistoryResponse> =
+        suspendCoroutine { continuation ->
+            try {
+                val payload = mapOf("id_device" to id)
+                CoroutineScope(continuation.context).launch {
+                    val response = client.post(DEVICE_HISTORY) {
+                        header("Authorization", "Bearer ${token.getJwtLocal()}")
+                        contentType(ContentType.Application.Json) // Set the content type to JSON
+                        setBody(payload)
+                    }
+                    val parsedResponse = response.body<DeviceHistoryResponse>()
 
-                if (response.status != HttpStatusCode.OK) {
-                    continuation.resume(handleApiCodeStatusException(response.status))
-                } else {
-                    continuation.resume(ApiResponse.Success(parsedResponse))
+                    if (response.status != HttpStatusCode.OK) {
+                        continuation.resume(handleApiCodeStatusException(response.status))
+                    } else {
+                        continuation.resume(ApiResponse.Success(parsedResponse))
+                    }
                 }
+
+            } catch (e: Exception) {
+                Log.d("getDeviceHistory Error?/", e.localizedMessage, e)
+                continuation.resumeWithException(e)
             }
-
-        } catch (e: Exception) {
-            Log.d("getDeviceHistory Error?/", e.localizedMessage, e)
-            continuation.resumeWithException(e)
         }
-    }
 
     override fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
         try {
@@ -127,21 +129,24 @@ class DevicesRemoteServiceImpl @Inject constructor(
         awaitClose {}
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun uploadDeviceAction(req : DeviceActionReq): ApiResponse<Nullable> =
-        suspendCoroutine { continuation ->
+    override suspend fun uploadDeviceAction(req: DeviceActionReq): ApiResponse<Nullable> {
+            Log.d("uploadDeviceAction", req.toString())
             try {
-                CoroutineScope(continuation.context).launch {
-                    val response = client.post(DEVICE_HISTORY) {
-                        header("Authorization", "Bearer ${token.getJwtLocal()}")
-                        setBody(req)
-                    }
-                    if (response.status == HttpStatusCode.Created) {
-                        continuation.resume(ApiResponse.Success(Nullable()))
-                    }
+                val response = client.post(DEVICE_ACTION) {
+                    contentType(ContentType.Application.Json)
+                    header("Authorization", "Bearer ${token.getJwtLocal()}")
+                    setBody(req)
                 }
+
+                if (response.status == HttpStatusCode.Created) {
+                    return ApiResponse.Success(Nullable())
+                }
+
+
             } catch (e: Exception) {
-                continuation.resume(ApiResponse.Error("Error de conexion."))
+                return ApiResponse.Error("Error de conexion.")
             }
+        return ApiResponse.Error("Error inesperado.")
     }
 
     override suspend fun deleteDevice(deviceId: String): ApiResponse<Boolean> =
@@ -163,7 +168,8 @@ class DevicesRemoteServiceImpl @Inject constructor(
             }
         }
 
-    override suspend fun updateDevice(device: DeviceDto): ApiResponse<Boolean> = suspendCoroutine { continuation ->
+    override suspend fun updateDevice(device: DeviceDto): ApiResponse<Boolean> =
+        suspendCoroutine { continuation ->
             try {
                 CoroutineScope(continuation.context).launch {
 
@@ -180,9 +186,12 @@ class DevicesRemoteServiceImpl @Inject constructor(
             } catch (e: Exception) {
                 continuation.resume(ApiResponse.Error("Error al intentar actualizar el dispositivo."))
             }
-    }
+        }
 
-    override suspend fun addUserToDevice( accessUserEmail: String,deviceId: String): ApiResponse<Boolean>  =  suspendCoroutine { continuation ->
+    override suspend fun addUserToDevice(
+        accessUserEmail: String,
+        deviceId: String
+    ): ApiResponse<Boolean> = suspendCoroutine { continuation ->
 
         val email = accessUserEmail
         try {
@@ -200,7 +209,7 @@ class DevicesRemoteServiceImpl @Inject constructor(
 
 
         } catch (e: Exception) {
-            Log.d("exception",e.localizedMessage,e)
+            Log.d("exception", e.localizedMessage, e)
             continuation.resume(ApiResponse.Error("Error intentando añadir usuario aldispositivo."))
         }
     }

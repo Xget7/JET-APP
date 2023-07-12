@@ -8,6 +8,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.domain.model.mqtt.SmartDeviceMqtt
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object ConstantsShared {
 
@@ -79,4 +82,14 @@ fun List<Pair<DeviceDto, Pair<String, SmartDeviceMqtt>>>.convertToSmartDevice():
 fun decodeBase64ToBitmap(base64String: String): Bitmap? {
     val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
     return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+}
+
+fun convertTimestamp(timestamp: String): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'a las' HH:mm")
+
+    val dateTime = LocalDateTime.parse(timestamp, inputFormatter)
+    val localDateTime = dateTime.atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+    return localDateTime.format(outputFormatter)
 }

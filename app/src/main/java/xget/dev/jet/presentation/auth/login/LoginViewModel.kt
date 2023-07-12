@@ -23,9 +23,9 @@ class LoginViewModel @Inject constructor(
     val token : Token
 ): BaseViewModel<LoginUiState>() {
 
-    var userGmail by mutableStateOf("p@p.com")
+    var userGmail by mutableStateOf("jet@jet.com")
         private set
-    var userPassword by mutableStateOf("p")
+    var userPassword by mutableStateOf("jetjet")
         private set
 
 

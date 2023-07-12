@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -47,6 +48,7 @@ import xget.dev.jet.presentation.main.history.components.SmartDeviceSimpleCard
 import xget.dev.jet.presentation.main.home.components.LoadingDevicesListShimmer
 import xget.dev.jet.presentation.theme.JetGray
 import xget.dev.jet.presentation.theme.JetScreensBackgroundColor
+import xget.dev.jet.presentation.utils.Screens
 import java.util.Locale
 
 @Composable
@@ -56,7 +58,9 @@ internal fun DeviceDetailHistoryScreen(
 ) {
     DeviceDetailHistoryScreen(
         uiState = viewModel.state.collectAsState(),
-        onBack = navController::navigateUp
+        onBack = {
+            navController.navigate(Screens.HistoryScreen.route)
+        }
     )
 
 }
@@ -78,12 +82,13 @@ internal fun DeviceDetailHistoryScreen(
             .padding(top = 5.dp, bottom = 55.dp),
         scaffoldState = scaffoldState,
         topBar = {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onBack) {
                     Icon(
                         painter = painterResource(id = R.drawable.bakcarrow),
                         "Back Arrow",
-                        tint = Color(0xFF407BFF)
+                        tint = Color(0xFF407BFF),
+                        modifier = Modifier.size(30.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(30.dp))
@@ -99,7 +104,8 @@ internal fun DeviceDetailHistoryScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.jet_logo),
                     contentDescription = "App Logo",
-                    tint = JetGray
+                    tint = JetGray,
+
                 )
             }
         },
@@ -124,7 +130,7 @@ internal fun DeviceDetailHistoryScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp),
+                    .padding(top = 60.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
@@ -138,12 +144,12 @@ internal fun DeviceDetailHistoryScreen(
                         .padding(start = 12.dp, end = 12.dp)
                 ) {
                     TextWithShadow(
-                        text = uiState.value.device.name.capitalize(Locale.getDefault()),
+                        text = uiState.value.deviceName.capitalize(Locale.getDefault()),
                         modifier = Modifier,
                         fontWeight = FontWeight.Bold,
                         shadow = false,
-                        fontSize = 26.sp,
-                        color = Color(0xFF435080)
+                        fontSize = 32.sp,
+                        color = Color(0xFF000D3A)
                     )
                 }
                 Spacer(modifier = Modifier.height(30.dp))

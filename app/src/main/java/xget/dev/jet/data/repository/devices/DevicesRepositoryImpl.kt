@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import xget.dev.jet.core.utils.toSmartDevice
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
+import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceActionReq
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.domain.repository.devices.DevicesRepository
 import xget.dev.jet.domain.repository.devices.mqtt.DevicesMqttService
@@ -29,7 +30,6 @@ class DevicesRepositoryImpl @Inject constructor(
         mqttDevices.release()
     }
 
-//  TODO("make Drop Down elipsis icon photo in iotin chat")
 
     private val restDevices = mutableListOf<DeviceDto>()
     private val smartDevices = mutableListOf<SmartDevice>()
@@ -39,6 +39,7 @@ class DevicesRepositoryImpl @Inject constructor(
         deviceService.getDevicesByUser().collect { response ->
             val data = response.data
             data?.myDevices?.let {
+                restDevices.clear()
                 restDevices.addAll(it)
             }
             if (data == null) {
@@ -127,15 +128,7 @@ class DevicesRepositoryImpl @Inject constructor(
                     online = mqttDevice.second.online == 1,
                     stateValue = mutableIntStateOf(mqttDevice.second.state)
                 )
-                //when repossitory context
-//                if not repository context
-//                if (!first && mqttDeivce2 == null){
-                    emit(emitDevice!!)
-//                }else{
-//                    emit(mqttDeivce2!!)
-//                    first = false
-//                }
-
+                emit(emitDevice!!)
             }
 
         } else {
@@ -149,6 +142,7 @@ class DevicesRepositoryImpl @Inject constructor(
         state: Int,
         userId: String
     ): Boolean {
+        deviceService.uploadDeviceAction(DeviceActionReq(state == 1,userId,deviceId))
         return mqttDevices.sendMessageToDevice(deviceId, state.toString(), userId)
     }
 

@@ -43,13 +43,12 @@ internal fun HistoryScreen(
     HistoryScreen(
         uiState = viewModel.state.collectAsState(),
         lastQuantityOfDevices = viewModel.lastQuantityOfDevices,
-        onDeviceDetail = {
-            navController.navigate(Screens.DeviceHistoryScreen.route + "/${it}") {
+        onDeviceDetail = { id , name ->
+            navController.navigate(Screens.DeviceHistoryScreen.route + "/$id/$name") {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = true
                 }
                 launchSingleTop = true
-                // Restore state when reselecting a previously selected item
                 restoreState = true
             }
         }
@@ -61,7 +60,7 @@ internal fun HistoryScreen(
 internal fun HistoryScreen(
     uiState: State<HistoryState>,
     lastQuantityOfDevices: Int, //Over-engineering.
-    onDeviceDetail: (String) -> Unit
+    onDeviceDetail: (String,String) -> Unit
 ) {
 
 
@@ -133,7 +132,7 @@ internal fun HistoryScreen(
                     ) {
                         items(uiState.value.devices) { device ->
                             SmartDeviceSimpleCard(device) {
-                                onDeviceDetail(device.id)
+                                onDeviceDetail(device.id,device.name)
                             }
                         }
                     }
