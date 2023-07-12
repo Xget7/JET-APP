@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
@@ -59,7 +60,13 @@ internal fun DeviceDetailHistoryScreen(
     DeviceDetailHistoryScreen(
         uiState = viewModel.state.collectAsState(),
         onBack = {
-            navController.navigate(Screens.HistoryScreen.route)
+            navController.navigate(Screens.HistoryScreen.route){
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
         }
     )
 

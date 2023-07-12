@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DeviceHistoryViewModel @Inject constructor(
     preferences: SharedPreferences,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val devicesService: DevicesRemoteService
 ) : BaseViewModel<DeviceHistoryState>() {
 
@@ -32,7 +32,7 @@ class DeviceHistoryViewModel @Inject constructor(
     private fun fetchDeviceData() {
         Log.d("fetchDeviceHistory", "device id $deviceId and name $deviceName")
         _state.update {
-            it.copy(isLoading = false, deviceName = deviceName)
+            it.copy( deviceName = deviceName)
         }
         fetchDeviceHistory()
     }
@@ -44,7 +44,7 @@ class DeviceHistoryViewModel @Inject constructor(
                 // Handle the ApiResponse.Success response
                 if (historyResponse is ApiResponse.Success) {
                     _state.update {
-                        it.copy(isLoading = false, history = historyResponse.data?.history!!)
+                        it.copy(isLoading = false, history = historyResponse.data?.history!!.reversed())
                     }
                 } else if (historyResponse is ApiResponse.Error) {
                     // Handle the error case
