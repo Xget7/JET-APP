@@ -16,14 +16,21 @@ hilt-android-gradle-plugin = "2.42"
 hilt-compiler = "1.0.0"
 hilt-navigation-compose = "2.5.3"
 jjwt-impl = "0.10.5"
+junit-junit2 = " 4.13.2"
+junit-jupiter-engine = "5.8.2"
+junit-jupiter-params = " 5.8.2"
+junit-vintage-engine = "5.8.2"
 kotlin-gradle-plugin = "1.8.0"
 kotlin-serialization = "1.8.21"
+kotlinx-coroutines-test = "1.6.4"
 kotlinx-serialization-json = "1.5.0"
 ktor-client-android = "2.3.0"
+ktor-client-mock = "2.2.1"
 ktor-client-websockets = "2.3.0"
 legacy-support-v4 = "1.0.0"
 logback-classic = "1.2.3"
 lottie-compose = "6.0.0"
+mockk = "1.13.3"
 navigation-compose = "2.5.3"
 org-jetbrains-kotlin-android = "1.8.0"
 core-ktx = "1.9.0"
@@ -74,14 +81,21 @@ jjwt-orgjson = { module = "io.jsonwebtoken:jjwt-orgjson", version.ref = "jjwt-im
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter-engine" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params" }
+junit-v_4132 = { module = "junit:junit", version.ref = "junit-junit2" }
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit-vintage-engine" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin-serialization" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ktor-auth = { module = "io.ktor:ktor-auth", version.ref = "ktor-client-android" }
 ktor-auth-jwt = { module = "io.ktor:ktor-auth-jwt", version.ref = "ktor-client-android" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor-client-android" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-client-android" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client-android" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor-client-mock" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor-client-android" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor-client-android" }
 ktor-client-serialization-jvm = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktor-client-android" }
@@ -94,6 +108,7 @@ activity-compose = { group = "androidx.activity", name = "activity-compose", ver
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 paho-mqtt-android = { module = "com.github.hannesa2:paho.mqtt.android", version.ref = "paho-mqtt-android" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbol-processing-api" }

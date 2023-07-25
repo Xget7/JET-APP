@@ -1,4 +1,4 @@
-package xget.dev.jet.data.remote
+package xget.dev.jet.data.util
 
 object HttpRoutes {
 
@@ -14,8 +14,6 @@ object HttpRoutes {
 
     //Devices Endpoints
     const val BASE_DEVICE = "$BASE_URL/device/"
-    const val GET_DEVICES_FROM_USER = "$BASE_URL/device/"
-    const val CREATE_DEVICE = "$BASE_URL/device/"
     const val DEVICE_HISTORY = "$BASE_URL/device/history/"
     const val DEVICE_ACTION = "$BASE_URL/record/"
 

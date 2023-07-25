@@ -5,13 +5,20 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
-    id ("kotlinx-serialization")
+    id("kotlinx-serialization")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp") version "1.8.0-1.0.9"
-
+    id("de.mannodermaus.android-junit5")
+    id("kover")
 
 
 }
+
+junitPlatform {
+    configurationParameter("junit.jupiter.testinstance.lifecycle.default", "per_class")
+}
+
+
 
 
 android {
@@ -34,10 +41,18 @@ android {
         }
 
         val properties = Properties()
-            properties.load(project.rootProject.file("local.properties").inputStream())
+        properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String","COGNITO_POOL_ID","\"${properties.getProperty("COGNITO_POOL_ID")}\"")
-        buildConfigField("String","AWS_MQTT_ENDPOINT","\"${properties.getProperty("AWS_MQTT_ENDPOINT")}\"")
+        buildConfigField(
+            "String",
+            "COGNITO_POOL_ID",
+            "\"${properties.getProperty("COGNITO_POOL_ID")}\""
+        )
+        buildConfigField(
+            "String",
+            "AWS_MQTT_ENDPOINT",
+            "\"${properties.getProperty("AWS_MQTT_ENDPOINT")}\""
+        )
     }
 
     buildTypes {
@@ -66,7 +81,7 @@ android {
         }
     }
     kapt {
-        correctErrorTypes= true
+        correctErrorTypes = true
     }
     externalNativeBuild {
         ndkBuild {
@@ -74,9 +89,16 @@ android {
         }
     }
 
+    //log Test
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+
 //    tasks.named<JavaExec>("run") {
 //        standardInput = System.`in`
 //    }
+
 }
 
 dependencies {
@@ -90,65 +112,65 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation (libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.appcompat)
-    api (libs.androidx.activity.ktx)
-    api (libs.androidx.fragment.ktx)
+    api(libs.androidx.activity.ktx)
+    api(libs.androidx.fragment.ktx)
 
 
     //compose ui ccontroller
-    implementation( libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.systemuicontroller)
 
     //Glide images
-    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 
 
     // Paging Compose
-    implementation (libs.accompanist.pager)
-    implementation (libs.accompanist.pager.indicators)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
 
     //Ktor
 
-    implementation (libs.logback.classic)
-    implementation (libs.ktor.client.core)
+    implementation(libs.logback.classic)
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.websockets)
     implementation(libs.ktor.serialization.kotlinx.json)
-    implementation (libs.ktor.client.android)
+    implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.gson)
 
-    implementation (libs.ktor.client.logging)
+    implementation(libs.ktor.client.logging)
 
     //MQTT V5
-    implementation (libs.androidx.legacy.support.v4)
-    implementation (libs.paho.mqtt.android)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.paho.mqtt.android)
 
 
     //AWS MQTT
 
     // AWS IoT
     implementation(libs.aws.android.sdk.iot)
-    implementation (libs.aws.android.sdk.core)
-    implementation (libs.aws.android.sdk.cognitoidentityprovider)
+    implementation(libs.aws.android.sdk.core)
+    implementation(libs.aws.android.sdk.cognitoidentityprovider)
 
     //Dagger Hilt
     implementation(libs.hilt.android)
     testImplementation("junit:junit:4.12")
     kapt(libs.hilt.android.compiler)
-    kapt (libs.androidx.hilt.compiler)
-    kapt (libs.dagger.android.processor)
-    implementation (libs.androidx.navigation.compose)
-    implementation (libs.androidx.hilt.navigation.compose)
-    implementation (libs.dagger.android.support)
+    kapt(libs.androidx.hilt.compiler)
+    kapt(libs.dagger.android.processor)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.dagger.android.support)
 
     //JWT AUTH
     api(libs.jjwt.api)
-    runtimeOnly (libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.orgjson)
 
     //Room
-    implementation (libs.androidx.room.runtime)
+    implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
 
     // To use Kotlin Symbol Processing (KSP)
@@ -156,26 +178,38 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     //Lottie
-    implementation (libs.lottie.compose)
+    implementation(libs.lottie.compose)
 
     //Location
-    implementation (libs.play.services.location)
-
-
+    implementation(libs.play.services.location)
 
 
     // ...with Kotlin.
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest (libs.hilt.android.compiler)
+    kaptAndroidTest(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+    testImplementation(libs.junit.jupiter.api)
+
+    //mock
+
+    // Then add the MockEngine that Ktor supplies for the Ktor Client. This is awesome and really / powerful: I'll go into how it works in a minute.
+    testImplementation(libs.ktor.client.mock)
+    // Finally, add the MockK dependency. This library is really easy to use, allowed me to use
+// real code for unit tests, and saved me a ton of extra typing.
+    testImplementation(libs.mockk)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    // (Optional) If vou need "Parameterized Tests"
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.vintage.engine)
+    testImplementation(libs.kotlinx.coroutines.test)
+
 
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
-
 
 
 }

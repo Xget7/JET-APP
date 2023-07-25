@@ -3,7 +3,6 @@ package xget.dev.jet.data.remote.auth
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -11,11 +10,10 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.http.parameters
-import xget.dev.jet.data.remote.HttpRoutes.FORGOT_PASSWORD
+import xget.dev.jet.data.util.HttpRoutes.FORGOT_PASSWORD
 import xget.dev.jet.data.util.network.ApiResponse
-import xget.dev.jet.data.remote.HttpRoutes.LOGIN_USER
-import xget.dev.jet.data.remote.HttpRoutes.LOGOUT_USER
+import xget.dev.jet.data.util.HttpRoutes.LOGIN_USER
+import xget.dev.jet.data.util.HttpRoutes.LOGOUT_USER
 import xget.dev.jet.data.remote.auth.dto.forgotPass.ForgotPasswordRequest
 import xget.dev.jet.data.remote.auth.dto.login.LoginRequest
 import xget.dev.jet.data.remote.users.dto.UserAuthResponse

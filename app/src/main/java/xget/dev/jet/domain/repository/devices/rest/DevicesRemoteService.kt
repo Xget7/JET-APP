@@ -19,7 +19,7 @@ interface DevicesRemoteService {
 
     fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>>
 
-    suspend fun uploadDeviceAction(req : DeviceActionReq) : ApiResponse<Nullable>
+    suspend fun uploadDeviceAction(req : DeviceActionReq) : ApiResponse<Boolean>
 
     suspend fun deleteDevice(deviceId : String) : ApiResponse<Boolean>
     suspend fun updateDevice(device : DeviceDto) : ApiResponse<Boolean>

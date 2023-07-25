@@ -5,12 +5,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -24,12 +22,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import xget.dev.jet.data.remote.HttpRoutes.CREATE_DEVICE
 
-import xget.dev.jet.data.remote.HttpRoutes.BASE_DEVICE
-import xget.dev.jet.data.remote.HttpRoutes.DEVICE_ACTION
-import xget.dev.jet.data.remote.HttpRoutes.DEVICE_HISTORY
-import xget.dev.jet.data.remote.HttpRoutes.GET_DEVICES_FROM_USER
+import xget.dev.jet.data.util.HttpRoutes.BASE_DEVICE
+import xget.dev.jet.data.util.HttpRoutes.DEVICE_ACTION
+import xget.dev.jet.data.util.HttpRoutes.DEVICE_HISTORY
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
 import xget.dev.jet.data.remote.devices.rest.dto.DevicesListResponse
 import xget.dev.jet.data.remote.devices.rest.dto.history.DeviceActionReq
@@ -48,14 +44,14 @@ import kotlin.coroutines.suspendCoroutine
 
 class DevicesRemoteServiceImpl @Inject constructor(
     val client: HttpClient,
-    val token: Token
+    val token: Token,
 ) : DevicesRemoteService {
     override suspend fun getDeviceById(id: String): ApiResponse<DeviceDto> {
         return try {
             val response = client.get(BASE_DEVICE) {
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
             }.body<DeviceDto>()
-            
+
             ApiResponse.Success(response)
         } catch (e: Exception) {
             handleApiException(e)
@@ -66,7 +62,7 @@ class DevicesRemoteServiceImpl @Inject constructor(
         try {
             Log.d("trying response", "yes")
             Log.d("localToken", token.getJwtLocal().toString())
-            val response = client.get(GET_DEVICES_FROM_USER) {
+            val response = client.get(BASE_DEVICE) {
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
             }
             Log.d("getDeviceSBYUserREsponse", response.body())
@@ -81,33 +77,32 @@ class DevicesRemoteServiceImpl @Inject constructor(
     }
 
     override suspend fun getDeviceHistory(id: String): ApiResponse<DeviceHistoryResponse> =
-        suspendCoroutine { continuation ->
+        withContext(Dispatchers.IO) {
             try {
                 val payload = mapOf("id_device" to id)
-                CoroutineScope(continuation.context).launch {
-                    val response = client.post(DEVICE_HISTORY) {
-                        header("Authorization", "Bearer ${token.getJwtLocal()}")
-                        contentType(ContentType.Application.Json) // Set the content type to JSON
-                        setBody(payload)
-                    }
-                    val parsedResponse = response.body<DeviceHistoryResponse>()
 
-                    if (response.status != HttpStatusCode.OK) {
-                        continuation.resume(handleApiCodeStatusException(response.status))
-                    } else {
-                        continuation.resume(ApiResponse.Success(parsedResponse))
-                    }
+                val response = client.post(DEVICE_HISTORY) {
+                    header("Authorization", "Bearer ${token.getJwtLocal()}")
+                    contentType(ContentType.Application.Json) // Set the content type to JSON
+                    setBody(payload)
+                }
+                val parsedResponse = response.body<DeviceHistoryResponse>()
+
+                if (response.status != HttpStatusCode.OK) {
+                    return@withContext handleApiCodeStatusException(response.status)
+                } else {
+                    return@withContext ApiResponse.Success(parsedResponse)
                 }
 
             } catch (e: Exception) {
                 Log.d("getDeviceHistory Error?/", e.localizedMessage, e)
-                continuation.resumeWithException(e)
+                return@withContext handleApiException(e)
             }
         }
 
     override fun createDevice(request: DeviceDto): Flow<ApiResponse<Boolean>> = callbackFlow {
         try {
-            val response = client.post(CREATE_DEVICE) {
+            val response = client.post(BASE_DEVICE) {
                 contentType(ContentType.Application.Json) // Set the content type to JSON
                 setBody(request)
                 header("Authorization", "Bearer ${token.getJwtLocal()}")
@@ -129,8 +124,10 @@ class DevicesRemoteServiceImpl @Inject constructor(
         awaitClose {}
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun uploadDeviceAction(req: DeviceActionReq): ApiResponse<Nullable> {
+    override suspend fun uploadDeviceAction(req: DeviceActionReq): ApiResponse<Boolean> {
+        return withContext(Dispatchers.IO) {
             Log.d("uploadDeviceAction", req.toString())
+
             try {
                 val response = client.post(DEVICE_ACTION) {
                     contentType(ContentType.Application.Json)
@@ -139,14 +136,13 @@ class DevicesRemoteServiceImpl @Inject constructor(
                 }
 
                 if (response.status == HttpStatusCode.Created) {
-                    return ApiResponse.Success(Nullable())
+                    return@withContext ApiResponse.Success(true)
                 }
-
-
             } catch (e: Exception) {
-                return ApiResponse.Error("Error de conexion.")
+                return@withContext ApiResponse.Error("Error de conexion.")
             }
-        return ApiResponse.Error("Error inesperado.")
+            return@withContext ApiResponse.Error("Error de Inesperado.")
+        }
     }
 
     override suspend fun deleteDevice(deviceId: String): ApiResponse<Boolean> =

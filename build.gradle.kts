@@ -20,6 +20,8 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.kapt) apply false
     id("com.google.dagger.hilt.android") version "2.44" apply false
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
+    id ("org.jetbrains.kotlinx.kover") version "0.6.1" apply false
+    id ("de.mannodermaus.android-junit5") version "1.8.2.1" apply false
 
 
 }

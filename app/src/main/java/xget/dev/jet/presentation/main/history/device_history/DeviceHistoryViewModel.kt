@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import xget.dev.jet.core.base.BaseViewModel
@@ -38,7 +39,7 @@ class DeviceHistoryViewModel @Inject constructor(
     }
 
     private fun fetchDeviceHistory() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val historyResponse = devicesService.getDeviceHistory(deviceId)
                 // Handle the ApiResponse.Success response

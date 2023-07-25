@@ -31,11 +31,13 @@ fun <T> handleApiException(e: Exception): ApiResponse.Error<T> {
                 else -> "Error del servidor."
             }
         }
-        else -> "Error de conexion."
-    }
 
-    // Puedes agregar un registro de error adicional si lo deseas
-    Log.d("ErrorWithServer", e.toString())
+        else ->{
+            "Error de conexion."
+        }
+
+    }
+    Log.d("ErrorWithServer",e.localizedMessage,e)
 
     return ApiResponse.Error(errorMessage)
 }
@@ -55,6 +57,5 @@ fun <T> handleApiCodeStatusException(e: HttpStatusCode): ApiResponse.Error<T> {
         }
     // Puedes agregar un registro de error adicional si lo deseas
     Log.d("ErrorWithServer", e.toString())
-
     return ApiResponse.Error(errorMessage)
 }

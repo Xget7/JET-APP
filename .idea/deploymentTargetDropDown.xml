@@ -2,34 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="DeviceDetailPreview">
-        <State />
-      </entry>
-      <entry key="HomeScreenPrev">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="ec77bb25" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-06-28T19:27:39.374019Z" />
-        </State>
-      </entry>
-      <entry key="LoadingDeviceShimmerPrev">
-        <State />
-      </entry>
-      <entry key="PrevShimmer">
-        <State />
-      </entry>
-      <entry key="ShareDeviceDialogPreview">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>

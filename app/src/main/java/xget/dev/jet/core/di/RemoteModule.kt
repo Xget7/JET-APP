@@ -49,7 +49,7 @@ object RemoteModule {
 
             install(Logging) {
                 logger = Logger.DEFAULT
-                level = LogLevel.HEADERS
+                level = LogLevel.ALL
                 filter { request ->
                     request.url.host.contains("ktor.io")
                 }
