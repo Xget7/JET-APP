@@ -24,7 +24,7 @@ import xget.dev.jet.presentation.theme.JETTheme
 @Composable
 fun LoadingDevicesListShimmer(devices:Int){
 
-    val preferences =
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {

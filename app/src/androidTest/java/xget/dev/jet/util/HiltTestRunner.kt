@@ -1,4 +1,4 @@
-package xget.dev.jet
+package xget.dev.jet.util
 
 import android.app.Application
 import android.content.Context

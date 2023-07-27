@@ -22,7 +22,7 @@ import xget.dev.jet.remote.api.creators.badRequestJSON
 import xget.dev.jet.remote.api.creators.ktorErrorClient
 import xget.dev.jet.remote.api.creators.ktorSuccessClient
 import xget.dev.jet.remote.util.LogMockExtension
-import xget.dev.jet.remote.util.MockToken
+import xget.dev.jet.core.utils.MockToken
 
 
 @ExtendWith(LogMockExtension::class)

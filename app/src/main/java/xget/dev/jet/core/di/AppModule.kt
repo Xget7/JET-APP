@@ -38,9 +38,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
-
-
+object AppModule {
     @Provides
     @Singleton
     fun provideToken(sharedPreferences: SharedPreferences): Token {

@@ -1,5 +1,6 @@
 package xget.dev.jet.presentation.main.history.device_history
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.background
@@ -72,6 +73,7 @@ internal fun DeviceDetailHistoryScreen(
 
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 internal fun DeviceDetailHistoryScreen(
     uiState: State<DeviceHistoryState>,
@@ -118,7 +120,6 @@ internal fun DeviceDetailHistoryScreen(
         },
         backgroundColor = JetScreensBackgroundColor,
     ) {
-        it
 
 
         LaunchedEffect(uiState.value.isError) {

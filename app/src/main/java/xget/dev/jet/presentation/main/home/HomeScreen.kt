@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +44,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopHomeBar
+import xget.dev.jet.core.utils.TestTags.HOME_SCREEN
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.presentation.main.home.components.LoadingDevicesListShimmer
 import xget.dev.jet.presentation.main.home.components.SmartDeviceItem
@@ -93,7 +95,8 @@ internal fun HomeScreen(
         Modifier
             .fillMaxSize()
             .background(JetScreensBackgroundColor)
-            .padding(top = 5.dp, bottom = 55.dp),
+            .padding(top = 5.dp, bottom = 55.dp)
+            .testTag(HOME_SCREEN),
         scaffoldState = scaffoldState,
         topBar = {
             TopHomeBar(addDevices = true, onAddDevice)

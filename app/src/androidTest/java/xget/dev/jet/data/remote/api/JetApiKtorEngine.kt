@@ -1,6 +1,5 @@
-package xget.dev.jet.remote.api.creators
+package xget.dev.jet.data.remote.api
 
-import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -13,12 +12,18 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.gson.gson
+import xget.dev.jet.data.remote.responses.CreateDeviceSuccessJSON
+import xget.dev.jet.data.remote.responses.DeviceHistorySuccessJSON
+import xget.dev.jet.data.remote.responses.DeviceRecordActionSuccessJSON
+import xget.dev.jet.data.remote.responses.GetUserDevicesSuccessJSON
+import xget.dev.jet.data.remote.responses.GetUserSuccessJSON
+import xget.dev.jet.data.remote.responses.LoginUserSuccessJSON
 import xget.dev.jet.data.util.HttpRoutes
 
 private val responseHeaders = headersOf(HttpHeaders.ContentType, "application/json")
 
 
-public val ktorSuccessClient = HttpClient(MockEngine) {
+val KtorClient = HttpClient(MockEngine) {
 
     engine {
         addHandler { req ->
@@ -27,7 +32,7 @@ public val ktorSuccessClient = HttpClient(MockEngine) {
             when (req.url.toString()) {
 
                 HttpRoutes.REGISTER_USER -> respond(
-                    content = if (req.method == HttpMethod.Post)LoginUserSuccessJSON else GetUserSuccessJSON,
+                    content = if (req.method == HttpMethod.Post) LoginUserSuccessJSON else GetUserSuccessJSON,
                     status = if (req.method == HttpMethod.Post) HttpStatusCode.Created else HttpStatusCode.OK,
                     responseHeaders
                 )
@@ -46,6 +51,7 @@ public val ktorSuccessClient = HttpClient(MockEngine) {
                     HttpStatusCode.Created,
                     responseHeaders
                 )
+
                 HttpRoutes.BASE_DEVICE -> respond(
                     content = if (req.method == HttpMethod.Post) CreateDeviceSuccessJSON else GetUserDevicesSuccessJSON,
                     status = if (req.method == HttpMethod.Post) HttpStatusCode.Created else HttpStatusCode.OK,
@@ -69,65 +75,3 @@ public val ktorSuccessClient = HttpClient(MockEngine) {
         gson()
     }
 }
-
-
-
-
-val ktorErrorClient = HttpClient(MockEngine) {
-    engine {
-        addHandler { req ->
-            when (req.url.encodedPath) {
-                HttpRoutes.REGISTER_USER -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.BadRequest
-                    )
-                }
-                HttpRoutes.LOGIN_USER -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.BadRequest
-                    )
-                }
-                HttpRoutes.DEVICE_HISTORY -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.BadRequest
-                    )
-                }
-                HttpRoutes.DEVICE_ACTION -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.BadRequest
-                    )
-                }
-                HttpRoutes.BASE_DEVICE -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.BadRequest
-                    )
-                }
-                else -> {
-                    respond(
-                        content = badRequestJSON,
-                        status = HttpStatusCode.NotFound
-                    )
-                }
-            }
-        }
-    }
-    expectSuccess = true
-    install(Logging) {
-        logger = object : Logger {
-            override fun log(message: String) {
-                println(message)
-            }
-        }
-        level = LogLevel.ALL
-    }
-    install(ContentNegotiation) {
-        gson()
-    }
-}
-
-data class ErrorJSON(val code: String, val message: String)

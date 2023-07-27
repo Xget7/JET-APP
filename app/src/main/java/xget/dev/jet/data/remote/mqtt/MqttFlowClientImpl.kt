@@ -57,6 +57,10 @@ class MqttFlowClientImpl @Inject constructor(
 
     private val _connectionStatus = MutableStateFlow(false)
     override val connectionStatus: SharedFlow<Boolean> get() = _connectionStatus.asSharedFlow()
+    private val _errors = MutableStateFlow("")
+    override val errors: SharedFlow<String>
+        get() = _errors.asSharedFlow()
+
 
     var connectionsRetry = 0
 
@@ -77,9 +81,6 @@ class MqttFlowClientImpl @Inject constructor(
         context.registerReceiver(wifiStatusReceiver, intentFilter)
     }
 
-    private val _errors = MutableStateFlow("")
-    override val errors: SharedFlow<String>
-        get() = _errors.asSharedFlow()
 
 
     override fun startMqttService() {

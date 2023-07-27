@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import xget.dev.jet.R
+import xget.dev.jet.core.utils.TestTags.DEVICE_DETAIL_SCREEN
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.presentation.main.home.device_details.components.JetCardIcon
 import xget.dev.jet.presentation.main.home.device_details.components.ShareDeviceDialog
@@ -152,13 +154,16 @@ internal fun DeviceDetailScreen(
         enter = expandHorizontally(expandFrom = Alignment.Start, animationSpec = tween(200))
     ) {
         Scaffold(
-            modifier = Modifier.background(backgroundColor.value),
+            modifier = Modifier
+                .background(backgroundColor.value)
+                .testTag(DEVICE_DETAIL_SCREEN),
             scaffoldState = scaffoldState,
             topBar = {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween,
+                        .padding(16.dp)
+                        .padding(top = 20.dp), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onBack) {

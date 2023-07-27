@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +46,7 @@ import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
+import xget.dev.jet.core.utils.TestTags
 import xget.dev.jet.core.utils.checkLocationSetting
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
@@ -202,7 +204,8 @@ internal fun AddDeviceSecondStep(
                         painter = painterResource(id = R.drawable.wifi_icon),
                         contentDescription = null
                     )
-                }
+                },
+                modifier = Modifier.testTag(TestTags.USER_WIFI_SSID_TEXT_FIELD)
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -215,8 +218,9 @@ internal fun AddDeviceSecondStep(
                         painter = painterResource(id = R.drawable.password_icon),
                         contentDescription = null
                     )
-
-                }
+                },
+                modifier = Modifier
+                    .testTag(TestTags.USER_WIFI_PASSWORD_TEXT_FIELD)
             )
 
 

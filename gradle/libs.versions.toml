@@ -12,6 +12,7 @@ constraintlayout-compose = "1.0.1"
 fragment-ktx = "1.6.0"
 gradle = "8.2.0-alpha09"
 hilt-android = "2.44"
+hilt-android-compiler = "2.28-alpha"
 hilt-android-gradle-plugin = "2.42"
 hilt-compiler = "1.0.0"
 hilt-navigation-compose = "2.5.3"
@@ -31,7 +32,9 @@ legacy-support-v4 = "1.0.0"
 logback-classic = "1.2.3"
 lottie-compose = "6.0.0"
 mockk = "1.13.3"
+monitor = "1.6.1"
 navigation-compose = "2.5.3"
+navigation-testing = "2.6.0"
 org-jetbrains-kotlin-android = "1.8.0"
 core-ktx = "1.9.0"
 junit = "4.13.2"
@@ -58,7 +61,9 @@ androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-compiler" }
 androidx-hilt-navigation-compose-2_5_3 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
+androidx-monitor = { module = "androidx.test:monitor", version.ref = "monitor" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigation-testing" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-compiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
 androidx-room-runtime-2_5_1 = { module = "androidx.room:room-runtime", version.ref = "androidx-room-runtime" }
@@ -72,6 +77,7 @@ dagger-android-support = { module = "com.google.dagger:dagger-android-support", 
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
+hilt-android-compiler-v228alpha = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android-compiler" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android" }
 hilt-android-gradle-plugin-2_42 = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android-gradle-plugin" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android" }

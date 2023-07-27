@@ -34,7 +34,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "xget.dev.jet.HiltTestRunner"
+        testInstrumentationRunner = "xget.dev.jet.util.HiltTestRunner"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -93,7 +93,13 @@ android {
     @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.isReturnDefaultValues = true
+
     }
+
+
+
+
+
 
 //    tasks.named<JavaExec>("run") {
 //        standardInput = System.`in`
@@ -102,8 +108,7 @@ android {
 }
 
 dependencies {
-
-    //Core
+    // Core
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
@@ -117,20 +122,17 @@ dependencies {
     api(libs.androidx.activity.ktx)
     api(libs.androidx.fragment.ktx)
 
-
-    //compose ui ccontroller
+    // Compose UI Controller
     implementation(libs.accompanist.systemuicontroller)
 
-    //Glide images
+    // Glide images
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
-
 
     // Paging Compose
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
 
-    //Ktor
-
+    // Ktor
     implementation(libs.logback.classic)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
@@ -139,77 +141,75 @@ dependencies {
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.gson)
-
     implementation(libs.ktor.client.logging)
 
-    //MQTT V5
+    // MQTT V5
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.paho.mqtt.android)
 
-
-    //AWS MQTT
-
-    // AWS IoT
+    // AWS MQTT
     implementation(libs.aws.android.sdk.iot)
     implementation(libs.aws.android.sdk.core)
     implementation(libs.aws.android.sdk.cognitoidentityprovider)
 
-    //Dagger Hilt
+    // Dagger Hilt
     implementation(libs.hilt.android)
-    testImplementation("junit:junit:4.12")
-    kapt(libs.hilt.android.compiler)
-    kapt(libs.androidx.hilt.compiler)
-    kapt(libs.dagger.android.processor)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.dagger.android.support)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    kapt(libs.dagger.android.processor)
 
-    //JWT AUTH
+    // JWT AUTH
     api(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.orgjson)
 
-    //Room
+    // Room
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
-
-    // To use Kotlin Symbol Processing (KSP)
     implementation(libs.symbol.processing.api)
     ksp(libs.androidx.room.compiler)
 
-    //Lottie
+    // Lottie
     implementation(libs.lottie.compose)
 
-    //Location
+    // Location
     implementation(libs.play.services.location)
 
 
-    // ...with Kotlin.
+    //Instrumentation Testing
+    androidTestImplementation (libs.androidx.navigation.testing)
+
+    // For instrumented tests HILT .
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.android.compiler)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation (libs.hilt.android.testing)
+    // ...with Kotlin.
+    kaptAndroidTest (libs.hilt.android.compiler)
+
+    //Expresso and Junit
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(platform(libs.compose.bom))
+    //Ui test
     androidTestImplementation(libs.ui.test.junit4)
+    //Ktor Mock
+    androidTestImplementation(libs.ktor.client.mock)
+    androidTestImplementation(libs.mockk)
+    //Unit test
     testImplementation(libs.junit.jupiter.api)
-
-    //mock
-
-    // Then add the MockEngine that Ktor supplies for the Ktor Client. This is awesome and really / powerful: I'll go into how it works in a minute.
+    testImplementation(libs.junit)
     testImplementation(libs.ktor.client.mock)
-    // Finally, add the MockK dependency. This library is really easy to use, allowed me to use
-// real code for unit tests, and saved me a ton of extra typing.
     testImplementation(libs.mockk)
     testRuntimeOnly(libs.junit.jupiter.engine)
-    // (Optional) If vou need "Parameterized Tests"
     testImplementation(libs.junit.jupiter.params)
     testRuntimeOnly(libs.junit.vintage.engine)
     testImplementation(libs.kotlinx.coroutines.test)
 
-
+    // Debugging
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
-
+    debugImplementation (libs.androidx.monitor)
 
 }

@@ -18,12 +18,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.TextWithShadow
+import xget.dev.jet.core.utils.TestTags.DEVICE_TYPE_ITEM
 import xget.dev.jet.presentation.utils.DevicesTypeObj
 import xget.dev.jet.presentation.theme.JetDarkGray
 import xget.dev.jet.presentation.theme.JetDarkGray2
@@ -39,7 +41,8 @@ fun SelectDeviceTypeItem(
         modifier = Modifier
             .width(360.dp)
             .height(60.dp)
-            .clickable(onClick = onSelected),
+            .clickable(onClick = onSelected)
+            .testTag(DEVICE_TYPE_ITEM),
         shape = RoundedCornerShape(50.dp),
         colors = CardDefaults.cardColors(if (isSelected) Color(0xA1DDEDFE) else Color.Transparent),
         elevation = CardDefaults.elevatedCardElevation(0.dp)

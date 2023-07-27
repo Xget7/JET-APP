@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +27,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import xget.dev.jet.R
+import xget.dev.jet.core.utils.TestTags
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JetGray2
 
@@ -82,6 +84,7 @@ fun RowScope.AddItem(
                 tint = if (!isSelected) JetGray2 else Color(0xFF1F7EFF)
             )
         },
+        modifier = Modifier,
         selected = isSelected,
         onClick = {
             navController.navigate(screen.route) {

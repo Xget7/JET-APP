@@ -88,9 +88,7 @@ fun ShareDeviceDialog(
 @Preview
 @Composable
 fun ShareDeviceDialogPreview() {
-    var email = remember {
-        ""
-    }
+
     JETTheme {
         ShareDeviceDialog({}) { }
     }

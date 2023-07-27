@@ -17,12 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import xget.dev.jet.R
+import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_SCREEN
 import xget.dev.jet.presentation.theme.JetBlue
 import xget.dev.jet.presentation.theme.JetDarkBlue
 import xget.dev.jet.presentation.theme.JetGray
@@ -57,10 +59,10 @@ fun TopCustomBar(
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = if(showBack) Arrangement.Start else Arrangement.Center
+                horizontalArrangement = if (showBack) Arrangement.Start else Arrangement.Center
             ) {
 
-                if (showBack){
+                if (showBack) {
                     Spacer(modifier = Modifier.width(34.dp))
                 }
                 Text(text = title, fontSize = 27.sp, color = color, fontWeight = FontWeight.Bold)
@@ -89,8 +91,8 @@ fun TopHomeBar(addDevices: Boolean, onClick: () -> Unit, modifier: Modifier = Mo
             tint = JetGray
         )
 
-        if (addDevices){
-            IconButton(onClick = onClick) {
+        if (addDevices) {
+            IconButton(onClick = onClick, modifier.testTag(GO_TO_ADD_DEVICE_SCREEN)) {
                 Icon(
                     painter = painterResource(id = R.drawable.add_device_icon),
                     contentDescription = "Add device Icon",
@@ -107,7 +109,7 @@ fun TopHomeBar(addDevices: Boolean, onClick: () -> Unit, modifier: Modifier = Mo
 @Preview(showBackground = true)
 @Composable
 fun TopHomeBarPreview() {
-    TopHomeBar(addDevices = true,{})
+    TopHomeBar(addDevices = true, {})
 }
 
 

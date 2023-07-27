@@ -1,4 +1,4 @@
-package xget.dev.jet.remote.util
+package xget.dev.jet.core.utils
 
 import xget.dev.jet.domain.repository.token.Token
 

@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
             Log.d("viewmodelDevicesByUserid", smartDevices.toString())
             _state.update {
                 it.copy(
-                    myDevices = MutableStateFlow(smartDevices.filter { it.uid == userId.value }),
+                    myDevices = MutableStateFlow(smartDevices), //fix filter by id
                     otherUsersDevices = MutableStateFlow(smartDevices.filter { it.uid != userId.value }),
                     isLoading = false
                 )

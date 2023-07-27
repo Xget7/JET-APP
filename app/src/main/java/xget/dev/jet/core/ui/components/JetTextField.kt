@@ -40,8 +40,8 @@ fun JetTextField(
     trailingIcon: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
     oneLine: Boolean = true,
-    shadow: Boolean = false
-
+    shadow: Boolean = false,
+    modifier: Modifier = Modifier
 ) {
 
     OutlinedTextField(
@@ -59,7 +59,7 @@ fun JetTextField(
         label = {
             Text(textLabel, color = Color(0xD323244E), fontWeight = FontWeight.Bold)
         },
-        modifier = Modifier
+        modifier = modifier
             .width(350.dp)
             .height(60.dp)
             .apply {

@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import xget.dev.jet.R
 import xget.dev.jet.core.ui.components.JetSwitchButton
 import xget.dev.jet.core.ui.components.TextWithShadow
+import xget.dev.jet.core.utils.TestTags.SMART_DEVICE_HISTORY_ITEM
 import xget.dev.jet.data.remote.devices.rest.dto.DeviceDto
 import xget.dev.jet.domain.model.device.SmartDevice
 import xget.dev.jet.presentation.theme.JetBlue2
@@ -50,7 +52,8 @@ fun SmartDeviceSimpleCard(
         modifier = Modifier
             .fillMaxWidth(0.999f)
             .height(125.dp)
-            .padding(4.dp),
+            .padding(4.dp)
+            .testTag(SMART_DEVICE_HISTORY_ITEM),
         shape = RoundedCornerShape(
             topStart = 15.dp,
             topEnd = 15.dp,

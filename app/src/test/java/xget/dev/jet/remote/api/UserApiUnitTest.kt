@@ -1,8 +1,5 @@
 package xget.dev.jet.remote.api
 
-import android.util.Log
-import io.mockk.every
-import io.mockk.mockkStatic
 import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -12,16 +9,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import xget.dev.jet.data.remote.auth.dto.login.LoginRequest
 import xget.dev.jet.data.remote.users.UserService
 import xget.dev.jet.data.remote.users.UserServiceImpl
 import xget.dev.jet.data.remote.users.dto.RegisterRequest
 import xget.dev.jet.data.util.network.ApiResponse
-import xget.dev.jet.remote.api.creators.LoginUserSuccessJSON
 import xget.dev.jet.remote.api.creators.ktorErrorClient
 import xget.dev.jet.remote.api.creators.ktorSuccessClient
 import xget.dev.jet.remote.util.LogMockExtension
-import xget.dev.jet.remote.util.MockToken
+import xget.dev.jet.core.utils.MockToken
 
 
 @ExtendWith(LogMockExtension::class)

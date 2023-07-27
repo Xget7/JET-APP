@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +52,8 @@ import xget.dev.jet.core.ui.components.CustomBackgroundButton
 import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
+import xget.dev.jet.core.utils.TestTags.DEVICE_NAME_TEXT_FIELD
+import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_2
 import xget.dev.jet.core.utils.checkLocationSetting
 import xget.dev.jet.presentation.main.device_config.components.SelectDeviceTypeItem
 import xget.dev.jet.presentation.main.device_config.components.TurnOnBluetooth
@@ -177,7 +180,7 @@ internal fun AddDeviceFirstStep(
         scaffoldState = scaffoldState,
         modifier = Modifier
             .background(Color.White)
-            .padding(start = 16.dp, end = 16.dp, top = 1.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 50.dp),
         topBar = {
             TopCustomBar(title = "Añadir Dispositivos", onClick = onBack)
         },
@@ -205,10 +208,8 @@ internal fun AddDeviceFirstStep(
                                 delay(1000)
                                 tryEnableLocation()
                             }
-
-
                         }
-                    },
+                    }, modifier = Modifier.testTag(GO_TO_ADD_DEVICE_STEP_2)
                 )
 
             }
@@ -285,7 +286,8 @@ internal fun AddDeviceFirstStep(
             JetTextField(
                 text = deviceName,
                 textLabel = "Nombre de tu dispositivo",
-                onValue = updateDeviceName
+                onValue = updateDeviceName,
+                modifier = Modifier.testTag(DEVICE_NAME_TEXT_FIELD)
             )
 
 
@@ -309,7 +311,7 @@ fun FirstStepPrev() {
                 bluetoothOn = false
             )
         )
-        AddDeviceFirstStep(uiState = uiState, {}, {}, {}, {},"",{})
+        AddDeviceFirstStep(uiState = uiState, {}, {}, {}, {}, "", {})
     }
 }
 

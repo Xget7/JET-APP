@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -55,6 +56,10 @@ import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
+import xget.dev.jet.core.utils.TestTags.GO_TO_FORGOT_PASSWORD_SCREEN
+import xget.dev.jet.core.utils.TestTags.GO_TO_REGISTER_SCREEN
+import xget.dev.jet.core.utils.TestTags.LOGIN_SCREEN
+import xget.dev.jet.core.utils.TestTags.SHOW_PASSWORD_ICON
 import xget.dev.jet.presentation.auth.AuthActivity
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
@@ -115,12 +120,13 @@ internal fun LoginScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier
-            .background( Color.White)
-            .padding(start = 1.dp, end = 1.dp, top = 12.dp ),
+            .background(Color.White)
+            .padding(start = 1.dp, end = 1.dp, top = 12.dp)
+            .testTag(LOGIN_SCREEN),
         topBar = {
             TopCustomBar(title = "Ingresa a tu cuenta", showBack = false, onClick = {})
         },
-        backgroundColor =  Color.White
+        backgroundColor = Color.White
     ) {
         it
         val act = LocalContext.current
@@ -143,7 +149,7 @@ internal fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 30.dp, bottom = 0.dp , start = 16.dp, end = 16.dp,)
+                .padding(top = 30.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -173,7 +179,10 @@ internal fun LoginScreen(
                     }
                 },
                 trailingIcon = {
-                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                    IconButton(
+                        onClick = { showPassword.value = !showPassword.value },
+                        modifier = Modifier.testTag(SHOW_PASSWORD_ICON)
+                    ) {
                         Icon(
                             painter = painterResource(id = if (showPassword.value) R.drawable.password_eye_open else R.drawable.password_eye_close),
                             contentDescription = "Eye password",
@@ -199,9 +208,11 @@ internal fun LoginScreen(
                     color = Color.Gray,
                     fontSize = 16.sp,
                     shadow = false,
-                    modifier = Modifier.clickable {
-                        onPasswordReset()
-                    },
+                    modifier = Modifier
+                        .clickable {
+                            onPasswordReset()
+                        }
+                        .testTag(GO_TO_FORGOT_PASSWORD_SCREEN),
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -246,9 +257,11 @@ internal fun LoginScreen(
                     color = JetBlue,
                     fontSize = 18.sp,
                     shadow = false,
-                    modifier = Modifier.clickable {
-                        goToRegister()
-                    },
+                    modifier = Modifier
+                        .clickable {
+                            goToRegister()
+                        }
+                        .testTag(GO_TO_REGISTER_SCREEN),
                     fontWeight = FontWeight.Medium
                 )
             }
