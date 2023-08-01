@@ -23,6 +23,9 @@ jobs:
     - name: Touch local properties
       run: touch local.properties
       
+    - name: Set Android Home
+      run: echo "export ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+      
     - name: Configure Sdk
       run: echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
