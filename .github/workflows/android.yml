@@ -23,7 +23,9 @@ jobs:
     - name: Touch local properties
       run: touch local.properties
       
- 
+    - name: Configure Sdk
+      run: echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
 
       
       
