@@ -34,16 +34,10 @@ jobs:
     - name: Configure Sdk
       run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
-
-
-
-
-      
-      
-
     - name: Add Api Key
-      run: echo "COGNITO_POOL_ID=us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445\"\"" >> local.properties
-           echo "AWS_MQTT_ENDPOINT=aaoa1mq2s2wh-ats.iot.us-east-2.amazonaws.com\"\"" >> local.properties
+      run: |
+        echo "COGNITO_POOL_ID=us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445" >> local.properties
+        echo "AWS_MQTT_ENDPOINT=aaoa1mq2s2wh-ats.iot.us-east-2.amazonaws.com" >> local.properties
 
 
   
