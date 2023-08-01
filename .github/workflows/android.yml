@@ -23,8 +23,7 @@ jobs:
     - name: Touch local properties
       run: touch local.properties
       
-    - name: Configure Sdk licences
-      run:  ./sdkmanager --licenses | yes
+ 
 
       
       
