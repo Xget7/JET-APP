@@ -22,6 +22,10 @@ jobs:
         
     - name: Touch local properties
       run: touch local.properties
+           yes | sdkmanager --licenses
+
+      
+      
 
     - name: Add Api Key
       run: echo "COGNITO_POOL_ID=us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445\"\"" >> local.properties
