@@ -32,7 +32,8 @@ jobs:
       run: echo "export ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
       
     - name: Configure Sdk
-      run: yes | $ANDROID_HOME/tools/bin/sdkmanager -–licenses
+      run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
 
 
 
