@@ -38,7 +38,7 @@ class UserRepositoryImpl @Inject constructor(
         val nameValid = user.name.length > 4
         val gmailValid = isValidGmail(user.email)
         val phoneNumberValid = isValidPhoneNumber(user.phoneNumber)
-        val passwordValid = user.password.length > 6 && user.password == user.confirmPassword
+        val passwordValid = user.password.length >= 6 && user.password == user.confirmPassword
 
         Log.d("isValidUser", "$nameValid" + "$gmailValid" + "$phoneNumberValid" + "$passwordValid")
         if (!nameValid) {

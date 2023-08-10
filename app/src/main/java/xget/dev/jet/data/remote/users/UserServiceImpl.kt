@@ -30,6 +30,9 @@ class UserServiceImpl @Inject constructor(
     override suspend fun getUser(): ApiResponse<User>? {
         ApiResponse.Loading<Any>()
         return try {
+            if (currentToken != null) {
+                Log.d("userTOkenGetUser", currentToken)
+            }
             val response = client.get(GET_USER) {
                 header("Authorization", "Bearer $currentToken")
             }
