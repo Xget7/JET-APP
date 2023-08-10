@@ -2,6 +2,9 @@ package xget.dev.jet.presentation.main.device_config.secondStep
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -47,6 +50,7 @@ import xget.dev.jet.core.ui.components.PasswordJetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.core.utils.TestTags
+import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_3_BTN
 import xget.dev.jet.core.utils.checkLocationSetting
 import xget.dev.jet.presentation.utils.Screens
 import xget.dev.jet.presentation.theme.JETTheme
@@ -89,6 +93,18 @@ internal fun AddDeviceSecondStep(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+            permissions[Manifest.permission.BLUETOOTH_CONNECT] == true) {
+            // Bluetooth permissions are granted, proceed with onNext
+            onNext()
+        } else {
+            // Show an error message or inform the user that Bluetooth permissions are required
+        }
+    }
 
 
     val wifiPermissions = rememberLauncherForActivityResult(
@@ -145,7 +161,15 @@ internal fun AddDeviceSecondStep(
                 CustomBackgroundButton(
                     text = "Siguiente",
                     containerColor = Color(0xFF407BFF),
-                    onClick = onNext
+                    onClick = {
+                        permissionLauncher?.launch(
+                            arrayOf(
+                                Manifest.permission.BLUETOOTH_SCAN,
+                                Manifest.permission.BLUETOOTH_CONNECT
+                            )
+                        )
+                    },
+                    modifier = Modifier.testTag(GO_TO_ADD_DEVICE_STEP_3_BTN)
                 )
 
             }
@@ -252,3 +276,7 @@ fun SecondStepPrev() {
 }
 
 
+private fun Context.hasBluetoothPermissions(): Boolean {
+    return (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
+            checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED)
+}

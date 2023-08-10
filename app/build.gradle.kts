@@ -1,23 +1,27 @@
 import java.util.Properties
 
 plugins {
+    // Add the Kotlin serialization plugin
     kotlin("plugin.serialization") version "1.8.0"
+    // Alias for common Android plugins
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    // Add the Kotlinx serialization plugin
     id("kotlinx-serialization")
+    // Add the Dagger Hilt plugin for Android
     id("com.google.dagger.hilt.android")
+    // Add the KSP (Kotlin Symbol Processing) plugin to generate code at compile-time
     id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+    // Add the Android JUnit 5 plugin to run unit tests on Android
     id("de.mannodermaus.android-junit5")
+    // Add the Kover plugin to generate code coverage reports
     id("kover")
-
-
 }
 
 junitPlatform {
     configurationParameter("junit.jupiter.testinstance.lifecycle.default", "per_class")
 }
-
 
 
 
@@ -96,15 +100,6 @@ android {
 
     }
 
-
-
-
-
-
-//    tasks.named<JavaExec>("run") {
-//        standardInput = System.`in`
-//    }
-
 }
 
 dependencies {
@@ -126,6 +121,7 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
 
     // Glide images
+    //noinspection UseTomlInstead
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 
     // Paging Compose
@@ -136,7 +132,6 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.websockets)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)

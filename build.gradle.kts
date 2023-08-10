@@ -4,6 +4,7 @@ buildscript {
     dependencies {
         classpath(libs.gradle)
         classpath(libs.kotlin.gradle.plugin)
+        //noinspection UseTomlInstead
         classpath("org.jetbrains.kotlin:kotlin-serialization:1.8.0")
 
     }
@@ -22,9 +23,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
     id ("org.jetbrains.kotlinx.kover") version "0.6.1" apply false
     id ("de.mannodermaus.android-junit5") version "1.8.2.1" apply false
-
-
 }
+
+
+
 
 repositories {
     google()

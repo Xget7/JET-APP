@@ -106,9 +106,7 @@ class BluetoothControllerImpl @Inject constructor(
 
                 }
             }
-
         }
-
     }
 
     private val bluetoothDeviceStateReceiver = BluetoothDeviceStateReceiver { isConnected ->
@@ -133,8 +131,8 @@ class BluetoothControllerImpl @Inject constructor(
     }
 
     override fun startDiscovery() {
-        if (hasPermission(Manifest.permission.BLUETOOTH_SCAN)) {
-            Log.d("HasPermission", hasPermission(Manifest.permission.BLUETOOTH_SCAN).toString())
+        if (hasPermission(Manifest.permission.BLUETOOTH_SCAN,context)) {
+            Log.d("HasPermission", hasPermission(Manifest.permission.BLUETOOTH_SCAN,context).toString())
             return
         }
         Log.d("HasPermission", "True Permission Scan")
@@ -160,7 +158,7 @@ class BluetoothControllerImpl @Inject constructor(
 
 
     override fun stopDiscovery() {
-        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) {
+        if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN,context)) {
             return
         }
         Log.d("cancel Discovery", "Canceled DISCOVEY")
@@ -170,7 +168,7 @@ class BluetoothControllerImpl @Inject constructor(
 
     override fun connectToDevice(): Flow<BluetoothConnectionResult> {
         return flow {
-            if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
+            if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT, context)) {
                 throw SecurityException("No hay permisos suficientes para establecer una conexion.")
             }
 
@@ -222,7 +220,7 @@ class BluetoothControllerImpl @Inject constructor(
     }
 
     override suspend fun trySendMessage(message: String): String? {
-        if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT)) {
+        if (hasPermission(Manifest.permission.BLUETOOTH_CONNECT, context)) {
             Log.d("dataTrasnferServiceNull", "NO PERMISSION???")
             return null
         }
@@ -240,7 +238,6 @@ class BluetoothControllerImpl @Inject constructor(
     override fun closeConnection() {
         Log.d("OnCloseConnection", "Closed")
         currentServerSocket?.close()
-
         currentServerSocket = null
     }
 
@@ -254,9 +251,10 @@ class BluetoothControllerImpl @Inject constructor(
         closeConnection()
     }
 
-    private fun hasPermission(permission: String): Boolean {
-        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
-    }
 
 
+
+}
+fun hasPermission(permission: String, context: Context): Boolean {
+    return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 }

@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import xget.dev.jet.core.ui.components.TextWithShadow
+import xget.dev.jet.core.utils.TestTags.SEARCH_DEVICES_STEPPER
 import xget.dev.jet.presentation.main.device_config.device_search.DeviceSearchUiState
 
 @OptIn(ExperimentalPagerApi::class)
@@ -68,7 +70,8 @@ fun SearchingDevicesStep(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .testTag(SEARCH_DEVICES_STEPPER),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

@@ -53,9 +53,7 @@ class DeviceSearchViewModel @Inject constructor(
             counter = object : CountDownTimer(120000, 1000L) {
                 override fun onTick(millisUntilFinished: Long) {
                     content.value = content.value - 1000
-
                 }
-
                 override fun onFinish() {
                     stopScan()
                 }

@@ -4,11 +4,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -20,8 +18,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -31,16 +27,14 @@ import xget.dev.jet.MainActivity
 import xget.dev.jet.core.di.AppModule
 import xget.dev.jet.core.di.RemoteModule
 import xget.dev.jet.core.utils.TestTags
-import xget.dev.jet.core.utils.TestTags.DEVICE_TYPE_ITEM
-import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_2
-import xget.dev.jet.core.utils.TestTags.HISTORY_NAV_HOST_ICON
+import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_2_BTN
+import xget.dev.jet.core.utils.TestTags.SEARCH_DEVICES_STEPPER
 import xget.dev.jet.core.utils.TestTags.SMART_DEVICE_HISTORY_ITEM
 import xget.dev.jet.core.utils.TestTags.SMART_DEVICE_ITEM
 import xget.dev.jet.core.utils.TestTags.USER_WIFI_PASSWORD_TEXT_FIELD
 import xget.dev.jet.core.utils.WifiUtil
 import xget.dev.jet.presentation.utils.Screens
 import javax.inject.Inject
-import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf.Expression
 
 @UninstallModules(AppModule::class, RemoteModule::class)
 @HiltAndroidTest
@@ -100,7 +94,8 @@ class MainScreensTest {
             Espresso.closeSoftKeyboard()
         }
 
-        compRule.onNodeWithTag(GO_TO_ADD_DEVICE_STEP_2).performClick()
+        compRule.onNodeWithTag(GO_TO_ADD_DEVICE_STEP_2_BTN).performClick()
+
         compRule.waitUntil {
             compRule
                 .onAllNodesWithTag(USER_WIFI_PASSWORD_TEXT_FIELD)
@@ -113,9 +108,18 @@ class MainScreensTest {
 //
         //Write password and verify
         compRule.onNodeWithTag(USER_WIFI_PASSWORD_TEXT_FIELD).performTextInput(userPasswordText)
-
 //        //Verify user wifi name
         compRule.onNodeWithTag(TestTags.USER_WIFI_SSID_TEXT_FIELD).assert(hasText(wifiName))
+
+        //Go to 3rd step
+        compRule.onNodeWithTag(TestTags.GO_TO_ADD_DEVICE_STEP_3_BTN).performClick()
+
+        print(navController.currentDestination?.route)
+
+        Assert.assertEquals(navController.currentDestination?.route, Screens.PairDeviceThirdStep.route)
+
+
+
     }
 
     @Test

@@ -59,12 +59,12 @@ class SplashActivity : ComponentActivity() {
 
     private fun getUserAndNavigate(isLoggedIn: Boolean?) {
         lifecycleScope.launch {
-            navigateAuth()
-//            if (isLoggedIn == false){
-//                navigateAuth()
-//            }else{
-//                navigateMain()
-//            }
+//            navigateAuth()
+            if (isLoggedIn == false){
+                navigateAuth()
+            }else{
+                navigateMain()
+            }
         }
     }
     private fun navigateMain(){

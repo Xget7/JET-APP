@@ -71,8 +71,8 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideBluetoothController(): BluetoothController {
-        return MockBluetoothController()
+    fun provideBluetoothController(@ApplicationContext context: Context): BluetoothController {
+        return MockBluetoothController(context)
     }
 
     @Provides
@@ -120,11 +120,13 @@ object TestAppModule {
     ): DevicesRepository {
         return DevicesRepositoryImpl(devicesRemoteService, mqttDevicesService)
     }
+
     @Provides
     @Singleton
     fun provideMockMqttFlowClient(): MockMqttFlowClient {
         return MockMqttFlowClient()
     }
+
     @Provides
     @Singleton
     fun provideDevicesMqttService(

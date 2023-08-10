@@ -143,6 +143,7 @@ internal fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(310.dp)
+                        .padding(top = 35.dp)
                 ) {
                     Column(
                         Modifier

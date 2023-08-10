@@ -6,7 +6,6 @@ import android.app.Activity.RESULT_OK
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -32,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +51,7 @@ import xget.dev.jet.core.ui.components.JetTextField
 import xget.dev.jet.core.ui.components.TextWithShadow
 import xget.dev.jet.core.ui.components.TopCustomBar
 import xget.dev.jet.core.utils.TestTags.DEVICE_NAME_TEXT_FIELD
-import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_2
+import xget.dev.jet.core.utils.TestTags.GO_TO_ADD_DEVICE_STEP_2_BTN
 import xget.dev.jet.core.utils.checkLocationSetting
 import xget.dev.jet.presentation.main.device_config.components.SelectDeviceTypeItem
 import xget.dev.jet.presentation.main.device_config.components.TurnOnBluetooth
@@ -209,7 +207,7 @@ internal fun AddDeviceFirstStep(
                                 tryEnableLocation()
                             }
                         }
-                    }, modifier = Modifier.testTag(GO_TO_ADD_DEVICE_STEP_2)
+                    }, modifier = Modifier.testTag(GO_TO_ADD_DEVICE_STEP_2_BTN)
                 )
 
             }

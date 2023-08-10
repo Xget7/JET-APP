@@ -1,6 +1,7 @@
 package xget.dev.jet.data.remote.auth
 
 import android.util.Log
+import androidx.compose.ui.text.capitalize
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -10,6 +11,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import xget.dev.jet.data.remote.ResponseError
 import xget.dev.jet.data.util.HttpRoutes.FORGOT_PASSWORD
 import xget.dev.jet.data.util.network.ApiResponse
 import xget.dev.jet.data.util.HttpRoutes.LOGIN_USER
@@ -20,6 +22,7 @@ import xget.dev.jet.data.remote.users.dto.UserAuthResponse
 import xget.dev.jet.data.util.network.handleApiCodeStatusException
 import xget.dev.jet.data.util.network.handleApiException
 import xget.dev.jet.domain.repository.token.Token
+import java.util.Locale
 import javax.inject.Inject
 
 class AuthServiceImpl @Inject constructor(
@@ -36,19 +39,14 @@ class AuthServiceImpl @Inject constructor(
                 setBody(request)
             }
 
-            Log.d("LoginResponse", response.bodyAsText())
-            Log.d("LoginResponse", response .toString())
-
             val formatedResponse = response.body<UserAuthResponse>()
-            Log.d("FormatedLoginResponse", formatedResponse.toString())
-
 
             if (formatedResponse.token != null){
                 if (formatedResponse.id.isNullOrBlank()){
-                    ApiResponse.Error("Error con la autenticacion del usuario.")
+                    ApiResponse.Error(response.body<ResponseError>().message.capitalize(Locale.ROOT))
                 } else {
                     Log.d("settedJwt and userId", formatedResponse.toString())
-                    token.setJwtLocal(formatedResponse.token ?: "" , formatedResponse.id ?: "null")
+                    token.setJwtLocal(formatedResponse.token, formatedResponse.id)
                     ApiResponse.Success(formatedResponse)
                 }
             } else {
