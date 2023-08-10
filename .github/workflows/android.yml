@@ -1,0 +1,45 @@
+name: JET ANDROID CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+        
+        
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Touch local properties
+      run: touch local.properties
+      
+    - name: Set Android Home
+      run: echo "export ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+      
+    - name: Configure Sdk
+      run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
+    - name: Add Api Key
+      run: |
+        echo "COGNITO_POOL_ID=us-east-2:c25cb477-4c3b-45e9-ba2e-9208438d5445" >> local.properties
+        echo "AWS_MQTT_ENDPOINT=aaoa1mq2s2wh-ats.iot.us-east-2.amazonaws.com" >> local.properties
+
+
+  
+    - name: Build with Gradle
+      run: ./gradlew build
